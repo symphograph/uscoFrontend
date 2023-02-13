@@ -33,4 +33,4 @@ jobs:
           MY_API: ${{ secrets.MY_API }}
           BASE_BRANCH: master
           BRANCH: gh-pages
-          FOLDER: dist/spa
+          FOLDER: disttmp/spa
