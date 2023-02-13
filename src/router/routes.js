@@ -56,11 +56,6 @@ const routes = [
     children: [{ path: '', component: () => import('pages/VideoPage.vue') }]
   },
   {
-    path: '/articles',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/ArticlesPage.vue') }]
-  },
-  {
     path: '/news/:category',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/NewsPage.vue') }]
