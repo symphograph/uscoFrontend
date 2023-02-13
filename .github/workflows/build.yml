@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: yarn run build
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           MY_API: ${{ secrets.MY_API }}
