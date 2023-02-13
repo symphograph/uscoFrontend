@@ -9,7 +9,7 @@
       <div class="p_title">{{ newData.title }}</div>
       <div class="narea">
         <div class="text">
-          <template v-for="row in newData.parsedMD">
+          <template v-for="(row, idx) in newData.parsedMD" :key="idx">
             <template v-if="row.type === 'text'">
               <section v-if="row.content !== '\n'" v-html="row.content"></section>
               <br v-else>
@@ -38,8 +38,9 @@
             </a>
           </div>
           <div
-            v-for="img in newData.unusedImages"
+            v-for="(img, idx) in newData.unusedImages"
             class="newsImg"
+            :key="idx"
           >
             <q-img
               :src="imgUrl(img)"
