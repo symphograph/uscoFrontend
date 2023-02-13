@@ -90,11 +90,6 @@ const routes = [
     component: () => import('layouts/AuthLayout.vue'),
     children: [{ path: '', component: () => import('pages/AuthPage.vue') }]
   },
-  {
-    path: '/env',
-    component: () => import('layouts/EnvLayout.vue'),
-    children: [{ path: '', component: () => import('pages/EnvTest.vue') }]
-  },
 
 
   // Always leave this as last one,
