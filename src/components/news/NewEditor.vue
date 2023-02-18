@@ -388,7 +388,7 @@ function save(addNew = 0) {
 
   api.post(apiUrl + 'api/set/news/entry.php', {
     params: {
-      entry: props.newData,
+      entry: newDataE.value,
       token: token.value,
       addNew: addNew,
       categs: categsFilter()
