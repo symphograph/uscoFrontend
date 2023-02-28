@@ -14,6 +14,7 @@ import { api } from 'boot/axios'
 import AnnounceCard from './AnnounceCard.vue'
 import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import {notifyError} from "src/myFuncts";
 
 
 const apiUrl = String(process.env.API)
@@ -23,8 +24,9 @@ const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
+const progress = inject('progress')
 
-const announceList = ref(null)
+const announceList = inject('announceList')
 const Halls = inject('Halls')
 
 const props = defineProps({
@@ -36,25 +38,23 @@ const props = defineProps({
 
 
     function loadData () {
+      progress.value = true
       api.post(apiUrl + 'api/get/announces/announces.php', {
         params: {
           sort: props.sort,
           year: props.evYear,
-          new: props.onlyNew,
-          token: token.value
+          new: props.onlyNew
         }
       })
         .then((response) => {
-          announceList.value = response.data.data
+          announceList.value = response?.data?.data ?? []
         })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
           announceList.value = []
+        })
+        .finally(() => {
+          progress.value = false
         })
     }
 onMounted(()=>{
@@ -64,10 +64,6 @@ onMounted(()=>{
 watch(() => props.evYear,()=>{
     loadData()
 })
-
-watch(() => props.sort,()=>{
-    //loadData()
-  })
 
 const sortFromOld = (d1, d2) => (d1.datetime < d2.datetime) ? 1 : -1
 const sortFromNew = (d1, d2) => (d1.datetime > d2.datetime) ? 1 : -1

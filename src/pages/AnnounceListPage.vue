@@ -11,7 +11,7 @@
           <q-select v-model="moSort" :options="options"></q-select>
         </div>
       </div>
-
+      <q-linear-progress v-if="progress" indeterminate color="secondary"/>
       <div class="gridarea">
         <AnnounceList v-model:evYear="evYear" :sort="moSort.value"></AnnounceList>
       </div>
@@ -20,11 +20,12 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue'
+import {inject, provide, ref} from 'vue'
 import AnnounceList from '../components/AnnounceList.vue'
 import { useQuasar, useMeta } from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import {notifyError, notifyOK} from "src/myFuncts";
 
 const metaData = {
   title: 'Анонсы'
@@ -32,13 +33,15 @@ const metaData = {
 useMeta(metaData)
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const token = inject('token')
 const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
 
-const announceList = ref(null)
+
+const progress = inject('progress')
+
+
 const Halls = inject('Halls')
 
 const moSort = ref({
@@ -61,47 +64,19 @@ const years = [2023, 2022, 2021, 2020, 2019, 2018]
 const evYear = ref(new Date().getFullYear())
 
 function addAnnounce () {
-
-      api.post(apiUrl + 'api/set/announces/addannounce.php', {
+      api.post(apiUrl + 'api/set/announce/addannounce.php', {
         params: {
-          token: token.value
         }
       })
         .then((response) => {
-          if (response.data.result) {
-            q.notify({
-              type: 'positive',
-              position: 'center',
-              message: 'Готово',
-              timeout: 1,
-              closeBtn: 'Ок'
-            })
-            router.push({ path: '/announce/' + response.data.data.ev_id })
-            return true
+          if(!!!response?.data?.result){
+            throw new Error();
           }
-
-          let msg = 'Ой! Какая досада!'
-          if (response.data.error) {
-            msg = response.data.error
-          }
-
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: msg,
-            icon: 'report_problem',
-            closeBtn: 'Закрыть'
-          })
-
+          q.notify(notifyOK(response?.data?.result ?? null))
+          router.push({ path: '/announce/' + response.data.data.ev_id })
         })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem',
-            closeBtn: 'Закрыть'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
 

@@ -107,13 +107,12 @@ import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import { computed, inject, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fDateTime } from 'src/myFuncts.js'
+import {fDateTime, notifyError, notifyOK} from 'src/myFuncts.js'
 
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
 const token = inject('token')
-const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
@@ -156,97 +155,34 @@ const topImgUrl = computed(()=>{
 function saveData () {
       api.post(apiUrl + 'api/set/announce/announce.php', {
         params: {
-          evdata: props.evData,
-          token: token.value
+          evdata: props.evData
         }
       })
         .then((response) => {
-          if (response.data.result) {
-            q.notify({
-              type: 'positive',
-              position: 'center',
-              message: 'Готово',
-              timeout: 300,
-              closeBtn: 'Ок'
-            })
-            return true
-          }
-          let msg = 'Ой! Какая досада!'
-          if (response.data.error) {
-            msg = response.data.error
-          }
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: msg,
-            icon: 'report_problem',
-            timeout: 300,
-            closeBtn: 'Закрыть'
-          })
+          q.notify(notifyOK(response?.data?.result ?? ''))
+        })
+        .catch((error) => {
+          q.notify(notifyError(error))
+        })
+    }
 
-        })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem',
-            closeBtn: 'Закрыть'
-          })
-        })
-    }
-function createNewAnnounce (id) {
-      route.params.evid = id
-      router.push({ path: '/announce/' + id })
-      emit('newAnnounce')
-    }
 function delAnnounce () {
-      api.post(apiUrl + 'api/set/announces/delannounce.php', {
+      api.post(apiUrl + 'api/set/announce/delannounce.php', {
         params: {
-          id: props.evData.ev_id,
-          token: token.value
+          id: props.evData.ev_id
         }
       })
         .then((response) => {
-          if (response.data.result === 'Ok') {
-            q.notify({
-              timeout: 100,
-              color: 'positive',
-              position: 'center',
-              message: 'Готово',
-              closeBtn: 'Закрыть'
-            })
-            emit('IamDeleted')
-            return true
-          }
-
-          let msg = 'Ой! Какая досада!'
-          if (response.data.error) {
-            msg = response.data.error
-          }
-
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: msg,
-            icon: 'report_problem',
-            closeBtn: 'Закрыть'
-          })
+          q.notify(notifyOK(response?.data?.result ?? null))
+          emit('IamDeleted')
         })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
+
 function changeShow () {
       emit('changeShow')
-    }
-function imeColor () {
-      return 'grey-4'
     }
 
 function payType () {

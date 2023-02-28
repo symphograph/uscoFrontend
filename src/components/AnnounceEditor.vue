@@ -25,6 +25,7 @@
               :factory="factoryFnMini"
               ref="uploader"
               @uploaded="uploaded"
+              @failed="failed"
             />
           </div>
           <div>
@@ -35,6 +36,7 @@
               :factory="factoryFn"
               ref="uploader2"
               @uploaded="uploaded"
+              @failed="failed"
             />
           </div>
         </div>
@@ -94,6 +96,7 @@ import { api } from 'boot/axios'
 import AnnounceCard from 'components/AnnounceCard.vue'
 import { inject, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import {notifyError, notifyOK} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -145,7 +148,7 @@ function factoryFn (files) {
     url: apiUrl + 'api/upload/poster.php',
     headers: [
       {
-        name: 'X-CSRF-TOKEN',
+        name: 'AUTHORIZATION',
         value: token.value
       }
     ],
@@ -161,7 +164,7 @@ function factoryFnMini (files) {
     url: apiUrl + 'api/upload/postertop.php',
     headers: [
       {
-        name: 'X-CSRF-TOKEN',
+        name: 'AUTHORIZATION',
         value: token.value
       }
     ],
@@ -173,26 +176,13 @@ function factoryFnMini (files) {
 }
 
 function uploaded (info) {
-  let data = info.xhr.responseText
-  let jsonResponse = JSON.parse(data)
-  if (jsonResponse.error) {
-    q.notify({
-      type: 'negative',
-      position: 'center',
-      message: jsonResponse.error,
-      closeBtn: 'Закрыть'
-    })
-    uploader.value.reset()
-    uploader2.value.reset()
-    return
-  }
-  q.notify({
-    type: 'positive',
-    position: 'center',
-    message: 'Загружено',
-    closeBtn: 'Ок'
-  })
+  q.notify(notifyOK('Загружено'))
   emit('posterUploaded')
+}
+
+function failed (info) {
+  let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
+  q.notify(notifyError(null ,msg))
 }
 
 function save () {
@@ -207,52 +197,20 @@ function reload () {
   emit('reload')
 }
 
-
-
 function delImg (istop) {
-  api.post(apiUrl + 'api/set/announces/delposter.php', {
+  api.post(apiUrl + 'api/set/announce/delposter.php', {
     params: {
       id: props.evData.ev_id,
-      token: token.value,
       istop: istop
     }
   })
     .then((response) => {
-      if (response.data.result) {
-        q.notify({
-          timeout: 100,
-          color: 'positive',
-          position: 'center',
-          message: 'Готово',
-          closeBtn: 'Закрыть'
-        })
-        emit('posterUploaded')
-        return true
-      }
-
-      let msg = 'Ой! Какая досада!'
-      if (response.data.error) {
-        msg = response.data.error
-      }
-
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: msg,
-        icon: 'report_problem',
-        closeBtn: 'Закрыть'
-      })
+      emit('posterUploaded')
+      q.notify(notifyOK(response?.data?.result ?? ''))
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        icon: 'report_problem'
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
-
-
 }
 
 </script>

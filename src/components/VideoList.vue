@@ -16,6 +16,7 @@
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import { inject, onMounted, ref } from 'vue'
+import {notifyError} from "src/myFuncts";
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
@@ -40,22 +41,16 @@ const videos = ref([
 
     function loadData () {
 
-      api.post(apiUrl + 'api/video.php', {
+      api.post(apiUrl + 'api/get/video.php', {
         params: {
-          limit: props.videoLimit.limit,
-          token: token.value
+          limit: props.videoLimit.limit
         }
       })
         .then((response) => {
-          videos.value = response.data.data
+          videos.value = response?.data?.data ?? []
         })
-        .catch(() => {
-          $q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
     onMounted(() => {

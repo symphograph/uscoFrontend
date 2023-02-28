@@ -22,6 +22,7 @@ import NewsList from 'components/news/NewsList.vue'
 import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import {notifyError} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
 const route = useRoute()
@@ -49,40 +50,11 @@ function addEntry () {
     }
   })
     .then((response) => {
-      if (response.data.error) {
-        q.notify({
-          color: 'negative',
-          position: 'center',
-          message: response.data.error,
-          icon: 'report_problem',
-          closeBtn: 'Закрыть'
-        })
-        return false
-      }
-
-      if (response.data.result) {
-        q.notify({
-          type: 'positive',
-          position: 'center',
-          message: 'Готово',
-          timeout: 1,
-          closeBtn: 'Ок'
-        })
-        route.params.id = response.data.data.id
-        router.push({ path: '/new/' + response.data.data.id })
-
-      }
-
+      route.params.id = response.data.data.id
+      router.push({ path: '/new/' + response.data.data.id })
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        timeout: 1,
-        icon: 'report_problem',
-        closeBtn: 'Закрыть'
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 
 }

@@ -51,6 +51,7 @@ import MainFooter from 'components/MainFooter.vue'
 import { useQuasar, Dialog, LocalStorage } from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute } from 'vue-router'
+import {notifyError} from "src/myFuncts";
 
 
 const q = useQuasar()
@@ -233,6 +234,12 @@ provide('tabList', tabList)
 const token = ref('')
 provide('token', token)
 
+const progress = ref(false)
+provide('progress', progress)
+
+const announceList = ref([])
+provide('announceList', announceList)
+
 const Defaults = ref(null)
 
 function toggleLeftDrawer () {
@@ -245,40 +252,23 @@ function apiSess () {
 
   api.post(apiUrl + 'api/auth/session.php', {
     params: {
-      token: token.value,
-      path: route.path,
+      path: route.path
     }
   })
     .then((response) => {
-      if (response.data.result) {
-        Defaults.value = response.data.data
-        admin.value = [4].some(l=>Defaults.value.Powers.includes(l))
-
-        loadOptions()
-        return true
+      if(!!!response?.data?.result){
+        throw new Error();
       }
-      if (response.data.error) {
-        if (['badToken', 'emptyToken', 'Refresh for new Sess', 'sessError'].includes(response.data.error)) {
-          goToLogin()
-        }
-
-        return false
-      }
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Ой! Не работает.:(',
-        closeBtn: 'Закрыть',
-        icon: 'report_problem'
-      })
+      Defaults.value = response?.data?.data ?? null
+      admin.value = [4].some(l=>Defaults.value.Powers.includes(l))
+      loadOptions()
     })
     .catch((error) => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Ой! Не работает.:(',
-        icon: 'report_problem'
-      })
+      if(error?.response?.status === 401){
+        goToLogin()
+        return
+      }
+      q.notify(notifyError(error))
     })
 }
 
@@ -288,37 +278,14 @@ provide('Halls', Halls)
 function loadOptions () {
   api.post(apiUrl + 'api/get/options.php', {
     params: {
-      token: token.value
+
     }
   })
     .then((response) => {
-      if (response.data.result) {
-        Halls.value = response.data.data.Halls
-        return true
-      }
-
-      let msg = 'Опции не загружены'
-      if (response.data.error) {
-        msg = response.data.error
-      }
-
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: msg,
-        icon: 'report_problem',
-        closeBtn: 'Закрыть'
-      })
-
+      Halls.value = response?.data?.data?.Halls ?? null
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Опции не загружены',
-        icon: 'report_problem',
-        closeBtn: 'Закрыть'
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 }
 
@@ -344,6 +311,10 @@ onBeforeMount(() => {
   getTokenFromCook()
 })
 onMounted(() => {
+  api.defaults.headers.common['Authorization'] = token.value
+  if(!process.env.isDebug){
+    api.defaults.headers.common['Accept'] = "application/json"
+  }
   apiSess()
   showCookieConfirm()
 })
@@ -353,9 +324,11 @@ function cook () {
 }
 
 const lastPath = '/'
+
 watch(route,(newpath) => {
   LocalStorage.set('lastPath',newpath.path)
 })
+
 function showCookieConfirm () {
   const $q = useQuasar()
   if (LocalStorage.getItem('CookieConfirm')) {

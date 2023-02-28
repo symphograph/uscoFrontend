@@ -48,6 +48,7 @@ import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import draggable from 'vuedraggable'
 import { inject, onMounted, ref } from 'vue'
+import {notifyError} from "src/myFuncts";
 
 
 const q = useQuasar()
@@ -64,28 +65,21 @@ const metaData = {
 useMeta(metaData)
 
     function loadData () {
-      api.post(apiUrl + 'api/staff.php', {
+      api.post(apiUrl + 'api/get/staff.php', {
         params: {
-          date: condDate.value,
-          token: token.value
+          date: condDate.value
         }
       })
         .then((response) => {
-          groups.value = response.data.data
+          groups.value = response?.data?.data ?? []
         })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
     function staffEdit () {
-      api.post(String(process.env.API) + '/api/staffedit.php', {
+      api.post(String(process.env.API) + '/api/set/staffedit.php', {
         params: {
-          token: token,
           groups: groups.value,
           date: condDate.value
         }
@@ -93,14 +87,8 @@ useMeta(metaData)
         .then((response) => {
           // console.log('ok')
         })
-        .catch(() => {
-          // console.log('err')
-          q.notify({
-            color: 'negative',
-            position: 'center',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
     function goToPers (id) {

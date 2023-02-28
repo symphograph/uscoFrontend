@@ -1,7 +1,7 @@
 <template>
   <div class="newscol">
     <q-linear-progress v-if="progress" indeterminate color="secondary" class="q-mt-sm"/>
-    <template v-if="Items">
+    <template v-if="Items.length">
       <NewItem
         v-for="item in Items"
         :key="item.id"
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { LocalStorage, useQuasar } from 'quasar'
+import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import NewItem from 'components/news/NewItem.vue'
 import { inject, onMounted, ref, watch } from 'vue'
@@ -26,9 +26,9 @@ const route = useRoute()
 const router = useRouter()
 const token = inject('token')
 const q = useQuasar()
-const progress = ref(false)
+const progress = inject('progress')
 
-const Items = ref(null)
+const Items = ref([])
 const emptymsg = ref('Лучшие новости - это их отсутствие.')
 const props = defineProps({
   query: ref(null),
@@ -52,30 +52,25 @@ watch(route, (newpath) => {
 })
 
 function loadData () {
-  progress.value = true
   if(!categ.value){
-    progress.value = false
     return;
   }
-  api.post(apiUrl + 'api/news.php', {
+  progress.value = true
+  api.post(apiUrl + 'api/get/news.php', {
     params: {
       category: categ.value,
       year: props.year,
-      limit: props.limit,
-      token: token.value
+      limit: props.limit
     }
   })
     .then((response) => {
-      if (response.data.result) {
-        Items.value = response.data.data
-      } else {
-        Items.value = null
-      }
-      progress.value = false
+      Items.value = response?.data?.data ?? []
     })
-    .catch(() => {
+    .catch((error) => {
+      Items.value = []
+    })
+    .finally(() => {
       progress.value = false
-      Items.value = null
     })
 }
 

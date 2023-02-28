@@ -26,3 +26,25 @@ export function fDateTime (date) {
   return ''
 }
 
+export function notifyOK (message = 'Готово') {
+  return {
+    color: 'positive',
+    position: 'center',
+    message: message ?? 'Готово',
+    timeout: 100,
+    closeBtn: 'x'
+  }
+}
+
+export function notifyError (error, defaultMsg = 'Ой! Не работает :(') {
+  return {
+    color: 'negative',
+    position: 'center',
+    message:
+      !!error?.response?.data?.error
+        ? error.response.data.error
+        : defaultMsg ?? 'Ой! Не работает :(',
+    closeBtn: 'x',
+    icon: 'report_problem'
+  }
+}

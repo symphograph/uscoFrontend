@@ -36,6 +36,7 @@ import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 import SelMytest from 'components/SelMytest.vue'
 import { useRoute } from 'vue-router'
+import {notifyError} from "src/myFuncts";
 
 const route = useRoute()
 const q = useQuasar()
@@ -62,7 +63,7 @@ function reaction () {
 
 function loadOptions () {
 
-      api.post(apiUrl + '/api/album.php', {
+      api.post(apiUrl + '/api/get/album.php', {
         params: {
           what: 'options',
           album: 0,
@@ -70,17 +71,12 @@ function loadOptions () {
         }
       })
         .then((response) => {
-          albumList.value = response.data.options
+          albumList.value = response?.data?.options ?? []
           initAlbum()
           loadData()
         })
-        .catch(() => {
-          q.notify({
-            color: 'negative',
-            position: 'top',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
 
@@ -104,15 +100,10 @@ function loadData () {
         }
       })
         .then((response) => {
-          files.value = response.data.files
+          files.value = response?.data?.files ?? []
         })
-        .catch(() => {
-          $q.notify({
-            color: 'negative',
-            position: 'top',
-            message: 'Сервер не отвечает',
-            icon: 'report_problem'
-          })
+        .catch((error) => {
+          q.notify(notifyError(error))
         })
     }
 

@@ -20,6 +20,7 @@ import AnnounceDescr from 'components/AnnounceDescr.vue'
 import AnnounceEditor from 'components/AnnounceEditor.vue'
 import { ref, inject, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import {notifyError} from "src/myFuncts";
 
 const metaData = {
   title: 'Анонс'
@@ -32,40 +33,20 @@ const apiUrl = String(process.env.API)
 const route = useRoute()
 const token = inject('token')
 
-const evid = ref(route.params.evid)
 const evData = ref(null)
 
 function loadData () {
 
   api.post(apiUrl + 'api/get/announces/announce.php', {
     params: {
-      id: route.params.evid,
-      token: token.value
+      id: route.params.evid
     }
   })
     .then((response) => {
-      if (response.data.error) {
-        q.notify({
-          color: 'negative',
-          position: 'center',
-          message: response.data.error,
-          icon: 'report_problem',
-          closeBtn: 'Закрыть'
-        })
-        evData.value = false
-      } else {
-        evData.value = response.data
-      }
-
-      // console.log(this.evData)
+      evData.value = response?.data?.data ?? null
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        icon: 'report_problem'
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 }
 

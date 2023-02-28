@@ -1,5 +1,5 @@
 <template>
-  <div v-if="newData" class="newsarea">
+  <div v-if="newDataE" class="newsarea">
     <q-input label="Заголовок"
              type="text"
              v-model="newDataE.title"
@@ -12,7 +12,7 @@
       flex-wrap: wrap">
       <div class="nimg_block">
         <q-img :ratio="1080/684"
-               :src="apiUrl + newData.img"
+               :src="apiUrl + newDataE.img"
         ></q-img>
       </div>
       <q-btn
@@ -22,7 +22,7 @@
         icon="delete"
         class="absolute"
         style="transform: translateY(-50%);"
-        @click="delPw(newData.img)"
+        @click="delPw(newDataE.img)"
       ></q-btn>
       <div style="
       width: calc(100% - 260px);
@@ -81,6 +81,7 @@
             max-file-size="50000000"
             ref="uploader"
             @uploaded="uploaded"
+            @failed="failed"
             padding="0"
             margin="0"
             bordered
@@ -98,6 +99,7 @@
             max-file-size="50000000"
             ref="uploader"
             @uploaded="uploaded"
+            @failed="failed"
             multiple
             batch
             padding="0"
@@ -109,11 +111,11 @@
       </div>
     </div>
     <div class="imagesArea">
-      <template v-for="(img, key) in newData.Images" :key="key">
+      <template v-for="(img, key) in newDataE.Images" :key="key">
         <q-card>
           <q-img
             :ratio="96/54"
-            :src="apiUrl + '/img/entry/1080/' + newData.id + '/'  + img.fileName"
+            :src="apiUrl + '/img/entry/1080/' + newDataE.id + '/'  + img.fileName"
           >
           </q-img>
           <q-card-section>
@@ -161,12 +163,10 @@ import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {inject, ref} from 'vue'
 import {useRoute} from 'vue-router'
+import {notifyError, notifyOK} from "src/myFuncts";
 
 
-const props = defineProps({
-  newData: ref(null)
-})
-const newDataE = ref(props.newData)
+const newDataE = inject('newData')
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -228,46 +228,16 @@ function delImg(img, key) {
   api.post(apiUrl + 'api/set/news/delimg.php', {
     params: {
       id: route.params.id,
-      img: img,
-      token: token.value
+      img: img
     }
   })
     .then((response) => {
-      if (response.data.error) {
-        q.notify({
-          color: 'negative',
-          position: 'center',
-          message: response.data.error,
-          icon: 'report_problem',
-          closeBtn: 'Закрыть',
-          timeout: 1
-        })
-        return false
-      }
-      if (response.data.result) {
-        q.notify({
-          color: 'positive',
-          position: 'center',
-          message: response.data.result,
-          icon: 'done',
-          closeBtn: 'Ок',
-          timeout: 1
-        })
-        console.log(key)
-        newDataE.value.Images.splice(key, 1)
-        emit('uploaded')
-        return true
-      }
+      q.notify(notifyOK(response?.data?.result ?? ''))
+      newDataE.value.Images.splice(key, 1)
+      emit('uploaded')
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        icon: 'report_problem',
-        closeBtn: 'Ок',
-        timeout: 1
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 }
 
@@ -276,44 +246,14 @@ function delPw(img) {
   api.post(apiUrl + 'api/set/news/delpw.php', {
     params: {
       id: route.params.id,
-      img: img,
-      token: token.value
+      img: img
     }
   })
     .then((response) => {
-      if (response.data.error) {
-        q.notify({
-          color: 'negative',
-          position: 'center',
-          message: response.data.error,
-          icon: 'report_problem',
-          closeBtn: 'Закрыть',
-          timeout: 1
-        })
-        return false
-      }
-      if (response.data.result) {
-        q.notify({
-          color: 'positive',
-          position: 'center',
-          message: response.data.result,
-          icon: 'done',
-          closeBtn: 'Ок',
-          timeout: 1
-        })
-        newDataE.value.img = '/img/entry/default.svg'
-        return true
-      }
+      newDataE.value.img = '/img/entry/default.svg'
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        icon: 'report_problem',
-        closeBtn: 'Ок',
-        timeout: 1
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 }
 
@@ -322,7 +262,7 @@ function factoryFnMini() {
     url: apiUrl + 'api/upload/entrypw.php',
     headers: [
       {
-        name: 'X-CSRF-TOKEN',
+        name: 'AUTHORIZATION',
         value: token.value
       }
     ],
@@ -338,7 +278,7 @@ function factoryFn() {
     url: apiUrl + 'api/upload/entryimg.php',
     headers: [
       {
-        name: 'X-CSRF-TOKEN',
+        name: 'AUTHORIZATION',
         value: token.value
       }
     ],
@@ -350,29 +290,14 @@ function factoryFn() {
 }
 
 function uploaded(info) {
-  let data = info.xhr.responseText
-  console.log(data)
-  let jsonResponse = JSON.parse(data)
-  if (jsonResponse.error) {
-    q.notify({
-      type: 'negative',
-      position: 'center',
-      message: jsonResponse.error,
-      closeBtn: 'Закрыть'
-    })
-    uploader.value.reset()
-    return
-  }
-  if (jsonResponse.result) {
-    q.notify({
-      type: 'positive',
-      position: 'center',
-      message: 'Загружено',
-      closeBtn: 'Ок'
-    })
-    emit('uploaded')
-  }
+  q.notify(notifyOK('Загружено'))
+  emit('uploaded')
   uploader.value.reset()
+}
+
+function failed (info) {
+  let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
+  q.notify(notifyError(null ,msg))
 }
 
 function categsFilter() {
@@ -389,48 +314,16 @@ function save(addNew = 0) {
   api.post(apiUrl + 'api/set/news/entry.php', {
     params: {
       entry: newDataE.value,
-      token: token.value,
       addNew: addNew,
       categs: categsFilter()
     }
   })
     .then((response) => {
-      if (response.data.result) {
-        q.notify({
-          type: 'positive',
-          position: 'center',
-          message: 'Готово',
-          timeout: 1,
-          closeBtn: 'Ок'
-        })
-        if (addNew) {
-          //createNewAnnounce(response.data.ev_id)
-        }
-        emit('uploaded')
-        return true
-      }
-      let msg = 'Ой! Какая досада!'
-      if (response.data.error) {
-        msg = response.data.error
-      }
-
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: msg,
-        icon: 'report_problem',
-        timeout: 300,
-        closeBtn: 'Закрыть'
-      })
+      q.notify(notifyOK(response?.data?.result ?? ''))
+      emit('uploaded')
     })
-    .catch(() => {
-      q.notify({
-        color: 'negative',
-        position: 'center',
-        message: 'Сервер не отвечает',
-        icon: 'report_problem',
-        closeBtn: 'Закрыть'
-      })
+    .catch((error) => {
+      q.notify(notifyError(error))
     })
 }
 
