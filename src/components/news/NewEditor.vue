@@ -268,7 +268,7 @@ function factoryFnMini() {
     ],
     formFields: [{
       name: 'id',
-      value: props.newData.id
+      value: newDataE.value.id
     }]
   }
 }
@@ -284,7 +284,7 @@ function factoryFn() {
     ],
     formFields: [{
       name: 'id',
-      value: props.newData.id
+      value: newDataE.value.id
     }]
   }
 }

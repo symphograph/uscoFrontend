@@ -73,6 +73,7 @@ import {notifyError} from "src/myFuncts";
 const id = ref(0)
 const newData = ref(null)
 provide('newData', newData)
+
 const q = useQuasar()
 const apiUrl = String(process.env.API)
 const token = inject('token')
@@ -114,8 +115,8 @@ function loadData() {
     }
   })
     .then((response) => {
-      newData.value = response.data.data ?? []
-      pTitle.value = newData.value.title ?? ''
+      newData.value = response?.data?.data ?? null
+      pTitle.value = newData?.value?.title ?? ''
     })
     .catch((error) => {
       q.notify(notifyError(error))
