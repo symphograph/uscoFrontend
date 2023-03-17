@@ -21,7 +21,7 @@
           </q-icon>
         </q-item-section>
         <q-item-section>
-          <q-item-label caption>{{ fDateTime(evData.datetime) }}</q-item-label>
+          <q-item-label caption>{{ fDateTime(evDataEditable.datetime) }}</q-item-label>
         </q-item-section>
       </q-item>
       <a :href="Halls.find(el => el.id === evData.hall_id).map" target="_blank">
@@ -105,7 +105,7 @@
 import DialogConfirm from './DialogConfirm.vue'
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
-import { computed, inject, ref } from 'vue'
+import {computed, inject, onMounted, ref} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {fDateTime, notifyError, notifyOK} from 'src/myFuncts.js'
 
@@ -151,7 +151,9 @@ const topImgUrl = computed(()=>{
     '?ver=' + props.evData.TopPoster.md5
 })
 
-
+onMounted(()=> {
+  //console.log(evDataEditable)
+})
 function saveData () {
       api.post(apiUrl + 'api/set/announce/announce.php', {
         params: {

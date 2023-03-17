@@ -13,7 +13,7 @@
       </div>
       <div class="editor">
         <div style="display: flex; justify-content: space-between">
-          <DateTime v-model:date="evDataEditable.datetime"></DateTime>
+          <DateTime v-model:date="evData.datetime" @update:date="test()"></DateTime>
         </div>
         <br>
         <div class="uploads">
@@ -47,11 +47,11 @@
 
 
         <q-input name="progName"
-                 v-model="evDataEditable.prog_name"
+                 v-model="evData.prog_name"
                  label="Название"
         ></q-input>
         <q-select
-          v-model="evDataEditable.hall_id"
+          v-model="evData.hall_id"
           label="Место проведения"
           emit-value
           map-options
@@ -60,23 +60,23 @@
           :options="Halls"
         ></q-select>
         <q-select
-          v-model="evDataEditable.pay"
+          v-model="evData.pay"
           emit-value
           map-options
           label="Условия входа"
           :options="paySelect"
         ></q-select>
         <br>
-        <q-input v-if="evData.pay == 3" type="text" v-model="evDataEditable.ticket_link" label="Ссылка на продажу билетов"></q-input>
+        <q-input v-if="evData.pay == 3" type="text" v-model="evData.ticket_link" label="Ссылка на продажу билетов"></q-input>
         <br>
-        <q-input type="number" v-model="evDataEditable.age" label="Возрастные ограничения"></q-input>
+        <q-input type="number" v-model="evData.age" label="Возрастные ограничения"></q-input>
         <br>
-        <q-input name="evDescr" v-model="evDataEditable.sdescr"
+        <q-input name="evDescr" v-model="evData.sdescr"
                  type="textarea"
                  label="Краткое описание"
         ></q-input>
         <br>
-        <q-input name="evText" v-model="evDataEditable.description"
+        <q-input name="evText" v-model="evData.description"
                  type="textarea"
                  label="Описание"
         ></q-input>
@@ -113,11 +113,11 @@ const emit = defineEmits(['reload', 'posterUploaded'])
 const model = {}
 const ttt = {}
 
-const props = defineProps({
-  evData: ref(false)
-})
+const evData = inject('evData')
 
-const evDataEditable = ref(props.evData)
+function test () {
+  console.log(evData)
+}
 
 const paySelect = [
   {

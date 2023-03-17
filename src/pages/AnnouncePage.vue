@@ -1,7 +1,6 @@
 <template>
   <div class="content">
     <AnnounceEditor v-if="editMode && evData"
-                  v-model:evData="evData"
                   @posterUploaded="loadData"
                   @reload="loadData"
                   :editMode="editMode"
@@ -18,7 +17,7 @@ import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import AnnounceDescr from 'components/AnnounceDescr.vue'
 import AnnounceEditor from 'components/AnnounceEditor.vue'
-import { ref, inject, onMounted } from 'vue'
+import {ref, inject, onMounted, provide} from 'vue'
 import { useRoute } from 'vue-router'
 import {notifyError} from "src/myFuncts";
 
@@ -34,6 +33,7 @@ const route = useRoute()
 const token = inject('token')
 
 const evData = ref(null)
+provide('evData', evData)
 
 function loadData () {
 
