@@ -154,7 +154,7 @@ function factoryFn (files) {
     ],
     formFields: [{
       name: 'id',
-      value: props.evData.ev_id
+      value: evData.value.ev_id
     }]
   }
 }
@@ -170,7 +170,7 @@ function factoryFnMini (files) {
     ],
     formFields: [{
       name: 'id',
-      value: props.evData.ev_id
+      value: evData.value.ev_id
     }]
   }
 }
@@ -200,7 +200,7 @@ function reload () {
 function delImg (istop) {
   api.post(apiUrl + 'api/set/announce/delposter.php', {
     params: {
-      id: props.evData.ev_id,
+      id: evData.value.ev_id,
       istop: istop
     }
   })
