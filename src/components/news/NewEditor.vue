@@ -178,7 +178,7 @@ const uploader = ref(null)
 const categs = ref([
   {
     id: 1,
-    name: 'Новости ЮСКО',
+    name: 'Новости ЮССО',
     caption: 'Новости оркестра',
     url: '/news/usco',
     ava: '/img/logo/logo_init.svg',

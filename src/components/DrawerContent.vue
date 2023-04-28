@@ -4,7 +4,7 @@
       <q-item clickable v-close-popup tabindex="0" to="/">
         <q-item-section avatar>
           <q-avatar square>
-            <img src="/logo.svg">
+            <img src="/usso.logo.svg">
           </q-avatar>
         </q-item-section>
         <q-item-section>

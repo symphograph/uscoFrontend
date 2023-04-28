@@ -5,7 +5,7 @@
     <q-tabs inline-label class="bg-primary text-white shadow-2 mobile-hide" align="center">
       <q-item clickable to="/">
         <q-avatar square>
-          <img src="/logo.svg">
+          <img src="/usso.logo.svg">
         </q-avatar>
       </q-item>
       <template v-for="tab in tabList" :key="tab.id">

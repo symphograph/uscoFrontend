@@ -39,7 +39,7 @@
         <p><a href="https://maps.sakh.com/ys/objects/2602/" target="_blank">г. Южно-Сахалинск, ул.Ленина д. 156</a></p>
       </div>
       <div class="footcol">
-        <p>МУНИЦИПАЛЬНОЕ БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ<br>"ЮЖНО-САХАЛИНСКИЙ КАМЕРНЫЙ ОРКЕСТР"</p>
+        <p>МУНИЦИПАЛЬНОЕ БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ<br>"ЮЖНО-САХАЛИНСКИЙ СИМФОНИЧЕСКИЙ ОРКЕСТР"</p>
         <div id="sputnikArea"><span id="sputnik-informer"></span></div>
 
       </div>

@@ -59,8 +59,8 @@
 <script setup>
 import { useMeta } from 'quasar'
 
-const org_name = 'МБУ "Южно-Сахалинский камерный оркестр" (далее ЮСКО)'
-const org_sname = 'ЮСКО'
+const org_name = 'МБУ "Южно-Сахалинский симфонический оркестр" (далее ЮССО)'
+const org_sname = 'ЮССО'
 
 const metaData = {
   title: 'ПДН'

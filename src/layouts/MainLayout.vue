@@ -12,25 +12,8 @@
         <q-img src="img/header-bg.jpg"></q-img>
       </div>
       <q-toolbar elevated class="bg-primary text-white shadow-5">
-        <div class="bg-primary text-white topin">
-          <router-link to="/">
-            <div class="logo-area">
-              <q-avatar square size="70px">
-                <img src="/logo.svg">
-              </q-avatar>
-              <div id="orgname">Южно-Сахалинский камерный оркестр</div>
-            </div>
-          </router-link>
-          <div class="logo-area">
-            <router-link to="/conductor">
-              <div class="conductor">
-                <span>Художественный руководитель</span>
-                <span>и главный дирижер</span>
-                <a href="/conductor"><span class="tsa">Тигран Ахназарян</span></a>
-              </div>
-            </router-link>
-          </div>
-        </div>
+        <SiteNameDesktop class="desktop-only"></SiteNameDesktop>
+        <SiteNameMobile class="mobile-only"></SiteNameMobile>
       </q-toolbar>
       <router-view/>
       <component :is="'script'" src='https://pos.gosuslugi.ru/bin/script.min.js'></component>
@@ -52,6 +35,8 @@ import { useQuasar, Dialog, LocalStorage } from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute } from 'vue-router'
 import {notifyError} from "src/myFuncts";
+import SiteNameDesktop from "components/main/SiteNameDesktop.vue";
+import SiteNameMobile from "components/main/SiteNameMobile.vue";
 
 
 const q = useQuasar()
@@ -71,10 +56,10 @@ const tabList = ref(
     {
       id: 1,
       expand: true,
-      label: 'ЮСКО',
+      label: 'ЮССО',
       caption: 'Об оркестре',
       ava: '',
-      icon: '/img:logo.svg',
+      icon: '/img:usso.logo.svg',
       tabs:
         [
           {
@@ -157,7 +142,7 @@ const tabList = ref(
         [
           {
             id: 1,
-            name: 'Новости ЮСКО',
+            name: 'Новости ЮССО',
             caption: 'Новости оркестра',
             url: '/news/usco',
             ava: '/img/logo/logo_init.svg',
@@ -342,7 +327,7 @@ function showCookieConfirm () {
     multiLine: true,
     onDismiss: cook,
     icon: 'ion-information-circle-outline',
-    //avatar: 'logo.svg',
+    //avatar: 'usso.logo.svg',
     actions: [
       {
         label: 'Понятно',
@@ -408,18 +393,7 @@ body{
   text-decoration: none;
 }
 
-.topin {
-  width: 80%;
-  max-width: 1200px;
-  overflow: hidden;
-  margin: auto;
-  padding-top: 2em;
-  padding-bottom: 1em;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+
 
 .topin a {
   text-decoration: none;
@@ -558,23 +532,9 @@ q-avatar img {
   width: 170px;
 }
 
-.logo-area {
-  display: flex;
-  justify-content: flex-start;
-  padding: 1em;
-  cursor: pointer;
-}
 
-#orgname {
-  max-width: 15em;
-  text-decoration: none;
-  color: #ecd872;
-  font-size: 25px;
-  font-family: 'Rubik Mono One', sans-serif;
-  text-shadow: 0 0 9px #000000;
-  margin-left: 0.5em;
-  white-space: pre-wrap;
-}
+
+
 
 .q-list {
   color: #342d71;
@@ -749,7 +709,7 @@ hr {
 @media screen and (max-device-width: 500px) {
 
   #orgname, .tsa {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.25em;
   }
 }

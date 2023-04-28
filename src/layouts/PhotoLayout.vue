@@ -5,9 +5,9 @@
         <router-link to="/">
           <div class="logo-area">
             <q-avatar square size="70px">
-              <img src="/logo.svg">
+              <img src="/usso.logo.svg">
             </q-avatar>
-            <div id="orgname">Южно-Сахалинский камерный оркестр</div>
+            <div id="orgname">Южно-Сахалинский симфонический оркестр</div>
           </div>
         </router-link>
         <div class="logo-area">
@@ -46,10 +46,10 @@ const tabList = ref(
     {
       id: 1,
       expand: true,
-      label: 'ЮСКО',
+      label: 'ЮССО',
       caption: 'Об оркестре',
       ava: '',
-      icon: 'img:/logo.svg',
+      icon: 'img:/usso.logo.svg',
       tabs:
         [
           {
@@ -132,7 +132,7 @@ const tabList = ref(
         [
           {
             id: 1,
-            name: 'Новости ЮСКО',
+            name: 'Новости ЮССО',
             caption: 'Новости оркестра',
             url: '/news/usco',
             ava: '/img/logo/logo_init.svg',

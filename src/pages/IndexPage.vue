@@ -25,7 +25,7 @@ import { ref } from 'vue'
 import { useMeta } from 'quasar'
 
 const metaData = {
-  title: 'ЮСКО'
+  title: 'ЮССО'
 }
 useMeta(metaData)
 const teasers = [
