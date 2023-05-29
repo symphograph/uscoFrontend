@@ -5,7 +5,8 @@
         <a :href="link()">
           <q-img
             :src="imgUrl()"
-            :ratio="1080/684"
+            :ratio="1920/1080"
+            fit="fill"
           ></q-img>
         </a>
       </div>
@@ -31,7 +32,7 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 import { fDate } from 'src/myFuncts.js'
 
 const apiUrl = String(process.env.API)
@@ -70,7 +71,7 @@ function link () {
 
 .nimg_block {
   width: 260px;
-  height: 162px;
+  height: 146px;
   overflow: hidden;
   box-shadow: 1px 2px 2px #555353;
 }
