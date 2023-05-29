@@ -1,7 +1,7 @@
 <template>
   <q-card v-if="evData && (evData.show || editMode)" square class="eventbox tdno" separator>
     <router-link :to="'/announce/'+evData.ev_id">
-      <q-img :ratio="270/171" :src="topImgUrl">
+      <q-img :ratio="1080/608" :src="topImgUrl" fit="fill">
       </q-img>
     </router-link>
     <q-card-section color="info" expand-separator>
@@ -65,7 +65,8 @@
     <template v-if="evData.pay">
       <q-separator inset></q-separator>
       <q-card-section class="text-body2 text-center">
-        <q-btn v-if="evData.pay === 3 && !evData.complited && evData.ticket_link" label="Купить билет" :href="evData.ticket_link"></q-btn>
+        <q-btn v-if="evData.pay === 3 && !evData.complited && evData.ticket_link" label="Купить билет"
+               :href="evData.ticket_link"></q-btn>
         <template v-else>
           {{ payType() }}
         </template>
@@ -80,7 +81,8 @@
         Афиша не загружена
       </q-card-section>
       <q-card-section>
-        <q-toggle v-model="evDataEditable.show" @update:model-value="saveData(0)" label="вкл" color="green" checked-icon="check" unchecked-icon="clear">
+        <q-toggle v-model="evDataEditable.show" @update:model-value="saveData(0)" label="вкл" color="green"
+                  checked-icon="check" unchecked-icon="clear">
           <q-tooltip>Опубликовать</q-tooltip>
         </q-toggle>
       </q-card-section>
@@ -103,10 +105,10 @@
 
 <script setup>
 import DialogConfirm from './DialogConfirm.vue'
-import { useQuasar } from 'quasar'
-import { api } from 'boot/axios'
+import {useQuasar} from 'quasar'
+import {api} from 'boot/axios'
 import {computed, inject, onMounted, ref} from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {fDateTime, notifyError, notifyOK} from 'src/myFuncts.js'
 
 
@@ -139,7 +141,7 @@ const props = defineProps({
 const evDataEditable = ref(props.evData)
 const Halls = inject('Halls')
 
-const topImgUrl = computed(()=>{
+const topImgUrl = computed(() => {
   let size = 480
   if (q.platform.is.mobile) {
     size = 1080
@@ -151,51 +153,52 @@ const topImgUrl = computed(()=>{
     '?ver=' + props.evData.TopPoster.md5
 })
 
-onMounted(()=> {
+onMounted(() => {
   //console.log(evDataEditable)
 })
-function saveData () {
-      api.post(apiUrl + 'api/set/announce/announce.php', {
-        params: {
-          evdata: props.evData
-        }
-      })
-        .then((response) => {
-          q.notify(notifyOK(response?.data?.result ?? ''))
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
-    }
 
-function delAnnounce () {
-      api.post(apiUrl + 'api/set/announce/delannounce.php', {
-        params: {
-          id: props.evData.ev_id
-        }
-      })
-        .then((response) => {
-          q.notify(notifyOK(response?.data?.result ?? null))
-          emit('IamDeleted')
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
+function saveData() {
+  api.post(apiUrl + 'api/set/announce/announce.php', {
+    params: {
+      evdata: props.evData
     }
+  })
+    .then((response) => {
+      q.notify(notifyOK(response?.data?.result ?? ''))
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
 
-function changeShow () {
-      emit('changeShow')
+function delAnnounce() {
+  api.post(apiUrl + 'api/set/announce/delannounce.php', {
+    params: {
+      id: props.evData.ev_id
     }
+  })
+    .then((response) => {
+      q.notify(notifyOK(response?.data?.result ?? null))
+      emit('IamDeleted')
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
 
-function payType () {
-      if (props.evData.pay) {
-        if(props.evData.pay === 3 && props.evData.complited){
-          return 'Продажа завершена'
-        }
-        return payTypes.value[props.evData.pay]
-      }
-      return ''
+function changeShow() {
+  emit('changeShow')
+}
+
+function payType() {
+  if (props.evData.pay) {
+    if (props.evData.pay === 3 && props.evData.complited) {
+      return 'Продажа завершена'
     }
+    return payTypes.value[props.evData.pay]
+  }
+  return ''
+}
 </script>
 
 <style scoped>
