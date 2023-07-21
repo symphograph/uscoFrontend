@@ -9,11 +9,15 @@
 <script setup>
 import PhotoArea from 'components/PhotoArea.vue'
 import { useMeta } from 'quasar'
+import {inject, onBeforeMount} from "vue";
 
 const metaData = {
   title: 'Галерея'
 }
 useMeta(metaData)
+onBeforeMount(() => {
+
+})
 </script>
 
 <style scoped>

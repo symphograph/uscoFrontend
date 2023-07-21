@@ -1,211 +1,24 @@
 <template>
-  <q-layout view="hHh lpR lff" class="bg-primary text-white q-dark">
-    <q-toolbar elevated class="bg-primary text-white shadow-5">
-      <div class="bg-primary text-white topin">
-        <router-link to="/">
-          <div class="logo-area">
-            <q-avatar square size="70px">
-              <img src="/usso.logo.svg">
-            </q-avatar>
-            <div id="orgname">Южно-Сахалинский симфонический оркестр</div>
-          </div>
-        </router-link>
-        <div class="logo-area">
-          <router-link to="/conductor">
-            <div class="conductor">
-              <span>Художественный руководитель</span>
-              <span>и главный дирижер</span>
-              <a href="/conductor"><span class="tsa">Тигран Ахназарян</span></a>
-            </div>
-          </router-link>
-        </div>
-      </div>
-    </q-toolbar>
-    <q-page-container>
+  <q-layout v-if="isOptionsLoaded" view="hHh lpR lfr">
+    <MainHeader></MainHeader>
+    <q-page-container v-if="AccessToken" style="height: 100vh">
       <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup>
-import DrawerContent from 'components/DrawerContent.vue'
-import { ref, provide, computed, onMounted, onBeforeMount } from 'vue'
-import MainHeader from 'components/MainHeader.vue'
-import MainFooter from 'components/MainFooter.vue'
-import { useQuasar } from 'quasar'
-import { api } from 'boot/axios'
-import { useRoute } from 'vue-router'
 
-const q = useQuasar()
-const apiUrl = String(process.env.API)
-//const allCookies = q.cookies.getAll()
-const route = useRoute()
+import SiteNameMobile from "components/main/SiteNameMobile.vue";
+import SiteNameDesktop from "components/main/SiteNameDesktop.vue";
+import MainFooter from "components/main/footer/MainFooter.vue";
+import MainHeader from "components/MainHeader.vue";
+import {inject} from "vue";
 
-const tabList = ref(
-  [
-    {
-      id: 1,
-      expand: true,
-      label: 'ЮССО',
-      caption: 'Об оркестре',
-      ava: '',
-      icon: 'img:/usso.logo.svg',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Тигран Ахназарян',
-            caption: 'Художественный руководитель и главный дирижер',
-            url: '/conductor',
-            ava: '/img/avatars/tsa.png',
-            icon: false
-          },
-          {
-            id: 2,
-            name: 'Состав оркестра',
-            caption: 'Список артистов',
-            url: '/staff',
-            ava: '',
-            icon: 'groups'
-          },
-          {
-            id: 3,
-            name: 'Александр Зражаев',
-            caption: 'Создатель оркестра',
-            url: '/AlexandrZrazaev',
-            ava: '/img/avatars/zag.jpg',
-            icon: false
-          },
-          {
-            id: 4,
-            name: 'Историческая справка',
-            caption: '"Ты помнишь, как все начиналось?.."',
-            url: '/history',
-            ava: '',
-            icon: 'history_edu'
-          }
-        ]
-    },
-    {
-      id: 2,
-      expand: false,
-      url: '/vacancies',
-      label: 'Вакансии'
-    },
-    {
-      id: 3,
-      expand: false,
-      url: '/anonces',
-      label: 'Афиши'
-    },
-    {
-      id: 4,
-      expand: true,
-      label: 'медиа',
-      caption: 'Фото и видео',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Фото',
-            caption: 'Фотографии оркестра',
-            url: '/gallery/0',
-            ava: '',
-            icon: 'photo_camera'
-          },
-          {
-            id: 2,
-            name: 'Видео',
-            caption: 'Видеозаписи',
-            url: '/video',
-            ava: '',
-            icon: 'smart_display'
-          }
-        ]
-    },
-    {
-      id: 5,
-      expand: true,
-      label: 'Новости',
-      caption: 'Новости',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Новости ЮССО',
-            caption: 'Новости оркестра',
-            url: '/news/usco',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 2,
-            name: 'Звезды Эвтерпы',
-            caption: 'Международный фестиваль',
-            url: '/news/euterpe',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 3,
-            name: 'Новости партнеров',
-            caption: 'Прочие новости',
-            url: '/news/other',
-            ava: '',
-            icon: 'volunteer_activism'
-          },
-          {
-            id: 4,
-            name: 'Все новости',
-            caption: 'Обо всем',
-            url: '/news/all',
-            ava: '',
-            icon: 'receipt_long'
-          }
-        ]
-    },
-    {
-      id: 6,
-      expand: false,
-      url: '/contacts',
-      label: 'Контакты'
-    },
-    {
-      id: 7,
-      expand: true,
-      label: 'Документы',
-      caption: '',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Основные сведения',
-            caption: '',
-            url: '/main',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 2,
-            name: 'Документы',
-            caption: '',
-            url: '/docs',
-            ava: '',
-            icon: 'folder'
-          },
-          {
-            id: 3,
-            name: 'Вместе против коррупции!',
-            caption: 'Международный молодежный конкурс',
-            url: '/corrupt',
-            ava: '/img/docs/logo-md.webp',
-            icon: ''
-          }
-        ]
-    }
-  ])
-provide('tabList', tabList)
+const AccessToken = inject('AccessToken')
+const isOptionsLoaded = inject('isOptionsLoaded')
 </script>
+
 
 <style>
 @font-face {
@@ -221,6 +34,9 @@ provide('tabList', tabList)
 @font-face {
   font-family: 'GoudyTrajan';
   src: url(/fonts/GoudyTrajan-Medium.otf) format("opentype");
+}
+.content {
+  height: 100%;
 }
 a {
   text-decoration: none;

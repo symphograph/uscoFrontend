@@ -114,7 +114,6 @@ import {fDateTime, notifyError, notifyOK} from 'src/myFuncts.js'
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const token = inject('token')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')

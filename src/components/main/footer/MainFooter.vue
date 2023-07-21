@@ -1,36 +1,7 @@
 <template>
   <q-footer elevated class="bg-grey-8 text-white">
-    <div class="partners">
-      <p class="parttitle">Партнеры</p>
-      <div class="logorow">
-
-        <div class="exxonbox">
-          <a href="https://www.sakhalin-1.com/ru-ru" >
-            <div class="exxon"></div>
-          </a>
-        </div>
-
-        <div class="exxonbox">
-          <a href="https://sakh.com" >
-            <div class="sakhcom"></div>
-          </a>
-        </div>
-
-        <div class="exxonbox">
-          <a href="https://astv.ru">
-            <div class="astv"></div>
-          </a>
-        </div>
-
-        <div class="exxonbox">
-          <a href="https://myhistorypark.ru">
-            <div class="rmh"></div>
-          </a>
-        </div>
-
-      </div>
-    </div>
-
+    <PartnersBlock></PartnersBlock>
+    <GosUslugi></GosUslugi>
     <div class="footer">
       <div class="footcol">
         <p><a href="tel:+74242300518">+7-4242-300-518</a></p>
@@ -47,27 +18,61 @@
         <p>УЧРЕДИТЕЛИ</p>
         <p><b>Администрация г.Южно-Сахалинска</b></p>
         <p>Департамент культуры и туризма г.Южно-Сахалинска</p>
-        <p><router-link to="/main">Основные сведения</router-link></p>
-        <p><router-link to="/docs">Документы</router-link></p><br><br>
+        <p>
+          <router-link to="/main">Основные сведения</router-link>
+        </p>
+        <p>
+          <router-link to="/docs">Документы</router-link>
+        </p>
+        <br><br>
         <p>Единый общероссийский детский телефон доверия:<br>
           <a href="tel:+78002000122">8-800-2000-122</a></p>
       </div>
     </div>
   </q-footer>
+  <component v-if="!isDebug" :is="'script'" src='/js/sputnik.js'></component>
 </template>
 
-<script type="text/javascript">
-(function(d, t, p) {
-  var j = d.createElement(t); j.async = true; j.type = "text/javascript";
-  j.src = ("https:" == p ? "https:" : "http:") + "//stat.sputnik.ru/cnt.js";
-  var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(j, s);
-})(document, "script", document.location.protocol);
-</script>
 
 <script setup>
+import GosUslugi from "components/main/footer/GosUslugi.vue";
+import PartnersBlock from "components/main/footer/PartnersBlock.vue";
 
+const isDebug = String(process.env.isDebug)
 </script>
 
 <style scoped>
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #2f2e2e;
+  color: #babab8;
+  font-size: 14px;
+  overflow: auto;
+  width: 100%;
+  clear: both;
+  margin: auto;
+  min-height: 200px;
+  font-size: 12px;
+
+}
+
+footer p {
+  margin: 0;
+}
+
+.footcol {
+
+  display: inline-block;
+  float: left;
+  padding: 30px;
+  /*width: 300px;*/
+}
+
+.footcol > p > a {
+  text-decoration: none;
+  color: #babab8;
+}
+
 
 </style>

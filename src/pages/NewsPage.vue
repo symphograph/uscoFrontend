@@ -30,7 +30,6 @@ const router = useRouter()
 const q = useQuasar()
 
 const editMode = inject('editMode')
-const token = inject('token')
 const years = ref([2018, 2019, 2020, 2021, 2022, 2023])
 const evYear = ref(new Date().getFullYear())
 const limit = ref(100)
@@ -46,7 +45,7 @@ function addEntry () {
 
   api.post(apiUrl + 'api/set/news/addentry.php', {
     params: {
-      token: token.value
+
     }
   })
     .then((response) => {

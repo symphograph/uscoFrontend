@@ -20,7 +20,6 @@ import {notifyError} from "src/myFuncts";
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
-const token = inject('token')
 
 const props = defineProps({
   videoLimit: Object

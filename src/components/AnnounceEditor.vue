@@ -100,7 +100,6 @@ import {notifyError, notifyOK} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const token = inject('token')
 const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
@@ -111,7 +110,7 @@ const emit = defineEmits(['reload', 'posterUploaded'])
 
 
 const model = {}
-const ttt = {}
+const AccessToken = inject('AccessToken')
 
 const evData = inject('evData')
 
@@ -148,8 +147,8 @@ function factoryFn (files) {
     url: apiUrl + 'api/upload/poster.php',
     headers: [
       {
-        name: 'AUTHORIZATION',
-        value: token.value
+        name: 'ACCESSTOKEN',
+        value: AccessToken.value
       }
     ],
     formFields: [{
@@ -164,8 +163,8 @@ function factoryFnMini (files) {
     url: apiUrl + 'api/upload/postertop.php',
     headers: [
       {
-        name: 'AUTHORIZATION',
-        value: token.value
+        name: 'ACCESSTOKEN',
+        value: AccessToken.value
       }
     ],
     formFields: [{

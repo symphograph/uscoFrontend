@@ -24,7 +24,6 @@ import { useRoute, useRouter } from 'vue-router'
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const router = useRouter()
-const token = inject('token')
 const q = useQuasar()
 const progress = inject('progress')
 

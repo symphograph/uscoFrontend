@@ -170,10 +170,10 @@ const newDataE = inject('newData')
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const token = inject('token')
 const route = useRoute()
 const emit = defineEmits(['uploaded'])
 const uploader = ref(null)
+const AccessToken = inject('AccessToken')
 
 const categs = ref([
   {
@@ -262,8 +262,8 @@ function factoryFnMini() {
     url: apiUrl + 'api/upload/entrypw.php',
     headers: [
       {
-        name: 'AUTHORIZATION',
-        value: token.value
+        name: 'ACCESSTOKEN',
+        value: AccessToken.value
       }
     ],
     formFields: [{
@@ -278,8 +278,8 @@ function factoryFn() {
     url: apiUrl + 'api/upload/entryimg.php',
     headers: [
       {
-        name: 'AUTHORIZATION',
-        value: token.value
+        name: 'ACCESSTOKEN',
+        value: AccessToken.value
       }
     ],
     formFields: [{

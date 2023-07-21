@@ -1,37 +1,45 @@
 <template>
-  <AuthComponent ref="refAuth"></AuthComponent>
-  <router-view v-if="isOptionsLoaded"/>
+  <q-layout view="hHh lpR lfr">
+    <MainHeader @moveDraver="toggleLeftDrawer"></MainHeader>
+
+    <!-- drawer content -->
+    <q-drawer v-model="leftDrawerOpen" side="left" elevated>
+      <DrawerContent></DrawerContent>
+    </q-drawer>
+    <q-page-container v-if="Defaults">
+      <div v-if="false" class="mobile-hide" style="background-color: black; height: 48px; box-shadow: 0 5px 7px #2f2e2e99;"></div>
+      <router-view/>
+    </q-page-container>
+  </q-layout>
 </template>
 
 
 <script setup>
-import {ref, provide, computed, onMounted, onBeforeMount, watch, inject} from 'vue'
-import {useQuasar, Dialog, LocalStorage, useMeta} from 'quasar'
+
+import DrawerContent from 'components/DrawerContent.vue'
+import { ref, provide, computed, onMounted, onBeforeMount, watch } from 'vue'
+import GosUslugi from 'components/main/footer/GosUslugi.vue'
+import MainHeader from 'components/MainHeader.vue'
+import MainFooter from 'components/main/footer/MainFooter.vue'
+import {useQuasar, Dialog, LocalStorage, Dark, useMeta} from 'quasar'
+import { api } from 'boot/axios'
 import { useRoute } from 'vue-router'
-import AuthComponent from "components/main/AuthComponent.vue";
+import {notifyError} from "src/myFuncts";
+import SiteNameDesktop from "components/main/SiteNameDesktop.vue";
+import SiteNameMobile from "components/main/SiteNameMobile.vue";
 
-const pageSettings = ref()
-provide('pageSettings', pageSettings)
 
-const isOptionsLoaded = ref(false)
-provide('isOptionsLoaded', isOptionsLoaded)
-
-const refAuth = ref()
 const q = useQuasar()
-provide('q', q)
 const apiUrl = String(process.env.API)
+const allCookies = q.cookies.getAll()
 const route = useRoute()
 const lvl = ref('lvl')
 provide('lvl', lvl)
 
-const AccessToken = ref('')
-provide('AccessToken', AccessToken)
-
-const SessionToken = ref('')
-provide('SessionToken', SessionToken)
-
 const admin = ref(false)
 provide('admin', admin)
+
+const isDebug = String(process.env.isDebug)
 
 const tabList = ref(
   [
@@ -204,40 +212,92 @@ provide('progress', progress)
 const announceList = ref([])
 provide('announceList', announceList)
 
+const Defaults = ref(null)
+
 function toggleLeftDrawer () {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
 const leftDrawerOpen = ref(false)
-provide('leftDrawerOpen', leftDrawerOpen)
 
+function apiSess () {
 
-const Halls = ref([])
+  api.post(apiUrl + 'api/auth/session.php', {
+    params: {
+      path: route.path
+    }
+  })
+    .then((response) => {
+      if(!!!response?.data?.result){
+        throw new Error();
+      }
+      Defaults.value = response?.data?.data ?? null
+      admin.value = [4].some(l=>Defaults.value.Powers.includes(l))
+      loadOptions()
+    })
+    .catch((error) => {
+      if(error?.response?.status === 401){
+        goToLogin()
+        return
+      }
+      q.notify(notifyError(error))
+    })
+}
+
+const Halls = ref(null)
 provide('Halls', Halls)
 
+function loadOptions () {
+  api.post(apiUrl + 'api/get/options.php', {
+    params: {
 
+    }
+  })
+    .then((response) => {
+      Halls.value = response?.data?.data?.Halls ?? null
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
+
+function goToLogin () {
+  window.location.href = apiUrl + 'auth/usco.php?debug=' + isDebug + '&path=' + route.path
+}
 
 const editMode = ref(false)
 provide('editMode', editMode)
 
+function getTokenFromCook () {
+
+  if (allCookies.token) {
+    token.value = allCookies.token
+    return
+  }
+  token.value = ''
+}
 
 
-//const lastPath = '/'
 
-watch(route,(newPath) => {
-  LocalStorage.set('lastPath',newPath.path)
-})
+
 
 function cook () {
   LocalStorage.set('CookieConfirm', '1')
 }
 
+const lastPath = '/'
+
+watch(route,(newpath) => {
+  LocalStorage.set('lastPath',newpath.path)
+})
+
 function showCookieConfirm () {
+  const $q = useQuasar()
   if (LocalStorage.getItem('CookieConfirm')) {
     return
   }
 
-  q.notify({
+  $q.notify({
     message: 'Мы тоже используем Cookies. Потому что без них ничего не работает.',
     color: 'primary',
     timeout: 0,
@@ -255,17 +315,25 @@ function showCookieConfirm () {
   })
 }
 
-
-//----------------------------------------------------------------------
+const metaData = {
+  title: 'Билеты',
+  meta: {
+    viewport:
+      {
+        name: 'viewport',
+        content: 'initial-scale=0.6,width=device-width, user-scalable=yes'
+      }
+  }
+}
+useMeta(metaData)
 
 onBeforeMount(() => {
-  console.log('mainLayout beforeMounted')
+  getTokenFromCook()
 })
-
 onMounted(() => {
-  console.log('mainLayout Mounted')
-  showCookieConfirm()
 
+  showCookieConfirm()
+  Dark.set(true)
 })
 </script>
 
@@ -294,7 +362,7 @@ onMounted(() => {
 body{
   /*background-color: #f3f4f7;*/
 
-  background-image: url(/img/header-bg.jpg);
+  /*background-image: url(/img/header-bg.jpg);*/
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
@@ -304,11 +372,11 @@ body{
 }
 
 #q-app {
-  background: rgb(255 255 255 / 84%);
+  /*background: rgb(255 255 255 / 84%);*/
   height: 100%;
   width: 100%;
-  -webkit-backdrop-filter: blur(40px) saturate(120%) contrast(50%);
-  backdrop-filter: blur(30px) saturate(200%) contrast(70%);
+  /*-webkit-backdrop-filter: blur(40px) saturate(120%) contrast(50%);*/
+  /*backdrop-filter: blur(30px) saturate(200%) contrast(70%);*/
   /*background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -316,7 +384,7 @@ body{
 }
 
 .q-menu {
-  background-color: #e7ddcbf5;
+  /*background-color: #e7ddcbf5;*/
 }
 
 .q-toolbar__title a {
@@ -454,8 +522,8 @@ q-toolbar-title {
 }
 
 .q-drawer {
-  background-image: linear-gradient(
-      180deg, #fbf5db 0%, rgba(203, 171, 122, 0.91) 150%);
+  /*background-image: linear-gradient(
+      180deg, #fbf5db 0%, rgba(203, 171, 122, 0.91) 150%);*/
 }
 
 q-avatar img {
@@ -496,6 +564,47 @@ q-avatar img {
   margin: auto;
 }
 
+.exxonbox {
+  width: 250px;
+  height: 220px;
+  font-size: 14px;
+  text-align: center;
+  display: inline-block;
+  float: left;
+  margin: auto;
+}
+
+.exxon {
+  width: 135px;
+  height: 140px;
+  margin: auto auto;
+  background-image: url(/img/sakhalin-logo-footer.svg);
+  background-size: 280px 140px;
+
+}
+
+.exxon:hover {
+
+  background-position: 135px;
+}
+
+.sakhcom {
+
+  background-image: url(/img/sakhcom-logo.svg);
+  width: 147px;
+  height: 40px;
+  background-size: 147px;
+  margin: auto auto;
+}
+
+.astv {
+
+  background-image: url(/img/astv.png);
+  width: 147px;
+  height: 53px;
+  background-size: 147px;
+  margin: auto auto;
+}
 
 .rmh {
 
@@ -506,7 +615,36 @@ q-avatar img {
   margin: auto auto;
 }
 
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #2f2e2e;
+  color: #babab8;
+  overflow: auto;
+  width: 100%;
+  clear: both;
+  margin: auto;
+  min-height: 200px;
+  font-size: 12px;
 
+}
+
+footer p {
+  margin: 0;
+}
+
+.footcol {
+
+  display: inline-block;
+  float: left;
+  padding: 30px;
+  /*width: 300px;*/
+}
+
+.footcol > p > a {
+  text-decoration: none;
+  color: #babab8;
+}
 
 .vidarea {
   display: grid;

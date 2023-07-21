@@ -51,6 +51,7 @@
           <q-toggle v-model="editMode" left-label color="red"></q-toggle>
         </q-item-section>
       </q-item>
+        <TelegramForm v-if="jwt_decode(AccessToken).authType !== 'telegram'"></TelegramForm>
     </q-list>
   </div>
 
@@ -58,10 +59,13 @@
 
 <script setup>
 import { inject, ref } from 'vue'
+import TelegramForm from "components/main/TelegramForm.vue";
+import jwt_decode from "jwt-decode";
 
 const tabList = inject('tabList')
 const editMode = inject('editMode')
 const admin = inject('admin')
+const AccessToken = inject('AccessToken')
 </script>
 
 <style scoped>

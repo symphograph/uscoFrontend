@@ -68,6 +68,7 @@ function vkHref () {
 .eventbox {
   width: 100%;
   background-repeat: no-repeat;
+  padding: 1em;
   /* backdrop-filter: blur(15px); */
 }
 

@@ -1,4 +1,7 @@
 import moment from 'moment'
+import {useQuasar} from "quasar";
+import jwt_decode from "jwt-decode";
+
 
 export function rateInfo (val) {
   let rates = [1, 0.5, 'гпх', 'гпх', 0.25]
@@ -47,4 +50,36 @@ export function notifyError (error, defaultMsg = 'Ой! Не работает :(
     closeBtn: 'x',
     icon: 'report_problem'
   }
+}
+
+export function notifyWarning (error, defaultMsg = 'Ой! Не работает :(') {
+  return {
+    color: 'orange',
+    position: 'center',
+    message:
+      !!error?.response?.data?.error
+        ? error.response.data.error
+        : defaultMsg ?? 'Ой! Не работает :(',
+    timeout: 500,
+    closeBtn: 'x',
+    icon: 'report'
+  }
+}
+
+export function isExpired(error) {
+  return [
+    'Session does not exist',
+    'Invalid tokenTime',
+    'Token is Expired',
+    'tokens is empty'
+  ].includes(error?.response?.data?.error)
+}
+
+export function powersByJWT(jwt) {
+  return jwt_decode(jwt).powers ?? []
+}
+
+export function checkPowers(allowed, AccessToken) {
+  let powers = powersByJWT(AccessToken)
+  return allowed.some(l=>powers.includes(l))
 }

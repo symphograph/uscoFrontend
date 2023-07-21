@@ -1,4 +1,5 @@
 <template>
+  <component :is="'script'" src='https://pos.gosuslugi.ru/bin/script.min.js'></component>
   <div id='js-show-iframe-wrapper'>
     <div class='pos-banner-fluid bf-41'>
 

@@ -1,6 +1,7 @@
 <template>
-  <div class="q-pa-md">
+  <div>
     <q-carousel
+      v-if="album?.images.length"
       swipeable
       animated
       arrows
@@ -10,8 +11,8 @@
       thumbnails
       infinite
     >
-      <template v-for="file in files" :key="file">
-        <q-carousel-slide :name="file" :img-src="apiUrl + '/img/albums/' + album + '/' + file"/>
+      <template v-for="file in album.images" :key="file">
+        <q-carousel-slide :name="file" :img-src="apiUrl + '/img/albums/' + album.name + '/' + file"/>
       </template>
       <template v-slot:control>
         <q-carousel-control
@@ -27,18 +28,26 @@
       </template>
     </q-carousel>
   </div>
-  <SelMytest @iAmSelected="reaction"></SelMytest>
+
+
+
+    <AlbumSelect></AlbumSelect>
+  <SriperComponent v-if="false"></SriperComponent>
+
+
 </template>
 
 <script setup>
-import { inject, onMounted, provide, ref, watch } from 'vue'
-import { api } from 'boot/axios'
-import { useQuasar } from 'quasar'
-import SelMytest from 'components/SelMytest.vue'
-import { useRoute } from 'vue-router'
+import {inject, onMounted, provide, ref, watch} from 'vue'
+import {api} from 'boot/axios'
+import {useQuasar} from 'quasar'
+import AlbumSelect from 'components/AlbumSelect.vue'
+import {useRoute} from 'vue-router'
 import {notifyError} from "src/myFuncts";
+import SriperComponent from "components/SriperComponent.vue";
 
-const route = useRoute()
+
+
 const q = useQuasar()
 
 const files = ref([])
@@ -48,73 +57,30 @@ const albumList = ref([])
 provide('albumList', albumList)
 
 const slide = ref(1)
-const album = ref(0)
+const album = ref(null)
 provide('album', album)
 
 
 const fullscreen = ref(true)
 const navigation = ref(true)
 
-function reaction () {
+function reaction() {
   console.log('react')
-      loadData()
-      fullscreen.value = true
-    }
+  loadData()
+  fullscreen.value = true
+}
 
-function loadOptions () {
 
-      api.post(apiUrl + '/api/get/album.php', {
-        params: {
-          what: 'options',
-          album: 0,
-          token: 12345
-        }
-      })
-        .then((response) => {
-          albumList.value = response?.data?.options ?? []
-          initAlbum()
-          loadData()
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
-    }
 
-function initAlbum () {
-      if (album.value === '0') {
-        seldata.value.selected = seldata.value.options[seldata.value.options.length - 1]
-        album.value = seldata.value.selected.label
-      } else {
-        seldata.value.selected.label = album.value
-        seldata.value.selected.value = '/img/albums/' + album.value
-      }
-    }
 
-function loadData () {
-      const $q = useQuasar()
-      api.post(apiUrl + '/api/album.php', {
-        params: {
-          what: 'data',
-          album: album.value,
-          token: 12345
-        }
-      })
-        .then((response) => {
-          files.value = response?.data?.files ?? []
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
-    }
+
+
 
 watch(files, () => {
-    slide.value = files.value[0]
+  slide.value = files.value[0]
 })
 
-onMounted(()=> {
-  album.value = route.params.album * 1
-  loadOptions(album.value)
-})
+
 </script>
 <style>
 .q-carousel__slide {

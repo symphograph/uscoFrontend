@@ -76,7 +76,6 @@ provide('newData', newData)
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
-const token = inject('token')
 const route = useRoute()
 const editMode = inject('editMode')
 const pTitle = ref('Новость')

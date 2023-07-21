@@ -19,8 +19,6 @@ import {notifyError} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const token = inject('token')
-const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')

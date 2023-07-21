@@ -51,11 +51,16 @@
 
 <script setup>
 import { useMeta } from 'quasar'
+import {onMounted} from "vue";
 
 const metaData = {
   title: 'Вакансии'
 }
 useMeta(metaData)
+
+onMounted(() => {
+
+})
 </script>
 
 <style scoped>

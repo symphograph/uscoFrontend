@@ -41,10 +41,15 @@
       </q-item>
     </q-tabs>
   </q-header>
+  <!-- drawer content -->
+  <q-drawer v-model="leftDrawerOpen" side="left" elevated>
+    <DrawerContent></DrawerContent>
+  </q-drawer>
 </template>
 
 <script setup>
 import { ref, provide, inject } from 'vue'
+import DrawerContent from "components/DrawerContent.vue";
 
 const tabList = inject('tabList')
 const drawer = ref(0)
@@ -52,9 +57,10 @@ const emit = defineEmits(['moveDraver'])
 const editMode = inject('editMode')
 const lvl = inject('lvl')
 const admin = inject('admin')
+const leftDrawerOpen = inject('leftDrawerOpen')
 
 function moveDraver () {
-  emit('moveDraver', drawer)
+  leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
 

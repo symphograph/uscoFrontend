@@ -53,7 +53,6 @@ import {notifyError} from "src/myFuncts";
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
-const token = inject('token')
 const editMode = inject('editMode')
 const enabled = ref(true)
 const groups = ref([])

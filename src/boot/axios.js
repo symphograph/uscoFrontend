@@ -9,3 +9,8 @@ export default boot(async ({ app }) => {
   app.config.globalProperties.$axios = axios
   app.config.globalProperties.$api = api
 })
+export const ttt = (xxx) => {
+  console.log(xxx)
+}
+
+
