@@ -21,7 +21,7 @@
 
 <script setup>
 import {inject, provide, ref} from 'vue'
-import AnnounceList from '../components/AnnounceList.vue'
+import AnnounceList from 'components/announses/AnnounceList.vue'
 import { useQuasar, useMeta } from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute, useRouter } from 'vue-router'

@@ -77,4 +77,33 @@ export default {
   padding: 1em;
   cursor: pointer;
 }
+
+.conductor {
+  width: 245px;
+  font-size: 12px;
+  color: #e7ddcb;
+  display: flex;
+  flex-direction: column;
+}
+
+.conductor a:hover {
+  text-decoration: underline;
+  color: #d9b34d;
+}
+
+.tsa {
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 25px;
+  letter-spacing: 1px;
+  color: white;
+  transition: all 200ms;
+}
+
+.sitename {
+  color: #e7ddcb;
+  text-transform: uppercase;
+  line-height: 1.9em;
+  display: flex;
+  justify-content: flex-end;
+}
 </style>

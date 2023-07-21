@@ -20,7 +20,7 @@ import moment from 'moment'
 import VideoList from 'components/VideoList.vue'
 import TeaserList from 'components/TeaserList.vue'
 import NewsList from 'components/news/NewsList.vue'
-import AnnounceList from 'components/AnnounceList.vue'
+import AnnounceList from 'components/announses/AnnounceList.vue'
 import { ref } from 'vue'
 import { useMeta } from 'quasar'
 

@@ -1,18 +1,18 @@
 <template>
   <div class="eventbox">
     <q-img
-      v-if="evData.verLink"
-      :ratio="evData.Poster.width/evData.Poster.height"
+      v-if="Announce.verLink"
+      :ratio="Announce.Poster.width/Announce.Poster.height"
       initial-ratio="1080/1534"
       :src="imgUrl"></q-img>
   </div>
   <div class="eventboxin">
     <div class="text">
-      <p v-if="evData.prog_name"><b>{{ evData.prog_name }}</b></p>
+      <p v-if="Announce.prog_name"><b>{{ Announce.prog_name }}</b></p>
       <br>
-      <p><b>{{ fDateTime(evData.datetime) }}</b></p>
+      <p><b>{{ fDateTime(Announce.datetime) }}</b></p>
       <br>
-      <div v-html="evData.description"></div>
+      <div v-html="Announce.description"></div>
       <br>
       <small>
         Уважаемые посетители, убедительная просьба соблюдать
@@ -38,7 +38,7 @@ import { fDateTime } from 'src/myFuncts.js'
 const apiUrl = String(process.env.API)
 const q = useQuasar()
 const props = defineProps({
-  evData: ref(null)
+  Announce: ref(null)
 })
 
 const imgUrl = computed(() => {
@@ -47,16 +47,16 @@ const imgUrl = computed(() => {
     size = 1080
   }
   return apiUrl +
-    String(props.evData.Poster.folder) +
+    String(props.Announce.Poster.folder) +
     '/' + String(size) + '/' +
-    props.evData.TopPoster.fileName +
-    '?ver=' + props.evData.Poster.md5
+    props.Announce.TopPoster.fileName +
+    '?ver=' + props.Announce.Poster.md5
 })
 
 function vkHref () {
   return 'https://vk.com/share.php?' +
-    'url=' + apiUrl + '/event.php?evid=' + String(props.evData.ev_id) +
-    '&title=' + String(props.evData.prog_name) +
+    'url=' + apiUrl + '/event.php?evid=' + String(props.Announce.ev_id) +
+    '&title=' + String(props.Announce.prog_name) +
     '&noparse=true' +
     '&image=' + String(imgUrl)
 }

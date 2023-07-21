@@ -1,12 +1,12 @@
 <template>
   <div class="content">
-    <AnnounceEditor v-if="editMode && evData"
+    <AnnounceEditor v-if="editMode && Announce"
                   @posterUploaded="loadData"
                   @reload="loadData"
                   :editMode="editMode"
     ></AnnounceEditor>
     <div class="eventboxl">
-      <AnnounceDescr v-if="evData" :evData="evData"></AnnounceDescr>
+      <AnnounceDescr v-if="Announce" :Announce="Announce"></AnnounceDescr>
     </div>
   </div>
 
@@ -15,8 +15,8 @@
 <script setup>
 import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
-import AnnounceDescr from 'components/AnnounceDescr.vue'
-import AnnounceEditor from 'components/AnnounceEditor.vue'
+import AnnounceDescr from 'components/announses/AnnounceDescr.vue'
+import AnnounceEditor from 'components/announses/AnnounceEditor.vue'
 import {ref, inject, onMounted, provide} from 'vue'
 import { useRoute } from 'vue-router'
 import {notifyError} from "src/myFuncts";
@@ -32,8 +32,8 @@ const apiUrl = String(process.env.API)
 const route = useRoute()
 const token = inject('token')
 
-const evData = ref(null)
-provide('evData', evData)
+const Announce = ref(null)
+provide('Announce', Announce)
 
 function loadData () {
 
@@ -43,7 +43,7 @@ function loadData () {
     }
   })
     .then((response) => {
-      evData.value = response?.data?.data ?? null
+      Announce.value = response?.data?.data ?? null
     })
     .catch((error) => {
       q.notify(notifyError(error))

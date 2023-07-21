@@ -16,17 +16,17 @@
 
 <script setup>
 
-import DrawerContent from 'components/DrawerContent.vue'
+import DrawerContent from 'components/main/header/DrawerContent.vue'
 import { ref, provide, computed, onMounted, onBeforeMount, watch } from 'vue'
 import GosUslugi from 'components/main/footer/GosUslugi.vue'
-import MainHeader from 'components/MainHeader.vue'
+import MainHeader from 'components/main/header/MainHeader.vue'
 import MainFooter from 'components/main/footer/MainFooter.vue'
 import {useQuasar, Dialog, LocalStorage, Dark, useMeta} from 'quasar'
 import { api } from 'boot/axios'
 import { useRoute } from 'vue-router'
 import {notifyError} from "src/myFuncts";
-import SiteNameDesktop from "components/main/SiteNameDesktop.vue";
-import SiteNameMobile from "components/main/SiteNameMobile.vue";
+import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
+import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
 
 
 const q = useQuasar()

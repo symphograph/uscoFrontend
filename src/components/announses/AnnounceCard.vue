@@ -1,12 +1,12 @@
 <template>
-  <q-card v-if="evData && (evData.show || editMode)" square class="eventbox tdno" separator>
-    <router-link :to="'/announce/'+evData.ev_id">
+  <q-card v-if="Announce && (Announce.show || editMode)" square class="eventbox tdno" separator>
+    <router-link :to="'/announce/'+Announce.ev_id">
       <q-img :ratio="1080/608" :src="topImgUrl" fit="fill">
       </q-img>
     </router-link>
     <q-card-section color="info" expand-separator>
       <q-badge
-        v-if="evData.complited === false"
+        v-if="Announce.complited === false"
         class="absolute bage"
         color="green-6"
         rounded
@@ -14,24 +14,24 @@
       >
         Скоро
       </q-badge>
-      <q-badge v-if="evData.age" rounded style="background-color: orange;" floating>{{ evData.age + '+' }}</q-badge>
+      <q-badge v-if="Announce.age" rounded style="background-color: orange;" floating>{{ Announce.age + '+' }}</q-badge>
       <q-item v-ripple>
         <q-item-section avatar>
           <q-icon name="schedule">
           </q-icon>
         </q-item-section>
         <q-item-section>
-          <q-item-label caption>{{ fDateTime(evDataEditable.datetime) }}</q-item-label>
+          <q-item-label caption>{{ fDateTime(AnnounceEditable.datetime) }}</q-item-label>
         </q-item-section>
       </q-item>
-      <a :href="Halls.find(el => el.id === evData.hall_id).map" target="_blank">
+      <a :href="Halls.find(el => el.id === Announce.hall_id).map" target="_blank">
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <q-icon color="primary" name="place"></q-icon>
           </q-item-section>
           <q-item-section>
             <q-item-label caption>
-              <span class="mapLink">{{ Halls.find(el => el.id === evData.hall_id).name }}</span>
+              <span class="mapLink">{{ Halls.find(el => el.id === Announce.hall_id).name }}</span>
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -39,17 +39,17 @@
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
-      <div class="text-subtitle1 text-center prog-name" v-html="evData.prog_name"></div>
+      <div class="text-subtitle1 text-center prog-name" v-html="Announce.prog_name"></div>
     </q-card-section>
     <q-card-section class="text-body2 text-center">
-      <div v-html="evData.sdescr"></div>
+      <div v-html="Announce.sdescr"></div>
     </q-card-section>
     <q-card-section class="space">
       <div></div>
     </q-card-section>
     <q-separator inset></q-separator>
-    <q-card-section v-if="evData.youtube_id">
-      <a :href="'https://www.youtube.com/watch?v=' + evData.youtube_id" target="_blank">
+    <q-card-section v-if="Announce.youtube_id">
+      <a :href="'https://www.youtube.com/watch?v=' + Announce.youtube_id" target="_blank">
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <q-icon color="primary" name="ion-logo-youtube"></q-icon>
@@ -62,11 +62,11 @@
         </q-item>
       </a>
     </q-card-section>
-    <template v-if="evData.pay">
+    <template v-if="Announce.pay">
       <q-separator inset></q-separator>
       <q-card-section class="text-body2 text-center">
-        <q-btn v-if="evData.pay === 3 && !evData.complited && evData.ticket_link" label="Купить билет"
-               :href="evData.ticket_link"></q-btn>
+        <q-btn v-if="Announce.pay === 3 && !Announce.complited && Announce.ticket_link" label="Купить билет"
+               :href="Announce.ticket_link"></q-btn>
         <template v-else>
           {{ payType() }}
         </template>
@@ -77,11 +77,11 @@
       Художественный руководитель и главный дирижер - <b>Тигран Ахназарян</b>.
     </q-card-section>
     <template v-if="editMode">
-      <q-card-section v-if="!evDataEditable.Poster.exist" class="text-body2 text-center danger">
+      <q-card-section v-if="!AnnounceEditable.Poster.exist" class="text-body2 text-center danger">
         Афиша не загружена
       </q-card-section>
       <q-card-section>
-        <q-toggle v-model="evDataEditable.show" @update:model-value="saveData(0)" label="вкл" color="green"
+        <q-toggle v-model="AnnounceEditable.show" @update:model-value="saveData(0)" label="вкл" color="green"
                   checked-icon="check" unchecked-icon="clear">
           <q-tooltip>Опубликовать</q-tooltip>
         </q-toggle>
@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import DialogConfirm from './DialogConfirm.vue'
+import DialogConfirm from '../DialogConfirm.vue'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {computed, inject, onMounted, ref} from 'vue'
@@ -135,9 +135,9 @@ const payTypes = ref([
 ])
 
 const props = defineProps({
-  evData: ref(false)
+  Announce: ref(false)
 })
-const evDataEditable = ref(props.evData)
+const AnnounceEditable = ref(props.Announce)
 const Halls = inject('Halls')
 
 const topImgUrl = computed(() => {
@@ -146,20 +146,20 @@ const topImgUrl = computed(() => {
     size = 1080
   }
   return String(process.env.API) +
-    props.evData.TopPoster.folder +
+    props.Announce.TopPoster.folder +
     '/' + size + '/' +
-    props.evData.TopPoster.fileName +
-    '?ver=' + props.evData.TopPoster.md5
+    props.Announce.TopPoster.fileName +
+    '?ver=' + props.Announce.TopPoster.md5
 })
 
 onMounted(() => {
-  //console.log(evDataEditable)
+  //console.log(AnnounceEditable)
 })
 
 function saveData() {
   api.post(apiUrl + 'api/set/announce/announce.php', {
     params: {
-      evdata: props.evData
+      evdata: props.Announce
     }
   })
     .then((response) => {
@@ -173,7 +173,7 @@ function saveData() {
 function delAnnounce() {
   api.post(apiUrl + 'api/set/announce/delannounce.php', {
     params: {
-      id: props.evData.ev_id
+      id: props.Announce.ev_id
     }
   })
     .then((response) => {
@@ -190,11 +190,11 @@ function changeShow() {
 }
 
 function payType() {
-  if (props.evData.pay) {
-    if (props.evData.pay === 3 && props.evData.complited) {
+  if (props.Announce.pay) {
+    if (props.Announce.pay === 3 && props.Announce.complited) {
       return 'Продажа завершена'
     }
-    return payTypes.value[props.evData.pay]
+    return payTypes.value[props.Announce.pay]
   }
   return ''
 }

@@ -2,7 +2,7 @@
   <AnnounceCard
     v-for="poster in sortedList"
     :key="poster.ev_id"
-    :evData="poster"
+    :Announce="poster"
     :editMode="editMode"
     @IamDeleted="loadData"
   ></AnnounceCard>

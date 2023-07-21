@@ -1,19 +1,19 @@
 <template>
-  <div v-if="evData" class="eventsarea">
+  <div v-if="Announce" class="eventsarea">
     <div class="editArea">
       <div class="card">
         <AnnounceCard
-          v-if="evData.map"
+          v-if="Announce.map"
           :editMode="$attrs.editMode"
           @IamDeleted="IamDeleted"
           @newAnnounce="reload"
           ref="rAnnounceCard"
-          :evData="evData" >
+          :Announce="Announce" >
         </AnnounceCard>
       </div>
       <div class="editor">
         <div style="display: flex; justify-content: space-between">
-          <DateTime v-model:date="evData.datetime" @update:date="test()"></DateTime>
+          <DateTime v-model:date="Announce.datetime" @update:date="test()"></DateTime>
         </div>
         <br>
         <div class="uploads">
@@ -47,11 +47,11 @@
 
 
         <q-input name="progName"
-                 v-model="evData.prog_name"
+                 v-model="Announce.prog_name"
                  label="Название"
         ></q-input>
         <q-select
-          v-model="evData.hall_id"
+          v-model="Announce.hall_id"
           label="Место проведения"
           emit-value
           map-options
@@ -60,23 +60,23 @@
           :options="Halls"
         ></q-select>
         <q-select
-          v-model="evData.pay"
+          v-model="Announce.pay"
           emit-value
           map-options
           label="Условия входа"
           :options="paySelect"
         ></q-select>
         <br>
-        <q-input v-if="evData.pay == 3" type="text" v-model="evData.ticket_link" label="Ссылка на продажу билетов"></q-input>
+        <q-input v-if="Announce.pay == 3" type="text" v-model="Announce.ticket_link" label="Ссылка на продажу билетов"></q-input>
         <br>
-        <q-input type="number" v-model="evData.age" label="Возрастные ограничения"></q-input>
+        <q-input type="number" v-model="Announce.age" label="Возрастные ограничения"></q-input>
         <br>
-        <q-input name="evDescr" v-model="evData.sdescr"
+        <q-input name="evDescr" v-model="Announce.sdescr"
                  type="textarea"
                  label="Краткое описание"
         ></q-input>
         <br>
-        <q-input name="evText" v-model="evData.description"
+        <q-input name="evText" v-model="Announce.description"
                  type="textarea"
                  label="Описание"
         ></q-input>
@@ -90,10 +90,10 @@
 </template>
 
 <script setup>
-import DateTime from 'components/DateTime.vue'
+import DateTime from 'components/announses/DateTime.vue'
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
-import AnnounceCard from 'components/AnnounceCard.vue'
+import AnnounceCard from 'components/announses/AnnounceCard.vue'
 import { inject, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {notifyError, notifyOK} from "src/myFuncts";
@@ -112,10 +112,10 @@ const emit = defineEmits(['reload', 'posterUploaded'])
 const model = {}
 const AccessToken = inject('AccessToken')
 
-const evData = inject('evData')
+const Announce = inject('Announce')
 
 function test () {
-  console.log(evData)
+  console.log(Announce)
 }
 
 const paySelect = [
@@ -153,7 +153,7 @@ function factoryFn (files) {
     ],
     formFields: [{
       name: 'id',
-      value: evData.value.ev_id
+      value: Announce.value.ev_id
     }]
   }
 }
@@ -169,7 +169,7 @@ function factoryFnMini (files) {
     ],
     formFields: [{
       name: 'id',
-      value: evData.value.ev_id
+      value: Announce.value.ev_id
     }]
   }
 }
@@ -199,7 +199,7 @@ function reload () {
 function delImg (istop) {
   api.post(apiUrl + 'api/set/announce/delposter.php', {
     params: {
-      id: evData.value.ev_id,
+      id: Announce.value.ev_id,
       istop: istop
     }
   })

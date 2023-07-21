@@ -9,14 +9,21 @@
 
 <script setup>
 
-import SiteNameMobile from "components/main/SiteNameMobile.vue";
-import SiteNameDesktop from "components/main/SiteNameDesktop.vue";
+import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
+import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
-import MainHeader from "components/MainHeader.vue";
-import {inject} from "vue";
+import MainHeader from "components/main/header/MainHeader.vue";
+import {inject, onMounted} from "vue";
+import {Dark} from "quasar";
+
 
 const AccessToken = inject('AccessToken')
 const isOptionsLoaded = inject('isOptionsLoaded')
+
+onMounted(() => {
+  Dark.set(true)
+})
+
 </script>
 
 
@@ -35,6 +42,11 @@ const isOptionsLoaded = inject('isOptionsLoaded')
   font-family: 'GoudyTrajan';
   src: url(/fonts/GoudyTrajan-Medium.otf) format("opentype");
 }
+
+body {
+  background-color: #0d0618;
+}
+body.body--dark,
 .content {
   height: 100%;
 }

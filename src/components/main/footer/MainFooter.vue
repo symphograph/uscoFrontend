@@ -74,5 +74,9 @@ footer p {
   color: #babab8;
 }
 
-
+@media screen and (min-device-width: 800px) {
+  .footer {
+    justify-content: space-around;
+  }
+}
 </style>

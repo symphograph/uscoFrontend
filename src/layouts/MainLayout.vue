@@ -33,170 +33,7 @@ provide('SessionToken', SessionToken)
 const admin = ref(false)
 provide('admin', admin)
 
-const tabList = ref(
-  [
-    {
-      id: 1,
-      expand: true,
-      label: 'ЮССО',
-      caption: 'Об оркестре',
-      ava: '',
-      icon: '/img:usso.logo.svg',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Тигран Ахназарян',
-            caption: 'Художественный руководитель и главный дирижер',
-            url: '/conductor',
-            ava: '/img/avatars/tsa.png',
-            icon: false
-          },
-          {
-            id: 2,
-            name: 'Состав оркестра',
-            caption: 'Список артистов',
-            url: '/staff',
-            ava: '',
-            icon: 'groups'
-          },
-          {
-            id: 3,
-            name: 'Александр Зражаев',
-            caption: 'Создатель оркестра',
-            url: '/AlexandrZrazaev',
-            ava: '/img/avatars/zag.jpg',
-            icon: false
-          },
-          {
-            id: 4,
-            name: 'Историческая справка',
-            caption: '"Ты помнишь, как все начиналось?.."',
-            url: '/history',
-            ava: '',
-            icon: 'history_edu'
-          }
-        ]
-    },
-    {
-      id: 2,
-      expand: false,
-      url: '/vacancies',
-      label: 'Вакансии'
-    },
-    {
-      id: 3,
-      expand: false,
-      url: '/announces',
-      label: 'Афиши'
-    },
-    {
-      id: 4,
-      expand: true,
-      label: 'медиа',
-      caption: 'Фото и видео',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Фото',
-            caption: 'Фотографии оркестра',
-            url: '/gallery/0',
-            ava: '',
-            icon: 'photo_camera'
-          },
-          {
-            id: 2,
-            name: 'Видео',
-            caption: 'Видеозаписи',
-            url: '/video',
-            ava: '',
-            icon: 'smart_display'
-          }
-        ]
-    },
-    {
-      id: 5,
-      expand: true,
-      label: 'Новости',
-      caption: 'Новости',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Новости ЮССО',
-            caption: 'Новости оркестра',
-            url: '/news/usco',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 2,
-            name: 'Звезды Эвтерпы',
-            caption: 'Международный фестиваль',
-            url: '/news/euterpe',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 3,
-            name: 'Новости партнеров',
-            caption: 'Прочие новости',
-            url: '/news/other',
-            ava: '',
-            icon: 'volunteer_activism'
-          },
-          {
-            id: 4,
-            name: 'Все новости',
-            caption: 'Обо всем',
-            url: '/news/all',
-            ava: '',
-            icon: 'receipt_long'
-          }
-        ]
-    },
-    {
-      id: 6,
-      expand: false,
-      url: '/contacts',
-      label: 'Контакты'
-    },
-    {
-      id: 7,
-      expand: true,
-      label: 'Документы',
-      caption: '',
-      tabs:
-        [
-          {
-            id: 1,
-            name: 'Основные сведения',
-            caption: '',
-            url: '/main',
-            ava: '/img/logo/logo_init.svg',
-            icon: ''
-          },
-          {
-            id: 2,
-            name: 'Документы',
-            caption: '',
-            url: '/docs',
-            ava: '',
-            icon: 'folder'
-          },
-          {
-            id: 3,
-            name: 'Вместе против коррупции!',
-            caption: 'Международный молодежный конкурс',
-            url: '/corrupt',
-            ava: '/img/docs/logo-md.webp',
-            icon: ''
-          }
-        ]
-    }
-  ])
-provide('tabList', tabList)
+
 
 const progress = ref(false)
 provide('progress', progress)
@@ -290,64 +127,14 @@ onMounted(() => {
   font-family: 'GoudyTrajan';
   src: url(/fonts/GoudyTrajan-Medium.otf) format("opentype");
 }
-
-body{
-  /*background-color: #f3f4f7;*/
-
-  background-image: url(/img/header-bg.jpg);
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-size: cover;
+body {
   height: 100%;
   width: 100%;
-
 }
 
 #q-app {
-  background: rgb(255 255 255 / 84%);
   height: 100%;
   width: 100%;
-  -webkit-backdrop-filter: blur(40px) saturate(120%) contrast(50%);
-  backdrop-filter: blur(30px) saturate(200%) contrast(70%);
-  /*background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;*/
-}
-
-.q-menu {
-  background-color: #e7ddcbf5;
-}
-
-.q-toolbar__title a {
-  text-decoration: none;
-}
-
-
-
-.topin a {
-  text-decoration: none;
-}
-
-.conductor {
-  width: 245px;
-  font-size: 12px;
-  color: #e7ddcb;
-  display: flex;
-  flex-direction: column;
-}
-
-.conductor a:hover {
-  text-decoration: underline;
-  color: #d9b34d;
-}
-
-.tsa {
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 25px;
-  letter-spacing: 1px;
-  color: white;
-  transition: all 200ms;
 }
 
 main {
@@ -428,43 +215,10 @@ q-toolbar-title {
 
 }
 
-.sitename {
-  color: #e7ddcb;
-  text-transform: uppercase;
-  line-height: 1.9em;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.top-container {
-  /*height: 300px;*/
-}
-
-.mytoolbar {
-  box-shadow: 0 5px 7px #2f2e2e99;
-}
-
-.header-image {
-
-}
-
-.topline {
-  background: none;
-
-}
-
-.q-drawer {
-  background-image: linear-gradient(
-      180deg, #fbf5db 0%, rgba(203, 171, 122, 0.91) 150%);
-}
 
 q-avatar img {
   width: 170px;
 }
-
-
-
-
 
 .q-list {
   color: #342d71;
@@ -559,11 +313,7 @@ hr {
   justify-content: flex-end;
 }
 
-@media screen and (min-device-width: 800px) {
-  .footer {
-    justify-content: space-around;
-  }
-}
+
 
 @media screen and (max-device-width: 500px) {
 
