@@ -1,6 +1,6 @@
 <template>
-  <q-card v-if="Announce && (Announce.show || editMode)" square class="eventbox tdno" separator>
-    <router-link :to="'/announce/'+Announce.ev_id">
+  <q-card v-if="Announce && (Announce.isShow || editMode)" square class="eventbox tdno" separator>
+    <router-link :to="'/announce/'+Announce.id">
       <q-img :ratio="1080/608" :src="topImgUrl" fit="fill">
       </q-img>
     </router-link>
@@ -24,14 +24,14 @@
           <q-item-label caption>{{ fDateTime(AnnounceEditable.datetime) }}</q-item-label>
         </q-item-section>
       </q-item>
-      <a :href="Halls.find(el => el.id === Announce.hall_id).map" target="_blank">
+      <a :href="Announce.Hall.map" target="_blank">
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <q-icon color="primary" name="place"></q-icon>
           </q-item-section>
           <q-item-section>
             <q-item-label caption>
-              <span class="mapLink">{{ Halls.find(el => el.id === Announce.hall_id).name }}</span>
+              <span class="mapLink">{{ Announce.Hall.name }}</span>
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -81,7 +81,7 @@
         Афиша не загружена
       </q-card-section>
       <q-card-section>
-        <q-toggle v-model="AnnounceEditable.show" @update:model-value="saveData(0)" label="вкл" color="green"
+        <q-toggle v-model="AnnounceEditable.isShow" @update:model-value="saveData(0)" label="вкл" color="green"
                   checked-icon="check" unchecked-icon="clear">
           <q-tooltip>Опубликовать</q-tooltip>
         </q-toggle>
@@ -138,7 +138,6 @@ const props = defineProps({
   Announce: ref(false)
 })
 const AnnounceEditable = ref(props.Announce)
-const Halls = inject('Halls')
 
 const topImgUrl = computed(() => {
   let size = 480
@@ -159,7 +158,7 @@ onMounted(() => {
 function saveData() {
   api.post(apiUrl + 'api/set/announce/announce.php', {
     params: {
-      evdata: props.Announce
+      announce: props.Announce
     }
   })
     .then((response) => {
@@ -173,7 +172,7 @@ function saveData() {
 function delAnnounce() {
   api.post(apiUrl + 'api/set/announce/delannounce.php', {
     params: {
-      id: props.Announce.ev_id
+      id: props.Announce.id
     }
   })
     .then((response) => {

@@ -73,7 +73,7 @@ function addAnnounce () {
             throw new Error();
           }
           q.notify(notifyOK(response?.data?.result ?? null))
-          router.push({ path: '/announce/' + response.data.data.ev_id })
+          router.push({ path: '/announce/' + response.data.data.id })
         })
         .catch((error) => {
           q.notify(notifyError(error))

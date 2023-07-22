@@ -51,9 +51,8 @@
                  label="Название"
         ></q-input>
         <q-select
-          v-model="Announce.hall_id"
+          v-model="Announce.Hall"
           label="Место проведения"
-          emit-value
           map-options
           option-label="name"
           option-value="id"
@@ -115,7 +114,7 @@ const AccessToken = inject('AccessToken')
 const Announce = inject('Announce')
 
 function test () {
-  console.log(Announce)
+  //console.log(Announce)
 }
 
 const paySelect = [
@@ -153,7 +152,7 @@ function factoryFn (files) {
     ],
     formFields: [{
       name: 'id',
-      value: Announce.value.ev_id
+      value: Announce.value.id
     }]
   }
 }
@@ -169,7 +168,7 @@ function factoryFnMini (files) {
     ],
     formFields: [{
       name: 'id',
-      value: Announce.value.ev_id
+      value: Announce.value.id
     }]
   }
 }
@@ -199,11 +198,14 @@ function reload () {
 function delImg (istop) {
   api.post(apiUrl + 'api/set/announce/delposter.php', {
     params: {
-      id: Announce.value.ev_id,
+      id: Announce.value.id,
       istop: istop
     }
   })
     .then((response) => {
+      if(!!!response?.data?.result){
+        throw new Error();
+      }
       emit('posterUploaded')
       q.notify(notifyOK(response?.data?.result ?? ''))
     })

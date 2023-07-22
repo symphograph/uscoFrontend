@@ -1,8 +1,8 @@
 <template>
   <AnnounceCard
-    v-for="poster in sortedList"
-    :key="poster.ev_id"
-    :Announce="poster"
+    v-for="announce in sortedList"
+    :key="announce.id"
+    :Announce="announce"
     :editMode="editMode"
     @IamDeleted="loadData"
   ></AnnounceCard>

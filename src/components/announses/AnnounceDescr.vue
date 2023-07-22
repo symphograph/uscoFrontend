@@ -55,7 +55,7 @@ const imgUrl = computed(() => {
 
 function vkHref () {
   return 'https://vk.com/share.php?' +
-    'url=' + apiUrl + '/event.php?evid=' + String(props.Announce.ev_id) +
+    'url=' + apiUrl + '/event.php?evid=' + String(props.Announce.id) +
     '&title=' + String(props.Announce.prog_name) +
     '&noparse=true' +
     '&image=' + String(imgUrl)
