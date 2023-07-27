@@ -3,8 +3,7 @@
     <div class="editArea">
       <div class="card">
         <AnnounceCard
-          v-if="Announce.map"
-          :editMode="$attrs.editMode"
+          v-if="Announce.Hall.map"
           @IamDeleted="IamDeleted"
           @newAnnounce="reload"
           ref="rAnnounceCard"
@@ -106,7 +105,6 @@ const editMode = inject('editMode')
 const Halls = inject('Halls')
 
 const emit = defineEmits(['reload', 'posterUploaded'])
-
 
 const model = {}
 const AccessToken = inject('AccessToken')

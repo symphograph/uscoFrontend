@@ -3,7 +3,6 @@
     v-for="announce in sortedList"
     :key="announce.id"
     :Announce="announce"
-    :editMode="editMode"
     @IamDeleted="loadData"
   ></AnnounceCard>
 </template>

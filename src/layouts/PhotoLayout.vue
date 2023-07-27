@@ -44,9 +44,10 @@ onMounted(() => {
 }
 
 body {
-  background-color: #0d0618;
+  background-color: #1d1d1d;
+
 }
-body.body--dark,
+
 .content {
   height: 100%;
 }

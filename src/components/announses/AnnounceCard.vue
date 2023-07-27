@@ -176,6 +176,9 @@ function delAnnounce() {
     }
   })
     .then((response) => {
+      if(!response?.data?.result){
+        throw new Error()
+      }
       q.notify(notifyOK(response?.data?.result ?? null))
       emit('IamDeleted')
     })

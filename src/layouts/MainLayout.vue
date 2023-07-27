@@ -7,8 +7,11 @@
 <script setup>
 import {ref, provide, computed, onMounted, onBeforeMount, watch, inject} from 'vue'
 import {useQuasar, Dialog, LocalStorage, useMeta} from 'quasar'
-import { useRoute } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import AuthComponent from "components/main/AuthComponent.vue";
+
+
+const router = useRouter()
 
 const pageSettings = ref()
 provide('pageSettings', pageSettings)
@@ -96,7 +99,10 @@ function showCookieConfirm () {
 //----------------------------------------------------------------------
 
 onBeforeMount(() => {
-  console.log('mainLayout beforeMounted')
+  if(!process.env.isDebug){
+    //router.push({ path: '/maintenance' })
+    window.location.href = '/maintenance'
+  }
 })
 
 onMounted(() => {

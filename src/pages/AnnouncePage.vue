@@ -3,7 +3,6 @@
     <AnnounceEditor v-if="editMode && Announce"
                   @posterUploaded="loadData"
                   @reload="loadData"
-                  :editMode="editMode"
     ></AnnounceEditor>
     <div class="eventboxl">
       <AnnounceDescr v-if="Announce" :Announce="Announce"></AnnounceDescr>
@@ -30,7 +29,6 @@ const q = useQuasar()
 const editMode = inject('editMode')
 const apiUrl = String(process.env.API)
 const route = useRoute()
-const token = inject('token')
 
 const Announce = ref(null)
 provide('Announce', Announce)

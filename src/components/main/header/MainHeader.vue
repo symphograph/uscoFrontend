@@ -42,7 +42,7 @@
     </q-tabs>
   </q-header>
   <!-- drawer content -->
-  <q-drawer v-model="leftDrawerOpen" side="left" elevated>
+  <q-drawer v-model="leftDrawerOpen" side="left" elevated overlay behavior="mobile">
     <DrawerContent></DrawerContent>
   </q-drawer>
 </template>

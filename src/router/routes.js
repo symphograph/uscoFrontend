@@ -106,11 +106,15 @@ const routes = [
       },
     ]
   },
-
   {
     path: '/auth/callback',
     component: () => import('layouts/RootLayout.vue'),
-    children: [{path: '', component: () => import('pages/AuthCallback.vue')}]
+    children: [{path: '', component: () => import('pages/service/AuthCallback.vue')}]
+  },
+  {
+    path: '/maintenance',
+    component: () => import('layouts/RootLayout.vue'),
+    children: [{path: '', component: () => import('pages/service/MainTenance.vue')}]
   },
 
 
@@ -118,7 +122,7 @@ const routes = [
   // but you can also remove it AlexandrZrazaev
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/Error404Page.vue')
+    component: () => import('pages/service/Error404Page.vue')
   }
 ]
 

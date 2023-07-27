@@ -76,18 +76,10 @@ module.exports = configure(function (ctx) {
         Auth: ctx.dev
           ? 'https://tauth.sakh-orch.ru/'
           : 'https://auth.sakh-orch.ru/',
-        APISTAFF: ctx.dev
-          ? 'https://tapi.staff.sakh-orch.ru/'
-          : 'https://api.staff.sakh-orch.ru/',
         STAFF: ctx.dev
           ? 'https://192.168.0.200:9100/'
           : 'https://staff.sakh-orch.ru/',
-        AppToken: ctx.dev
-          ? '12345'
-          : '12345',
-        isDebug: ctx.dev
-          ? 'debug'
-          : '',
+        isDebug: !!ctx.dev,
         ServiceUrl: ctx.dev
           ? 'https://192.168.0.200:9200/'
           : 'https://sakh-orch.ru/',
