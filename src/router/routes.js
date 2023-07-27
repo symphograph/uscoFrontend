@@ -70,11 +70,6 @@ const routes = [
         children: [{path: '', component: () => import('pages/NewPage.vue')}]
       },
       {
-        path: '/swiper',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/SwiperPage.vue')}]
-      },
-      {
         path: '/corrupt',
         component: () => import('layouts/MidLayout.vue'),
         children: [{path: '', component: () => import('pages/CorruptPage.vue')}]
