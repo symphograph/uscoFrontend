@@ -39,7 +39,7 @@
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
-      <div class="text-subtitle1 text-center prog-name" v-html="Announce.prog_name"></div>
+      <div class="text-subtitle1 text-center prog-name" v-html="Announce.progName"></div>
     </q-card-section>
     <q-card-section class="text-body2 text-center">
       <div v-html="Announce.sdescr"></div>
@@ -65,8 +65,8 @@
     <template v-if="Announce.pay">
       <q-separator inset></q-separator>
       <q-card-section class="text-body2 text-center">
-        <q-btn v-if="Announce.pay === 3 && !Announce.complited && Announce.ticket_link" label="Купить билет"
-               :href="Announce.ticket_link"></q-btn>
+        <q-btn v-if="Announce.pay === 3 && !Announce.complited && Announce.ticketLink" label="Купить билет"
+               :href="Announce.ticketLink"></q-btn>
         <template v-else>
           {{ payType() }}
         </template>

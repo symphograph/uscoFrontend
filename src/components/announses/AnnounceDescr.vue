@@ -8,7 +8,7 @@
   </div>
   <div class="eventboxin">
     <div class="text">
-      <p v-if="Announce.prog_name"><b>{{ Announce.prog_name }}</b></p>
+      <p v-if="Announce.progName"><b>{{ Announce.progName }}</b></p>
       <br>
       <p><b>{{ fDateTime(Announce.datetime) }}</b></p>
       <br>
@@ -56,7 +56,7 @@ const imgUrl = computed(() => {
 function vkHref () {
   return 'https://vk.com/share.php?' +
     'url=' + apiUrl + '/event.php?evid=' + String(props.Announce.id) +
-    '&title=' + String(props.Announce.prog_name) +
+    '&title=' + String(props.Announce.progName) +
     '&noparse=true' +
     '&image=' + String(imgUrl)
 }

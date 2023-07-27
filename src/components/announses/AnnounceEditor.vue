@@ -46,7 +46,7 @@
 
 
         <q-input name="progName"
-                 v-model="Announce.prog_name"
+                 v-model="Announce.progName"
                  label="Название"
         ></q-input>
         <q-select
@@ -65,7 +65,7 @@
           :options="paySelect"
         ></q-select>
         <br>
-        <q-input v-if="Announce.pay == 3" type="text" v-model="Announce.ticket_link" label="Ссылка на продажу билетов"></q-input>
+        <q-input v-if="Announce.pay == 3" type="text" v-model="Announce.ticketLink" label="Ссылка на продажу билетов"></q-input>
         <br>
         <q-input type="number" v-model="Announce.age" label="Возрастные ограничения"></q-input>
         <br>
