@@ -48,8 +48,8 @@
       <div></div>
     </q-card-section>
     <q-separator inset></q-separator>
-    <q-card-section v-if="Announce.youtube_id">
-      <a :href="'https://www.youtube.com/watch?v=' + Announce.youtube_id" target="_blank">
+    <q-card-section v-if="Announce.youtubeId">
+      <a :href="'https://www.youtube.com/watch?v=' + Announce.youtubeId" target="_blank">
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <q-icon color="primary" name="ion-logo-youtube"></q-icon>

@@ -1,10 +1,10 @@
 <template>
 <div class="eventsarea">
 <div class="vidarea">
-  <div class="vitem" v-for="vid in videos" :key="vid.youtube_id">
+  <div class="vitem" v-for="vid in videos" :key="vid.youtubeId">
     <q-video
       :ratio="16/9"
-      :src="'https://www.youtube.com/embed/' + vid.youtube_id + '?rel=0'"
+      :src="'https://www.youtube.com/embed/' + vid.youtubeId + '?rel=0'"
     ></q-video>
   </div>
 </div>
