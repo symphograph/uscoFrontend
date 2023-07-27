@@ -101,7 +101,7 @@ function showCookieConfirm () {
 onBeforeMount(() => {
   if(!process.env.isDebug){
     //router.push({ path: '/maintenance' })
-    window.location.href = '/maintenance'
+    //window.location.href = '/maintenance'
   }
 })
 
