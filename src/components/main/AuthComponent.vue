@@ -124,7 +124,6 @@ defineExpose({
 
 onBeforeMount(() => {
   console.log('auth beforeMounted')
-  //api.defaults.headers.common['Origin'] = "https://dev.sakh-orch.ru"
   if(!process.env.isDebug){
     api.defaults.headers.common['Accept'] = "application/json"
   }
