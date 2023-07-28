@@ -40,7 +40,7 @@ const videos = ref([
 
     function loadData () {
 
-      api.post(apiUrl + 'api/get/video.php', {
+      api.post(apiUrl + 'api/video/list.php', {
         params: {
           limit: props.videoLimit.limit
         }

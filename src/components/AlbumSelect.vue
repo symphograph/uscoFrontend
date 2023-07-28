@@ -37,7 +37,7 @@ function loadList() {
 }
 
 function loadAlbum() {
-  api.post(apiUrl + '/api/get/album/images.php', {
+  api.post(apiUrl + '/api/album/img/list.php', {
     params: {
       albumName: album.value.name
     }

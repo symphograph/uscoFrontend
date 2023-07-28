@@ -64,7 +64,7 @@ const metaData = {
 useMeta(metaData)
 
     function loadData () {
-      api.post(apiUrl + 'api/get/staff.php', {
+      api.post(apiUrl + 'api/staff/list.php', {
         params: {
           date: condDate.value
         }
@@ -77,7 +77,7 @@ useMeta(metaData)
         })
     }
     function staffEdit () {
-      api.post(String(process.env.API) + '/api/set/staffedit.php', {
+      api.post(String(process.env.API) + '/api/staff/update.php', {
         params: {
           groups: groups.value,
           date: condDate.value
