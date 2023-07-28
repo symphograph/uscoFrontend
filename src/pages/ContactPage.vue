@@ -44,7 +44,7 @@
       </div>
       <br><br>
 
-      <div class="fidback_area">
+      <div class="feedbackArea">
         <div class="q-pa-md">
 
           <q-form
@@ -112,6 +112,7 @@ const msg = ref(null)
 const accept = ref(false)
 
 function test () {
+  //console.log(msg.value)
   $q.notify({
     color: 'green-4',
     textColor: 'white',
@@ -145,7 +146,7 @@ function onReset () {
 </script>
 
 <style scoped>
-.fidback_area {
+.feedbackArea {
   width: 100%;
 }
 

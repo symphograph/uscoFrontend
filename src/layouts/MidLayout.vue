@@ -15,11 +15,16 @@ import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
 import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
 import MainHeader from "components/main/header/MainHeader.vue";
-import {inject} from "vue";
+import {inject, onBeforeMount, onMounted} from "vue";
 import AnderHeader from "components/main/header/AnderHeader.vue";
+import {Dark} from "quasar";
 
 const AccessToken = inject('AccessToken')
 const isOptionsLoaded = inject('isOptionsLoaded')
+
+onBeforeMount(() => {
+  Dark.set(false)
+})
 </script>
 
 

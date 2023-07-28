@@ -20,7 +20,7 @@ const avatar = computed(() => {
 
 function loadList() {
 
-  api.post(apiUrl + '/api/get/album/list.php', {})
+  api.post(apiUrl + '/api/album/list.php', {})
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -68,12 +68,13 @@ onMounted(() => {
         dark
         options-dark
         v-model="album"
+        label-color="amber"
         :options="albumList"
         map-options
         option-value="name"
         option-label="name"
         label="Альбом"
-        color="teal"
+        color="amber"
         options-selected-class="text-deep-orange"
         :popup-content-style="{ backgroundColor: '#2f2e2e' }"
         @update:model-value="loadAlbum()"
@@ -87,9 +88,13 @@ onMounted(() => {
 
         </template>
         <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps" dark>
+          <q-item v-bind="scope.itemProps">
             <q-item-section avatar>
-              <q-img :ratio="4/3" :src="apiUrl + scope.opt.avatar" class="avatar"></q-img>
+              <q-img :ratio="4/3"
+                     :src="apiUrl + scope.opt.avatar"
+                     class="avatar"
+                     loading="eager"
+              ></q-img>
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ scope.opt.name }}</q-item-label>
