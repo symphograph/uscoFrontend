@@ -21,7 +21,7 @@
               v-model="model"
               style="max-width: 300px"
               label="Загрузить эскиз 1080:684"
-              :factory="factoryFnMini"
+              :factory="addSketch"
               ref="uploader"
               @uploaded="uploaded"
               @failed="failed"
@@ -32,7 +32,7 @@
               v-model="model"
               style="max-width: 300px"
               label="Загрузить афишу"
-              :factory="factoryFn"
+              :factory="addPoster"
               ref="uploader2"
               @uploaded="uploaded"
               @failed="failed"
@@ -40,8 +40,8 @@
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
-          <q-btn label="Удалить эскиз" icon="delete" @click="delImg('top')"></q-btn>
-          <q-btn label="Удалить афишу" icon="delete" @click="delImg('poster')"></q-btn>
+          <q-btn label="Удалить эскиз" icon="delete" @click="delSketch()"></q-btn>
+          <q-btn label="Удалить афишу" icon="delete" @click="delPoster()"></q-btn>
         </div>
 
 
@@ -139,9 +139,9 @@ const uploader2 = ref(null)
 const rAnnounceCard = ref(null)
 
 
-function factoryFn (files) {
+function addPoster (files) {
   return {
-    url: apiUrl + 'api/upload/poster.php',
+    url: apiUrl + 'api/event/poster/add.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -155,9 +155,9 @@ function factoryFn (files) {
   }
 }
 
-function factoryFnMini (files) {
+function addSketch (files) {
   return {
-    url: apiUrl + 'api/upload/postertop.php',
+    url: apiUrl + 'api/event/sketch/add.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -193,11 +193,28 @@ function reload () {
   emit('reload')
 }
 
-function delImg (istop) {
-  api.post(apiUrl + 'api/set/announce/delposter.php', {
+function delPoster () {
+  api.post(apiUrl + 'api/event/poster/del.php', {
     params: {
-      id: Announce.value.id,
-      istop: istop
+      id: Announce.value.id
+    }
+  })
+    .then((response) => {
+      if(!!!response?.data?.result){
+        throw new Error();
+      }
+      emit('posterUploaded')
+      q.notify(notifyOK(response?.data?.result ?? ''))
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
+
+function delSketch () {
+  api.post(apiUrl + 'api/event/sketch/del.php', {
+    params: {
+      id: Announce.value.id
     }
   })
     .then((response) => {
