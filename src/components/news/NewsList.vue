@@ -37,7 +37,7 @@ const props = defineProps({
 
 })
 const categ = ref(props.category)
-watch(() => props.query, (fdf) => {
+watch(() => props.query, () => {
   //Items.value = null
   loadData()
 }, { deep: true })
