@@ -35,7 +35,7 @@ provide('Announce', Announce)
 
 function loadData () {
 
-  api.post(apiUrl + 'api/announce/get.php', {
+  api.post(apiUrl + 'api/event/announce/get.php', {
     params: {
       id: route.params.evid
     }

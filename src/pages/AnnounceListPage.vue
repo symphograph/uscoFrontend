@@ -64,7 +64,7 @@ const years = [2023, 2022, 2021, 2020, 2019, 2018]
 const evYear = ref(new Date().getFullYear())
 
 function addAnnounce () {
-      api.post(apiUrl + 'api/announce/add.php', {
+      api.post(apiUrl + 'api/event/announce/add.php', {
         params: {
         }
       })

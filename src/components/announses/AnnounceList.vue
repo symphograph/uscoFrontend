@@ -36,7 +36,7 @@ const props = defineProps({
 
     function loadData () {
       progress.value = true
-      api.post(apiUrl + 'api/announce/list.php', {
+      api.post(apiUrl + 'api/event/announce/list.php', {
         params: {
           sort: props.sort,
           year: props.evYear,
