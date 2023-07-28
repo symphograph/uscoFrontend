@@ -156,7 +156,7 @@ onMounted(() => {
 })
 
 function saveData() {
-  api.post(apiUrl + 'api/set/announce/announce.php', {
+  api.post(apiUrl + 'api/announce/update.php', {
     params: {
       announce: props.Announce
     }
@@ -170,7 +170,7 @@ function saveData() {
 }
 
 function delAnnounce() {
-  api.post(apiUrl + 'api/set/announce/delannounce.php', {
+  api.post(apiUrl + 'api/announce/del.php', {
     params: {
       id: props.Announce.id
     }

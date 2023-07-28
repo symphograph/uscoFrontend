@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import {inject, provide, ref} from 'vue'
+import {inject, ref} from 'vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
 import { useQuasar, useMeta } from 'quasar'
 import { api } from 'boot/axios'
@@ -64,7 +64,7 @@ const years = [2023, 2022, 2021, 2020, 2019, 2018]
 const evYear = ref(new Date().getFullYear())
 
 function addAnnounce () {
-      api.post(apiUrl + 'api/set/announce/addannounce.php', {
+      api.post(apiUrl + 'api/announce/add.php', {
         params: {
         }
       })
