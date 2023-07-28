@@ -37,8 +37,13 @@
 <script setup>
 import GosUslugi from "components/main/footer/GosUslugi.vue";
 import PartnersBlock from "components/main/footer/PartnersBlock.vue";
+import {onMounted} from "vue";
 
-const isDebug = String(process.env.isDebug)
+const isDebug = !!process.env.isDebug
+
+onMounted(() => {
+
+})
 </script>
 
 <style scoped>
