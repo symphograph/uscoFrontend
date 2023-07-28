@@ -43,7 +43,7 @@ const titles = ref({
 
 function addEntry () {
 
-  api.post(apiUrl + 'api/set/news/addentry.php', {
+  api.post(apiUrl + 'api/news/entry/add.php', {
     params: {
 
     }

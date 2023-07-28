@@ -108,7 +108,7 @@ function imgUrl(img) {
 }
 
 function loadData() {
-  api.post(apiUrl + 'api/get/new.php', {
+  api.post(apiUrl + 'api/news/entry/get.php', {
     params: {
       id: route.params.id
     }

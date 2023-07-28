@@ -225,7 +225,7 @@ function copy(val) {
 
 function delImg(img, key) {
 
-  api.post(apiUrl + 'api/set/news/delimg.php', {
+  api.post(apiUrl + 'api/news/img/del.php', {
     params: {
       id: route.params.id,
       img: img
@@ -243,7 +243,7 @@ function delImg(img, key) {
 
 function delPw(img) {
 
-  api.post(apiUrl + 'api/set/news/delpw.php', {
+  api.post(apiUrl + 'api/news/pw/del.php', {
     params: {
       id: route.params.id,
       img: img
@@ -259,7 +259,7 @@ function delPw(img) {
 
 function factoryFnMini() {
   return {
-    url: apiUrl + 'api/upload/entrypw.php',
+    url: apiUrl + 'api/news/pw/add.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -275,7 +275,7 @@ function factoryFnMini() {
 
 function factoryFn() {
   return {
-    url: apiUrl + 'api/upload/entryimg.php',
+    url: apiUrl + 'api/news/img/add.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -311,7 +311,7 @@ function categsFilter() {
 
 function save(addNew = 0) {
 
-  api.post(apiUrl + 'api/set/news/entry.php', {
+  api.post(apiUrl + 'api/news/entry/update.php', {
     params: {
       entry: newDataE.value,
       addNew: addNew,
