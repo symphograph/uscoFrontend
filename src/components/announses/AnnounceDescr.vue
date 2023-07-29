@@ -49,7 +49,7 @@ const imgUrl = computed(() => {
   return apiUrl +
     String(props.Announce.Poster.folder) +
     '/' + String(size) + '/' +
-    props.Announce.TopPoster.fileName +
+    props.Announce.Sketch.fileName +
     '?ver=' + props.Announce.Poster.md5
 })
 

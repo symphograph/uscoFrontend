@@ -82,6 +82,12 @@ const colors = {
 }
 provide('colors', colors)
 
+const progress = ref(false)
+provide('progress', progress)
+
+const announceList = ref([])
+provide('announceList', announceList)
+
 function savePlan() {
   //HallPlan.value.pricing = Pricing.value
   if(selectedMode.value === 'Structure'){
@@ -198,7 +204,8 @@ function cellClicked(cell) {
   console.log(cell)
 }
 
-function onSelectHall() {
+function onSelectHall(hallId) {
+  loadAnnounces(hallId)
   loadHallPlan()
 }
 
@@ -227,6 +234,26 @@ function loadHallPlan() {
     })
 }
 
+function loadAnnounces(hallId) {
+  progress.value = true
+  api.post(apiUrl + 'api/event/announce.php', {
+    params: {
+      hallId: hallId,
+      method: 'listByHall'
+    }
+  })
+    .then((response) => {
+      announceList.value = response?.data?.data ?? []
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+      announceList.value = []
+    })
+    .finally(() => {
+      progress.value = false
+    })
+}
+
 onBeforeMount(() => {
 
 })
@@ -240,7 +267,7 @@ onMounted(() => {
 
 <template>
   <div class="content">
-    <HallCreatorMenu @onSelectHall="onSelectHall()"></HallCreatorMenu>
+    <HallCreatorMenu @onSelectHall="(hallId) => onSelectHall(hallId)"></HallCreatorMenu>
 
     <div style="overflow: auto; ; margin: 1em auto">
       <q-card style="width: max-content; padding: 2em; margin: 0 auto" dark>

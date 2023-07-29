@@ -2,7 +2,7 @@
   <q-page class="items-center justify-evenly">
     <div class="eventsarea">
       <div class="announceArea">
-        <AnnounceList :sort="1" :evYear="year" only-new="1"></AnnounceList>
+        <AnnounceList :method="'futureList'"></AnnounceList>
       </div>
     </div>
     <div class="eventsarea">
@@ -16,13 +16,15 @@
 </template>
 
 <script setup>
-import moment from 'moment'
+
 import VideoList from 'components/VideoList.vue'
 import TeaserList from 'components/TeaserList.vue'
 import NewsList from 'components/news/NewsList.vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
-import { ref } from 'vue'
+import {inject, onMounted, provide, ref} from 'vue'
 import { useMeta } from 'quasar'
+import {api} from "boot/axios";
+import {notifyError} from "src/myFuncts";
 
 const metaData = {
   title: 'ЮССО'
@@ -41,32 +43,26 @@ const teasers = [
   }
 ]
 
-const videos = [
-  { id: 'cYYEe_o-M3w' },
-  { id: 'ZAC_GGmo-bk' },
-  { id: 'yjTAG2iCjpk' },
-  { id: 'Y4syxGpzDn4' },
-  { id: 'lmpnSdUmSEE' },
-  { id: '2Pagmmq3Yho' }
-]
-
 const videoLimit = {
   limit: 6
 }
 
-const anonses = {
-  sort: 0,
-  year: 0,
-  onlyNew: 1
-}
-
 const year = ref(new Date().getFullYear())
+
+const announceList = ref([])
+provide('announceList', announceList)
+
+const progress = inject('progress')
 
  const query = {
    category: 'usco',
    year: 0,
    limit: 5
  }
+
+onMounted(() => {
+
+})
 </script>
 
 <style>

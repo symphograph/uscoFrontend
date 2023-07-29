@@ -13,14 +13,14 @@
       </div>
       <q-linear-progress v-if="progress" indeterminate color="secondary"/>
       <div class="gridarea">
-        <AnnounceList v-model:evYear="evYear" :sort="moSort.value"></AnnounceList>
+        <AnnounceList v-model:evYear="evYear" :method="'listByYear'"  :sort="moSort.value"></AnnounceList>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {inject, ref} from 'vue'
+import {inject, provide, ref} from 'vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
 import { useQuasar, useMeta } from 'quasar'
 import { api } from 'boot/axios'
@@ -63,9 +63,13 @@ const options = ref([
 const years = [2023, 2022, 2021, 2020, 2019, 2018]
 const evYear = ref(new Date().getFullYear())
 
+const announceList = ref([])
+provide('announceList', announceList)
+
 function addAnnounce () {
-      api.post(apiUrl + 'api/event/announce/add.php', {
+      api.post(apiUrl + 'api/event/announce.php', {
         params: {
+          method: 'add'
         }
       })
         .then((response) => {

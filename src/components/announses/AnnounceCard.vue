@@ -1,7 +1,7 @@
 <template>
   <q-card v-if="Announce && (Announce.isShow || editMode)" square class="eventbox tdno" separator>
     <router-link :to="'/announce/'+Announce.id">
-      <q-img :ratio="1080/608" :src="topImgUrl" fit="fill">
+      <q-img :ratio="1080/608" :src="sketchUrl" fit="fill">
       </q-img>
     </router-link>
     <q-card-section color="info" expand-separator>
@@ -139,16 +139,16 @@ const props = defineProps({
 })
 const AnnounceEditable = ref(props.Announce)
 
-const topImgUrl = computed(() => {
+const sketchUrl = computed(() => {
   let size = 480
   if (q.platform.is.mobile) {
     size = 1080
   }
   return String(process.env.API) +
-    props.Announce.TopPoster.folder +
+    props.Announce.Sketch.folder +
     '/' + size + '/' +
-    props.Announce.TopPoster.fileName +
-    '?ver=' + props.Announce.TopPoster.md5
+    props.Announce.Sketch.fileName +
+    '?ver=' + props.Announce.Sketch.md5
 })
 
 onMounted(() => {
@@ -156,8 +156,9 @@ onMounted(() => {
 })
 
 function saveData() {
-  api.post(apiUrl + 'api/event/announce/update.php', {
+  api.post(apiUrl + 'api/event/announce.php', {
     params: {
+      method: 'update',
       announce: props.Announce
     }
   })
@@ -170,8 +171,9 @@ function saveData() {
 }
 
 function delAnnounce() {
-  api.post(apiUrl + 'api/event/announce/del.php', {
+  api.post(apiUrl + 'api/event/announce.php', {
     params: {
+      method: 'del',
       id: props.Announce.id
     }
   })

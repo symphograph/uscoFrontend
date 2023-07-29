@@ -41,13 +41,6 @@ provide('admin', admin)
 const progress = ref(false)
 provide('progress', progress)
 
-const announceList = ref([])
-provide('announceList', announceList)
-
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
-
 const leftDrawerOpen = ref(false)
 provide('leftDrawerOpen', leftDrawerOpen)
 
@@ -108,7 +101,6 @@ onBeforeMount(() => {
 onMounted(() => {
   console.log('mainLayout Mounted')
   showCookieConfirm()
-
 })
 </script>
 

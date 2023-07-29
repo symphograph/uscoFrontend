@@ -51,7 +51,7 @@
 
 <script setup>
 import { useMeta } from 'quasar'
-import {onMounted} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 
 const metaData = {
   title: 'Вакансии'
