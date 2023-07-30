@@ -9,12 +9,14 @@ const q = useQuasar()
 
 const HallPlan = inject('HallPlan')
 const Halls = inject('Halls')
-const emit = defineEmits(['onSelectHall', 'onSelectPrice'])
+const emit = defineEmits(['onSelectHall', 'onSelectPrice', 'onSelectAnnounce'])
 
 
 const selectedMode = inject('selectedMode')
 
 const announceList = inject('announceList')
+
+const selectedAnnounce = inject('selectedAnnounce')
 
 const colors = inject('colors')
 
@@ -38,7 +40,7 @@ function onSelectMode (mode) {
 }
 
 function onSelectAnnounce() {
-
+emit('onSelectAnnounce')
 }
 
 function onSelectHall (hallId) {
@@ -49,7 +51,7 @@ function onSelectHall (hallId) {
 <template>
   <div class="menuArea">
     <div class="menuBlock">
-      <div class="blockRow">
+      <div v-if="false" class="blockRow">
         <q-select :options="Halls"
                   v-model="HallPlan.id"
                   color="amber"
@@ -65,31 +67,49 @@ function onSelectHall (hallId) {
       <div class="blockRow">
       <q-select v-if="announceList.length"
                 :options="announceList"
-                v-model="announceList.id"
+                v-model="selectedAnnounce"
                 color="amber"
                 outlined
                 style="width: 100%"
-                emit-value
                 map-options
                 option-value="id"
                 option-label="progName"
                 @update:model-value="onSelectAnnounce()"
       >
+        <template v-slot:selected>
+          <q-item dense>
+            <q-item-section>
+              <q-item-label>{{ selectedAnnounce.progName }}</q-item-label>
+              <q-item-label caption>{{ selectedAnnounce.Hall.name }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+        <template v-slot:prepend>
+          <q-img width="50px" :src="sketchUrl(selectedAnnounce.Sketch)"></q-img>
+        </template>
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
+
             <q-item-section avatar>
               <img style="width: 50px" :src="sketchUrl(scope.opt.Sketch)"/>
+              <q-img v-if="false" width="50px"  :src="sketchUrl(scope.opt.Sketch)"></q-img>
             </q-item-section>
-            <q-item-section >
+            <q-item-section>
               <q-item-label>
                 {{ scope.opt.progName }}
+              </q-item-label>
+              <q-item-label caption>
+                {{ scope.opt.Hall.name }}
               </q-item-label>
               <q-item-label caption>
                 {{ scope.opt.datetime }}
               </q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle v-model="scope.opt.isShow" color="green"></q-toggle>
+              <q-toggle v-if="false" v-model="scope.opt.isShow" color="green"></q-toggle>
+              <q-checkbox disable v-model="scope.opt.isShow" color="green">
+                <q-tooltip>Опубликован</q-tooltip>
+              </q-checkbox>
             </q-item-section>
           </q-item>
           <q-separator></q-separator>
@@ -108,11 +128,10 @@ function onSelectHall (hallId) {
           <StructureInputs></StructureInputs>
         </div>
       </template>
-
-      <template v-if="selectedMode === 'Prices'">
-        <PriceInputs></PriceInputs>
-      </template>
     </div>
+    <template v-if="selectedMode === 'Prices'">
+      <PriceInputs></PriceInputs>
+    </template>
   </div>
 </template>
 

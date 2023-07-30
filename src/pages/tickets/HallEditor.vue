@@ -54,6 +54,9 @@ const selectedPrice = ref({
 },)
 provide('selectedPrice', selectedPrice)
 
+const selectedAnnounce = ref({})
+provide('selectedAnnounce', selectedAnnounce)
+
 const addCountable = ref(false)
 provide('addCountable', addCountable)
 
@@ -88,15 +91,17 @@ provide('progress', progress)
 const announceList = ref([])
 provide('announceList', announceList)
 
+const renderHallTable = ref(false);
+
 function savePlan() {
   //HallPlan.value.pricing = Pricing.value
-  if(selectedMode.value === 'Structure'){
+  if (selectedMode.value === 'Structure') {
     resetTickets()
   }
-  api.post(apiUrl + 'api/tickets/hallplan/set.php', {
+  api.post(apiUrl + 'api/tickets/hallplan.php', {
     params: {
-      plan: HallPlan.value,
-      id: HallPlan.value.id
+      method: 'put',
+      plan: HallPlan.value
     }
   })
     .then((response) => {
@@ -139,19 +144,24 @@ async function initCells() {
   await nextTick()
   renderHallTable.value = true
 }
+
 provide('initCells', initCells)
 
+const seatNum = ref(0);
+const seatRow = ref(0);
+
 function newTicketByCell(cell) {
-  if(!cell.exist && !cell.forceCount){
-    return false
+  if (!cell.exist && !cell.forceCount) {
+    return
   }
 
-  if(cell.forceCount) {
+  if (cell.forceCount) {
     seatNum.value++
+    return
   }
 
-  if(!cell.exist){
-    return false
+  if (!cell.exist) {
+    return
   }
 
   seatNum.value++
@@ -163,17 +173,11 @@ function newTicketByCell(cell) {
     priceType: 'Invite'
   }
   HallPlan.value.tickets.push(ticket)
-  //console.log(cell.exist)
 }
 
-const seatNum = ref(0);
-const seatRow = ref(0);
-
-const renderHallTable = ref(false);
-
-function ticketsOfRow(row){
+function ticketsOfRow(row) {
   seatNum.value = 0;
-  if(isEmptyRow(row)) {
+  if (isEmptyRow(row)) {
     HallPlan.value.structure.rowNums.push(false)
     return
   }
@@ -183,6 +187,7 @@ function ticketsOfRow(row){
 }
 
 async function resetTickets() {
+
   renderHallTable.value = false
   seatRow.value = 0
   HallPlan.value.tickets = []
@@ -190,8 +195,7 @@ async function resetTickets() {
   HallPlan.value.cells.forEach(row => ticketsOfRow(row));
   await nextTick()
   renderHallTable.value = true
-  //console.log(HallPlan.value.tickets)
-  //console.log('cntOfTickets:',HallPlan.value.tickets.length)
+  console.log('cntOfTickets:', HallPlan.value.tickets.length)
 
 }
 
@@ -210,18 +214,19 @@ function onSelectHall(hallId) {
 }
 
 function loadHallPlan() {
-  api.post(apiUrl + 'api/tickets/hallplan/get.php', {
+  api.post(apiUrl + 'api/tickets/hallplan.php', {
     params: {
-      id: HallPlan.value.id
+      method: 'get',
+      id: selectedAnnounce.value.id
     }
   })
     .then(async (response) => {
-      if (!response?.data?.result) {
-        throw new Error()
+      if (response.status === 204) {
+        await initCells()
+        return
       }
       if (!response?.data?.data?.HallPlan) {
-        initCells()
-        return
+        throw new Error()
       }
       renderHallTable.value = false;
       HallPlan.value = response?.data?.data?.HallPlan
@@ -229,21 +234,26 @@ function loadHallPlan() {
       renderHallTable.value = true;
     })
     .catch((error) => {
-      initCells()
+      HallPlan.value = {}
       q.notify(notifyError(error))
     })
 }
 
-function loadAnnounces(hallId) {
+function loadAnnounces() {
   progress.value = true
   api.post(apiUrl + 'api/event/announce.php', {
     params: {
-      hallId: hallId,
-      method: 'listByHall'
+      method: 'futureList'
     }
   })
     .then((response) => {
+      if (!response?.data?.result) {
+        throw new Error()
+      }
       announceList.value = response?.data?.data ?? []
+
+      selectedAnnounce.value = announceList.value[0]
+      loadHallPlan()
     })
     .catch((error) => {
       q.notify(notifyError(error))
@@ -254,27 +264,44 @@ function loadAnnounces(hallId) {
     })
 }
 
+function reset() {
+  switch (selectedMode.value) {
+
+    case 'Prices': {
+      console.log('resetTickets')
+      resetTickets()
+      break;
+    }
+    default : {
+      console.log(selectedMode.value)
+    }
+  }
+}
+
+function onSelectAnnounce() {
+  loadHallPlan()
+}
+
 onBeforeMount(() => {
 
 })
 
 onMounted(() => {
-  loadHallPlan()
-
-
+  //loadHallPlan()
+  loadAnnounces()
 })
 </script>
 
 <template>
   <div class="content">
-    <HallCreatorMenu @onSelectHall="(hallId) => onSelectHall(hallId)"></HallCreatorMenu>
+    <HallCreatorMenu @onSelectAnnounce="loadHallPlan()"></HallCreatorMenu>
 
-    <div style="overflow: auto; ; margin: 1em auto">
-      <q-card style="width: max-content; padding: 2em; margin: 0 auto" dark>
+    <div style="overflow: auto; margin: 1em auto; min-width: 100vw;">
+      <q-card style="width: max-content; min-width: 80vw;  padding: 2em; margin: 0 auto" dark>
         <HallTable v-if="renderHallTable"></HallTable>
         <q-card-actions style="display: flex; justify-content: end">
+          <q-btn v-if="selectedMode === 'Prices'" label="Сбросить" @click="reset()"></q-btn>
           <q-btn label="Сохранить" @click="savePlan"></q-btn>
-          <q-btn v-if="selectedMode === 'Prices'" label="Сбросить" @click="resetTickets"></q-btn>
         </q-card-actions>
       </q-card>
     </div>
@@ -283,7 +310,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-
 
 
 </style>
