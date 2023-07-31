@@ -15,7 +15,7 @@ function ticketClicked(ticket) {
 }
 
 function findTicket(id) {
-  return HallPlan.value.tickets.find(el => el.id === id)
+  return HallPlan.value.tickets.find(el => el.cellId === id)
 }
 </script>
 

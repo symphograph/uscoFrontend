@@ -166,7 +166,7 @@ function newTicketByCell(cell) {
 
   seatNum.value++
   let ticket = {
-    id: cell.id,
+    cellId: cell.id,
     offline: false,
     seatRow: seatRow.value,
     seatNum: seatNum.value,
@@ -297,7 +297,7 @@ onMounted(() => {
     <HallCreatorMenu @onSelectAnnounce="loadHallPlan()"></HallCreatorMenu>
 
     <div style="overflow: auto; margin: 1em auto; min-width: 100vw;">
-      <q-card style="width: max-content; min-width: 80vw;  padding: 2em; margin: 0 auto" dark>
+      <q-card style="width: max-content; min-width: 80vw; padding: 2em; margin: 0 auto;" dark>
         <HallTable v-if="renderHallTable"></HallTable>
         <q-card-actions style="display: flex; justify-content: end">
           <q-btn v-if="selectedMode === 'Prices'" label="Сбросить" @click="reset()"></q-btn>

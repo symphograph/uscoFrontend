@@ -17,7 +17,7 @@ const prevPriceType = ref(false)
 const prevTicket = ref(0)
 
 function findTicket(id) {
-  return HallPlan.value.tickets.find(el => el.id === id) ?? false
+  return HallPlan.value.tickets.find(el => el.cellid === id) ?? false
 }
 
 function setPriceType() {
@@ -48,7 +48,7 @@ function setStructureCell(cell) {
   cell.exist = !cell.exist
   if(!findTicket(cell.id)){
     HallPlan.value.tickets.push({
-      id: cell.id,
+      cellId: cell.id,
       offline: false,
       seatRow: 0,
       seatNum: 0,
@@ -97,7 +97,7 @@ function editCell(cell) {
     @click="editCell(cell)"
   >
     <template v-if="props.cell.exist">
-      <div v-if="ticket.offline" class="offlineCell"
+      <div v-if="!!ticket?.offline" class="offlineCell"
            :style="{
         borderColor: colors[props.ticket?.priceType || 'Invite'][1],
         backgroundColor: colors[props.ticket?.priceType || 'Invite'][1]
