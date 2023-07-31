@@ -21,16 +21,16 @@ function findTicket(id) {
 }
 
 function setPriceType() {
-  console.log(ticketMutable.value)
+  //console.log(ticketMutable.value)
 
-  if(!!!(ticketMutable?.value?.id ?? 0)){
+  if(!!!(ticketMutable?.value?.cellId ?? 0)){
     return
   }
-  console.log(props.ticket)
+  //console.log(props.ticket)
   if(
-    prevTicket.value.id
+    prevTicket.value.cellId
     !==
-    (ticketMutable?.value?.id ?? 0)
+    (ticketMutable?.value?.cellId ?? 0)
   ){
     prevPriceType.value = false
   }
@@ -40,7 +40,7 @@ function setPriceType() {
     prevPriceType.value = ticketMutable.value.priceType
     ticketMutable.value.priceType = selectedPrice.value.priceType
   }
-  prevTicket.value = ticketMutable.value.id
+  prevTicket.value = ticketMutable.value.cellId
 
 }
 
@@ -58,7 +58,7 @@ function setStructureCell(cell) {
 
   cell.forceCount = !!(!cell.exist && addCountable.value);
 
-  console.log(cell)
+  //console.log(cell)
 }
 
 function editCell(cell) {
