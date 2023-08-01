@@ -26,7 +26,7 @@
                     </q-avatar>
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>{{ element.name }} {{ element.last_name }}</q-item-label>
+                    <q-item-label>{{ element.name }} {{ element.lastName }}</q-item-label>
                     <q-item-label v-for="label in element.labels" :key="label.name" caption>{{ label.name }}</q-item-label>
                   </q-item-section>
                 </q-item>

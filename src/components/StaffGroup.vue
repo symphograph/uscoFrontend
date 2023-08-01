@@ -13,7 +13,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ player.name }} {{ player.last_name }}</q-item-label>
+            <q-item-label>{{ player.name }} {{ player.lastName }}</q-item-label>
             <q-item-label caption lines="1">gfdsfgdsgf</q-item-label>
           </q-item-section>
         </q-item>
