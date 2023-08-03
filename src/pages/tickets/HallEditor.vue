@@ -222,6 +222,7 @@ function loadHallPlan() {
   })
     .then(async (response) => {
       if (response.status === 204) {
+        HallPlan.value.id = selectedAnnounce.value.id
         await initCells()
         return
       }

@@ -13,7 +13,7 @@ const selectedMode = inject('selectedMode')
 const emit = defineEmits(['cellClick'])
 const selectedPrice = inject('selectedPrice')
 const addCountable = inject('addCountable')
-const prevPriceType = ref(false)
+const prevPriceType = ref('Invite')
 const prevTicket = ref(0)
 
 function findTicket(id) {
@@ -32,7 +32,7 @@ function setPriceType() {
     !==
     (ticketMutable?.value?.cellId ?? 0)
   ){
-    prevPriceType.value = false
+    prevPriceType.value = 'Invite'
   }
   if(selectedPrice.value.priceType === ticketMutable.value.priceType){
     ticketMutable.value.priceType = prevPriceType.value

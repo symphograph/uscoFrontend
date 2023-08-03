@@ -21,7 +21,7 @@ function findTicket(id) {
 
 <template>
   <q-card-section v-if="HallPlan.tickets.length">
-    <table style="width: max-content">
+    <table style="width: max-content; margin: auto">
       <tbody style="margin: auto">
       <template v-for="(row,idx) in HallPlan.cells" :key="'row_' + idx">
         <tr>
