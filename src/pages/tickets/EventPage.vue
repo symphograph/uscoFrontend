@@ -6,10 +6,14 @@ import {useMeta, useQuasar} from "quasar";
 import HallUserCell from "components/hall/cells/HallUserCell.vue";
 import {useRoute} from "vue-router";
 import TicketCard from "components/hall/TicketCard.vue";
+import { scroll } from 'quasar'
+const { getHorizontalScrollPosition, setHorizontalScrollPosition } = scroll
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
 const route = useRoute()
+
+const tableAreaRef = ref(null)
 
 const Pricing = ref([
   {
@@ -110,7 +114,6 @@ function loadHallPlan() {
       await nextTick()
       renderHallTable.value = true;
       console.log('HallPlan loaded')
-
     })
     .catch((error) => {
       HallPlan.value = {}
@@ -119,6 +122,12 @@ function loadHallPlan() {
     .finally(() => {
       progress.value = false
       console.log('progress off')
+      nextTick(() => {
+        let el = document.getElementById('tableArea')
+        el.scrollTo(el.clientWidth/2, 0)
+        console.log(el.scrollWidth)
+        upScale()
+      })
     })
 }
 
@@ -165,6 +174,9 @@ function reserveTicket(ticketId) {
     .catch((error) => {
       HallPlan.value.tickets.find(el => el.id === ticketId).userId = null
       q.notify(notifyError(error))
+      if(error.response.status === 403){
+        HallPlan.value.tickets.find(el => el.id === ticketId).offline = true
+      }
     })
 }
 
@@ -188,8 +200,19 @@ function returnTicket(ticketId) {
     })
 }
 
+const elScale = ref(50)
+function upScale () {
+  setTimeout(()=> {
+    elScale.value = 100
+  }, 1000)
+}
+
 onMounted(() => {
   loadAnnounce()
+  nextTick(() => {
+    //document.getElementById('tableArea').scrollLeft = 100
+
+  })
 })
 
 const style = ref({width: '100%', height: '100%', margin: 'auto', overflow: 'scroll'})
@@ -198,6 +221,7 @@ const metaData = {
     title: 'Билеты'
 }
 useMeta(metaData)
+
 </script>
 
 <template>
@@ -207,31 +231,40 @@ useMeta(metaData)
     <div>rer</div>
     <q-card class="card">
       <q-linear-progress v-if="progress" indeterminate color="secondary"/>
-      <div class="tableArea">
-        <table>
-          <tbody>
-          <template v-for="(row,idx) in HallPlan.cells" :key="'row_' + idx">
-            <tr>
-              <td>
-                <div class="rowNumber">{{ HallPlan.structure.rowNums[idx] || '' }}</div>
-              </td>
-              <td v-for="(cell, col) in row" :key="idx + '_' + col">
-                <HallUserCell
-                  v-model:cell="HallPlan.cells[cell.row-1][cell.col-1]"
-                  :ticket="findTicket(cell.id)"
-                  :key="cell.id"
-                  @reserve="(ticketId) => reserveTicket(ticketId)"
-                  @returnTicket="(ticketId) => returnTicket(ticketId)"
-                ></HallUserCell>
-              </td>
-              <td>
-                <div class="rowNumber">{{ HallPlan.structure.rowNums[idx] || '' }}</div>
-              </td>
-            </tr>
-          </template>
-          </tbody>
-        </table>
+      <div class="tableArea" id="tableArea" ref="tableAreaRef" v-if="!progress">
+        <div :style="{transform: `scale(` + elScale + `%)`}" >
+          <div>
+            <div class="scene">Сцена</div>
+            <table>
+              <tbody>
+              <template v-for="(row,idx) in HallPlan.cells" :key="'row_' + idx">
+                <tr>
+                  <td>
+                    <div class="rowNumber">{{ HallPlan.structure.rowNums[idx] || '' }}</div>
+                  </td>
+                  <td v-for="(cell, col) in row" :key="idx + '_' + col">
+                    <HallUserCell
+                      v-model:cell="HallPlan.cells[cell.row-1][cell.col-1]"
+                      :ticket="findTicket(cell.id)"
+                      :key="cell.id"
+                      @reserve="(ticketId) => reserveTicket(ticketId)"
+                      @returnTicket="(ticketId) => returnTicket(ticketId)"
+                    ></HallUserCell>
+                  </td>
+                  <td>
+                    <div class="rowNumber">{{ HallPlan.structure.rowNums[idx] || '' }}</div>
+                  </td>
+                </tr>
+              </template>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
+      <q-card-actions style="display: flex; justify-content: end; padding: 1em">
+        <q-btn label="сохранить" outline color="green"></q-btn>
+      </q-card-actions>
     </q-card>
     <template v-if="HallPlan.tickets.length">
       <div class="ticketList">
@@ -239,6 +272,7 @@ useMeta(metaData)
           <TicketCard :ticket="ticket"
                       :price="findPrice(ticket)"
                       @reserve="(ticketId) => reserveTicket(ticketId)"
+                      @returnTicket="(ticketId) => returnTicket(ticketId)"
           ></TicketCard>
         </template>
       </div>
@@ -247,7 +281,14 @@ useMeta(metaData)
 </template>
 
 <style scoped>
-
+.scene {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  border: 1px solid #f5c672;
+}
 
 .card {
   width: 100%;
@@ -256,14 +297,23 @@ useMeta(metaData)
 }
 
 .tableArea {
-  max-width: max-content;
+  width: 100%;
   height: 100%;
   padding: 1em;
-  margin: auto;
+  margin: 1em auto;
   overflow: auto;
-}
 
+}
+.tableArea>div{
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  /*display: flex;
+  justify-content: center;
+  align-items: center;*/
+  transition-duration: 1s;
+}
 .ticketList {
-  transition-duration: 600ms;
+  transition-duration: 1s;
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
 import {useQuasar} from "quasar";
-import {inject} from "vue";
+import {inject, ref} from "vue";
 import {fDateTime} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
@@ -12,11 +12,19 @@ const props = defineProps({
   price: Number
 })
 
-const emit = defineEmits(['reserve'])
+const emit = defineEmits(['reserve', 'returnTicket'])
+const transClass = ref('')
+function returnTicket(id) {
+  transClass.value = ' returning'
+  setTimeout(() => {
+    emit('returnTicket', id)
+  }, 600)
+
+}
 </script>
 
 <template>
-  <q-card class="ticketCard">
+  <q-card :class="'ticketCard' + transClass">
     <q-card-section class="progName">{{ Announce.progName }}</q-card-section>
     <q-item dense>
       <q-item-section avatar>
@@ -61,8 +69,14 @@ const emit = defineEmits(['reserve'])
       <q-item-section></q-item-section>
       <q-item-section side>
         <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between">
-          <div><q-btn @click="emit('reserve', ticket.id)"><q-icon name="add"></q-icon></q-btn></div>
-          <div><q-btn><q-icon name="delete"></q-icon></q-btn></div>
+          <div><div style="border: 1px solid white; width: 100px; height: 100px"></div>
+
+          </div>
+          <div>
+            <q-btn @click="returnTicket(ticket.id)" flat>
+              <q-icon name="delete" color="red"></q-icon>
+            </q-btn>
+          </div>
         </div>
       </q-item-section>
     </q-item>
@@ -77,6 +91,11 @@ const emit = defineEmits(['reserve'])
   padding: 1em;
   border: 1px solid #f5c672;
   transition-duration: 600ms;
+}
+
+.returning {
+  border: 1px solid gray;
+  transform: scale(10%);
 }
 
 .progName {
