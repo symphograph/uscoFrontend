@@ -42,7 +42,7 @@
 import { useMeta } from 'quasar'
 
 const metaData = {
-  title: 'Создатель'
+  title: 'Александр Зражаев'
 }
 useMeta(metaData)
 </script>

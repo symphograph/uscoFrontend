@@ -27,7 +27,7 @@ import {api} from "boot/axios";
 import {notifyError} from "src/myFuncts";
 
 const metaData = {
-  title: 'ЮССО'
+  title: 'Новости'
 }
 useMeta(metaData)
 const teasers = [

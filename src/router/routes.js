@@ -99,6 +99,11 @@ const routes = [
         component: () => import('layouts/PhotoLayout.vue'),
         children: [{path: '', component: () => import('pages/tickets/HallEditor.vue')}]
       },
+      {
+        path: '/event/:id',
+        component: () => import('layouts/HallLayout.vue'),
+        children: [{path: '', component: () => import('pages/tickets/EventPage.vue')}]
+      },
     ]
   },
   {

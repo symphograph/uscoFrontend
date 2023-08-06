@@ -24,18 +24,16 @@
           <q-item-label caption>{{ fDateTime(AnnounceEditable.datetime) }}</q-item-label>
         </q-item-section>
       </q-item>
-      <a :href="Announce.Hall.map" target="_blank">
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon color="primary" name="place"></q-icon>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label caption>
-              <span class="mapLink">{{ Announce.Hall.name }}</span>
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </a>
+      <q-item clickable v-ripple :href="Announce.Hall.map" target="_blank">
+        <q-item-section avatar>
+          <q-icon color="primary" name="place"></q-icon>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption>
+            <span class="mapLink">{{ Announce.Hall.name }}</span>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
     </q-card-section>
     <q-separator inset></q-separator>
     <q-card-section>
@@ -178,7 +176,7 @@ function delAnnounce() {
     }
   })
     .then((response) => {
-      if(!response?.data?.result){
+      if (!response?.data?.result) {
         throw new Error()
       }
       q.notify(notifyOK(response?.data?.result ?? null))

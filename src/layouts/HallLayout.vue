@@ -23,7 +23,16 @@ const isOptionsLoaded = inject('isOptionsLoaded')
 onMounted(() => {
   Dark.set(true)
 })
-
+const metaData = {
+  meta: {
+    viewport: {
+        name: 'viewport',
+        content: 'initial-scale=0.7, width=device-width, user-scalable=yes'
+      },
+    equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
+  }
+}
+useMeta(metaData)
 </script>
 
 

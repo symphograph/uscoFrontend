@@ -2,7 +2,7 @@
   <div class="content" v-if="Halls">
     <div class="eventsarea">
       <div class="p_title">
-        <div>Афиши</div>
+        <div>Анонсы</div>
         <div class="selectors">
           <q-btn v-if="editMode"  label="Добавить"
                  @click="addAnnounce"

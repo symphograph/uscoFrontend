@@ -102,6 +102,17 @@ onMounted(() => {
   console.log('mainLayout Mounted')
   showCookieConfirm()
 })
+
+const metaData = {
+  meta: {
+    viewport: {
+      name: 'viewport',
+      content: 'initial-scale=1, width=device-width, user-scalable=yes'
+    },
+    equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
+  },
+}
+useMeta(metaData)
 </script>
 
 <style lang="scss">
