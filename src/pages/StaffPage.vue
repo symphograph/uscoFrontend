@@ -7,19 +7,19 @@
         </div>
       </div>
       <div class="gridarea">
-        <template v-for="group in groups" :key="group.group_id">
-          <div class="group" v-if="editMode || group.group_id !== 200">
-            <span class="groupname">{{ group.group_name }}</span>
+        <template v-for="group in groups" :key="group.groupId">
+          <div class="group" v-if="editMode || group.groupId !== 200">
+            <span class="groupname">{{ group.groupName }}</span>
             <hr>
             <br>
             <draggable
               :list="group.Players"
-              itemKey="pers_id"
+              itemKey="persId"
               :disabled="!editMode"
               group="people"
             >
               <template #item="{ element, index }">
-                <q-item :clickable="editMode" @click="goToPers(element.pers_id)">
+                <q-item :clickable="editMode" @click="goToPers(element.persId)">
                   <q-item-section avatar>
                     <q-avatar size="50px">
                       <img :src="apiUrl + element.ava" :alt="index">

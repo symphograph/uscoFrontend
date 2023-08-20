@@ -1,12 +1,13 @@
 <script setup>
 import {computed, inject, nextTick, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {notifyError, notifyOK, userIdByJWT} from "src/myFuncts";
+import {authTypeByJWT, notifyError, notifyOK, userIdByJWT} from "src/myFuncts";
 import {useMeta, useQuasar} from "quasar";
 import HallUserCell from "components/hall/cells/HallUserCell.vue";
 import {useRoute} from "vue-router";
 import TicketCard from "components/hall/TicketCard.vue";
 import { scroll } from 'quasar'
+import DialogLogin from "components/hall/DialogLogin.vue";
 const { getHorizontalScrollPosition, setHorizontalScrollPosition } = scroll
 
 const apiUrl = String(process.env.API)
@@ -52,7 +53,9 @@ provide('defaultPricing', Pricing)
 const progress = inject('progress')
 
 const AccessToken = inject('AccessToken')
+const SessionToken = inject('SessionToken')
 const userId = userIdByJWT(AccessToken.value) * 1
+const authType = authTypeByJWT(AccessToken.value)
 
 const Announce = ref({})
 provide('Announce', Announce)
@@ -96,6 +99,33 @@ function findPrice(ticket) {
 
 function findTicket(cellId) {
   return HallPlan.value.tickets.find(el => el.cellId === cellId)
+}
+
+function diaLogin () {
+  q.dialog({
+    component: DialogLogin,
+    componentProps: {
+      text: 'Войдите, чтобы сохранить',
+      okBtnText: 'В настройки',
+      cancelBtnText: 'Не сейчас',
+      AccessToken: AccessToken.value,
+      SessionToken: SessionToken.value
+      // ...more..props...
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    // console.log('>>>> OK')
+  }).onOk(() => {
+    router.push('/account')
+    // console.log('>>>> second OK catcher')
+  }).onCancel(() => {
+    //emit('Cancel')
+    // console.log('>>>> Cancel')
+  }).onDismiss(() => {
+    //emit('Dismiss')
+    // console.log('I am triggered on both OK and Cancel')
+  })
 }
 
 function loadHallPlan() {
@@ -209,10 +239,7 @@ function upScale () {
 
 onMounted(() => {
   loadAnnounce()
-  nextTick(() => {
-    //document.getElementById('tableArea').scrollLeft = 100
-
-  })
+  console.log(authType)
 })
 
 const style = ref({width: '100%', height: '100%', margin: 'auto', overflow: 'scroll'})
@@ -263,7 +290,11 @@ useMeta(metaData)
         </div>
       </div>
       <q-card-actions style="display: flex; justify-content: end; padding: 1em">
-        <q-btn label="сохранить" outline color="green"></q-btn>
+        <q-btn label="сохранить"
+               outline
+               color="green"
+               @click="diaLogin"
+        ></q-btn>
       </q-card-actions>
     </q-card>
     <template v-if="HallPlan.tickets.length">

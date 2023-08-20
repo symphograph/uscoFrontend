@@ -83,6 +83,10 @@ export function userIdByJWT(jwt) {
   return jwt_decode(jwt).uid ?? 0
 }
 
+export function authTypeByJWT(jwt) {
+  return jwt_decode(jwt).authType ?? 0
+}
+
 export function checkPowers(allowed, AccessToken) {
   let powers = powersByJWT(AccessToken)
   return allowed.some(l=>powers.includes(l))

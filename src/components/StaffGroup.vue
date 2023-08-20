@@ -1,10 +1,10 @@
 <template>
-  <div class="group" @dragover="onGrpoup(group.group_id)">
+  <div class="group" @dragover="onGrpoup(group.groupId)">
 
-    <template v-for="player in group.Players" :key="player.pers_id">
+    <template v-for="player in group.Players" :key="player.persId">
         <q-item
           draggable="true"
-          @dragstart="onDragStart(player.pers_id)"
+          @dragstart="onDragStart(player.persId)"
           @dragleave="onDrop"
         >
           <q-item-section avatar>

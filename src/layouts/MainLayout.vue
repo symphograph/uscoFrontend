@@ -99,6 +99,7 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
+  LocalStorage.set('lastPath',route.path)
   console.log('mainLayout Mounted')
   showCookieConfirm()
 })

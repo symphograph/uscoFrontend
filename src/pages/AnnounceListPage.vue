@@ -4,7 +4,8 @@
       <div class="p_title">
         <div>Анонсы</div>
         <div class="selectors">
-          <q-btn v-if="editMode"  label="Добавить"
+          <q-btn v-if="editMode"
+                 label="Добавить"
                  @click="addAnnounce"
           ></q-btn>
           <q-select v-model="evYear" :options="years" emit-value></q-select>
@@ -33,7 +34,6 @@ const metaData = {
 useMeta(metaData)
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const lvl = inject('lvl')
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')

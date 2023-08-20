@@ -1,7 +1,7 @@
 <template>
   <q-header v-if="tabList" class="bg-header text-white bg absolute-top" height-hint="48">
     <q-btn class="absolute" style="top: 0.5em; left: 1em; z-index: 1" dense flat round icon="menu" v-model="drawer"
-           @click="moveDraver"/>
+           @click="moveDrawer"/>
     <q-tabs inline-label class="bg-primary text-white shadow-2 mobile-hide" align="center">
       <q-item clickable to="/">
         <q-avatar square>
@@ -223,7 +223,7 @@ const tabList = ref(
   ])
 provide('tabList', tabList)
 
-function moveDraver () {
+function moveDrawer () {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 

@@ -51,7 +51,11 @@
           <q-toggle v-model="editMode" left-label color="red"></q-toggle>
         </q-item-section>
       </q-item>
-        <TelegramForm v-if="jwt_decode(AccessToken).authType !== 'telegram'"></TelegramForm>
+        <TelegramForm
+          v-if="jwt_decode(AccessToken).authType !== 'telegram'"
+          :AccessToken="AccessToken"
+          :SessionToken="SessionToken"
+        ></TelegramForm>
     </q-list>
   </div>
 
@@ -66,6 +70,7 @@ const tabList = inject('tabList')
 const editMode = inject('editMode')
 const admin = inject('admin')
 const AccessToken = inject('AccessToken')
+const SessionToken = inject('SessionToken')
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <q-form ref="formTelegram"  v-if="AccessToken" :action="authUrl + 'auth/telegram/login.php'" method="post">
+  <q-form ref="formVk"  v-if="AccessToken" :action="authUrl + 'auth/vk/login.php'" method="post">
     <input type="hidden" name="AccessToken" :value="AccessToken"/>
     <input type="hidden" name="SessionToken" :value="SessionToken"/>
     <input type="hidden" name="from" :value="SelfDomain"/>
@@ -16,14 +16,14 @@
 
       <q-item dense>
         <q-item-section avatar>
-          <q-avatar>
-            <q-img src="/img/auth/telegram.svg"></q-img>
+          <q-avatar style="background-color: #e9d26c">
+            <q-icon name="ion-logo-vk" color="info"></q-icon>
           </q-avatar>
         </q-item-section>
 
         <q-item-section>
           <q-item-label caption>Войти через</q-item-label>
-          <q-item-label>Телеграм</q-item-label>
+          <q-item-label>ВКонтакте</q-item-label>
         </q-item-section>
       </q-item>
 
@@ -45,11 +45,11 @@ const props = defineProps({
 const SelfDomain = String(process.env.SelfDomain)
 const authUrl = String(process.env.Auth)
 
-const formTelegram = ref(null)
+const formVk = ref(null)
 
 function submit () {
   console.log('hgh')
-  formTelegram.value.submit()
+  formVk.value.submit()
 }
 
 function isSubmit (evt) {
