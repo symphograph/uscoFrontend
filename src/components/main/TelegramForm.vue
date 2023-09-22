@@ -26,10 +26,7 @@
           <q-item-label>Телеграм</q-item-label>
         </q-item-section>
       </q-item>
-
-
     </q-btn>
-
   </q-form>
 </template>
 

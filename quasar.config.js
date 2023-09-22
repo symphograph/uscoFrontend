@@ -74,8 +74,8 @@ module.exports = configure(function (ctx) {
           ? 'https://tapi.sakh-orch.ru/'
           : 'https://api.sakh-orch.ru/',
         Auth: ctx.dev
-          ? 'https://tauth.sakh-orch.ru/'
-          : 'https://auth.sakh-orch.ru/',
+          ? 'https://tauth.symphograph.ru/'
+          : 'https://auth.symphograph.ru/',
         STAFF: ctx.dev
           ? 'https://192.168.0.200:9100/'
           : 'https://staff.sakh-orch.ru/',

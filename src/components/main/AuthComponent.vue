@@ -44,6 +44,9 @@ function loadOptions () {
 const AccessToken = inject('AccessToken')
 const SessionToken = inject('SessionToken')
 
+const SessionTokenName = 'SessionToken'
+const AccessTokenName = 'AccessToken'
+
 function setToken(name, value, expires = '90d') {
   q.cookies.set(name, value, {
     expires: expires,
@@ -53,13 +56,13 @@ function setToken(name, value, expires = '90d') {
     secure: true,
     httpOnly: false
   })
-  if(name === 'AccessToken'){
+  if(name === AccessTokenName){
     api.defaults.headers.common['AccessToken'] = value
     AccessToken.value = value
     loadOptions()
   }
 
-  if(name === 'SessionToken'){
+  if(name === SessionTokenName){
     SessionToken.value = value
   }
 }
@@ -100,7 +103,7 @@ function refreshAccessToken () {
 
     })
     .catch((error) => {
-      if(isExpired(error)){
+      if(error?.response?.status === 401){
         register()
         return
       }
@@ -130,21 +133,14 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-
   console.log('auth Mounted')
-  if(!!!q.cookies.getAll().SessionToken || !!!q.cookies.getAll().AccessToken){
+  if(!!!q.cookies.getAll()[AccessTokenName] || !!!q.cookies.getAll()[SessionTokenName]){
     register()
   } else {
-    SessionToken.value = q.cookies.getAll()?.SessionToken ?? ''
-    AccessToken.value = q.cookies.getAll()?.AccessToken ?? ''
+    SessionToken.value = q.cookies.getAll()[SessionTokenName] ?? ''
+    AccessToken.value = q.cookies.getAll()[AccessTokenName] ?? ''
     refreshAccessToken()
   }
-  //api.defaults.headers.common['Authorization'] = token.value
-
-
-
-
-
 })
 </script>
 
