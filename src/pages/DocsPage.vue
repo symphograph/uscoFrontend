@@ -23,6 +23,10 @@
       <details open="open">
         <summary>Платные услуги</summary>
         <br>
+        <a class="flink" :href="api + 'documents/provisionOnPaidServices.pdf'">
+          Положение о платных услугах
+        </a>
+        <br>
         <ol>
           <li>Организация и проведение концерта для детей детских садов, школьников, студентов.<br>
             <span>Стоимость: Договорная</span><br></li>
@@ -83,6 +87,18 @@ const blocks = [
       {
         href: 'documents/ustav_edit_2020-04-14.pdf',
         text: 'Изменения в Устав от 14.04.2020'
+      },
+      {
+        href: 'documents/ustav_edit_2023-04-10.pdf',
+        text: 'Изменения в Устав от 10.04.2023'
+      },
+      {
+        href: 'documents/Certificate_of_registration_2023-04-10.pdf',
+        text: 'Свидетельство о постановке на учет от 10.04.2023'
+      },
+      {
+        href: 'documents/extractFromEGRN.pdf',
+        text: 'Выписка из ЕГРН'
       },
       {
         href: 'ofdocs/inn.pdf',
@@ -175,6 +191,10 @@ const blocks = [
         text: 'Муниципальное задание 2023'
       },
       {
+        href: 'documents/MUP_Task_2023edit.pdf',
+        text: 'Муниципальное задание 2023 изменения'
+      },
+      {
         href: 'documents/report_MTask_2018.doc',
         text: 'Отчеты по выполнению Муниципального задания 2018'
       },
@@ -193,6 +213,14 @@ const blocks = [
       {
         href: 'documents/report_MTask_2022.pdf',
         text: 'Отчеты по выполнению Муниципального задания 2022'
+      },
+      {
+        href: 'documents/report_MTask_2023_q2.pdf',
+        text: 'Отчеты по выполнению Муниципального задания 2кв 2023'
+      },
+      {
+        href: 'documents/report_MTask_2023_q3.pdf',
+        text: 'Отчеты по выполнению Муниципального задания 3кв 2023'
       },
 
     ]
