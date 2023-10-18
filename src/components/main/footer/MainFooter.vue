@@ -1,7 +1,7 @@
 <template>
   <q-footer elevated class="bg-grey-8 text-white">
     <PartnersBlock></PartnersBlock>
-    <GosUslugi></GosUslugi>
+    <GosUslugi2023></GosUslugi2023>
     <div class="footer">
       <div class="footcol">
         <p><a href="tel:+74242300518">+7-4242-300-518</a></p>
@@ -35,7 +35,7 @@
 
 
 <script setup>
-import GosUslugi from "components/main/footer/GosUslugi.vue";
+import GosUslugi2023 from "components/main/footer/GosUslugi2023.vue";
 import PartnersBlock from "components/main/footer/PartnersBlock.vue";
 import {onMounted} from "vue";
 
