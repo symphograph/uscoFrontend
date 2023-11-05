@@ -6,7 +6,7 @@
     </router-link>
     <q-card-section color="info" expand-separator>
       <q-badge
-        v-if="Announce.complited === false"
+        v-if="Announce.completed === false"
         class="absolute bage"
         color="green-6"
         rounded
@@ -63,7 +63,7 @@
     <template v-if="Announce.pay">
       <q-separator inset></q-separator>
       <q-card-section class="text-body2 text-center">
-        <q-btn v-if="Announce.pay === 3 && !Announce.complited && Announce.ticketLink" label="Купить билет"
+        <q-btn v-if="Announce.pay === 3 && !Announce.completed && Announce.ticketLink" label="Купить билет"
                :href="Announce.ticketLink"></q-btn>
         <template v-else>
           {{ payType() }}
@@ -193,7 +193,7 @@ function changeShow() {
 
 function payType() {
   if (props.Announce.pay) {
-    if (props.Announce.pay === 3 && props.Announce.complited) {
+    if (props.Announce.pay === 3 && props.Announce.completed) {
       return 'Продажа завершена'
     }
     return payTypes.value[props.Announce.pay]

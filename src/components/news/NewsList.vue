@@ -55,8 +55,9 @@ function loadData () {
     return;
   }
   progress.value = true
-  api.post(apiUrl + 'api/news/entry/list.php', {
+  api.post(apiUrl + 'api/news/entry.php', {
     params: {
+      method: 'list',
       category: categ.value,
       year: props.year,
       limit: props.limit

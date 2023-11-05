@@ -311,8 +311,9 @@ function categsFilter() {
 
 function save(addNew = 0) {
 
-  api.post(apiUrl + 'api/news/entry/update.php', {
+  api.post(apiUrl + 'api/news/entry.php', {
     params: {
+      method: 'update',
       entry: newDataE.value,
       addNew: addNew,
       categs: categsFilter()

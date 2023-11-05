@@ -43,9 +43,9 @@ const titles = ref({
 
 function addEntry () {
 
-  api.post(apiUrl + 'api/news/entry/add.php', {
+  api.post(apiUrl + 'api/news/entry.php', {
     params: {
-
+        method: 'add'
     }
   })
     .then((response) => {
