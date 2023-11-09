@@ -5,7 +5,7 @@
                   @reload="loadData"
     ></AnnounceEditor>
     <div class="eventboxl">
-      <AnnounceDescr v-if="Announce" :Announce="Announce"></AnnounceDescr>
+      <AnnounceDescr v-if="Announce"></AnnounceDescr>
     </div>
   </div>
 
@@ -43,6 +43,7 @@ function loadData () {
   })
     .then((response) => {
       Announce.value = response?.data?.data ?? null
+      console.log('Announce loaded')
     })
     .catch((error) => {
       q.notify(notifyError(error))

@@ -12,7 +12,7 @@
       </div>
       <div class="editor">
         <div style="display: flex; justify-content: space-between">
-          <DateTime v-model:date="Announce.datetime" @update:date="test()"></DateTime>
+          <DateTime v-model:date="Announce.eventTime" @update:date="test()"></DateTime>
         </div>
         <br>
         <div class="uploads">
@@ -145,33 +145,43 @@ const rAnnounceCard = ref(null)
 
 function addPoster(files) {
   return {
-    url: apiUrl + 'api/event/poster/add.php',
+    url: apiUrl + 'api/event/poster.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
         value: AccessToken.value
       }
     ],
-    formFields: [{
-      name: 'id',
-      value: Announce.value.id
-    }]
+    formFields: [
+      {
+        name: 'announceId',
+        value: Announce.value.id
+      },{
+        name: 'method',
+        value: 'add',
+      }
+    ]
   }
 }
 
 function addSketch(files) {
   return {
-    url: apiUrl + 'api/event/sketch/add.php',
+    url: apiUrl + 'api/event/sketch.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
         value: AccessToken.value
       }
     ],
-    formFields: [{
-      name: 'id',
-      value: Announce.value.id
-    }]
+    formFields: [
+      {
+        name: 'announceId',
+        value: Announce.value.id
+      },{
+        name: 'method',
+        value: 'add',
+      }
+    ]
   }
 }
 
@@ -198,9 +208,10 @@ function reload() {
 }
 
 function delPoster() {
-  api.post(apiUrl + 'api/event/poster/del.php', {
+  api.post(apiUrl + 'api/event/poster.php', {
     params: {
-      id: Announce.value.id
+      method: 'del',
+      announceId: Announce.value.id,
     }
   })
     .then((response) => {
@@ -216,9 +227,10 @@ function delPoster() {
 }
 
 function delSketch() {
-  api.post(apiUrl + 'api/event/sketch/del.php', {
+  api.post(apiUrl + 'api/event/sketch.php', {
     params: {
-      id: Announce.value.id
+      method: 'del',
+      announceId: Announce.value.id
     }
   })
     .then((response) => {

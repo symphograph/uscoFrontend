@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-md" style="max-width: 300px; padding: 0">
-    <q-input filled v-model="Announce.datetime"  @update:modelValue="emit('update:date')">
+    <q-input filled v-model="Announce.eventTime"  @update:modelValue="emit('update:date')">
       <template v-slot:prepend>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-date v-model="Announce.datetime" mask="YYYY-MM-DD HH:mm">
+            <q-date v-model="Announce.eventTime" mask="YYYY-MM-DD HH:mm">
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Закрыть" color="primary" flat />
               </div>
@@ -16,7 +16,7 @@
       <template v-slot:append>
         <q-icon name="access_time" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-time v-model="Announce.datetime" mask="YYYY-MM-DD HH:mm" format24h>
+            <q-time v-model="Announce.eventTime" mask="YYYY-MM-DD HH:mm" format24h>
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Закрыть" color="primary" flat />
               </div>

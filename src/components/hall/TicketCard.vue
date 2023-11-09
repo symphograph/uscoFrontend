@@ -36,7 +36,7 @@ function returnTicket(id) {
             <q-icon name="schedule" color="amber"></q-icon>
           </q-item-section>
           <q-item-section>
-            <q-item-label caption>{{ fDateTime(Announce.datetime) }}</q-item-label>
+            <q-item-label caption>{{ fDateTime(Announce.eventTime) }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable dense :href="Announce.Hall.map" target="_blank">
@@ -94,7 +94,7 @@ function returnTicket(id) {
 }
 
 .returning {
-  border: 1px solid gray;
+  border: 1px solid #808080FF;
   transform: scale(10%);
 }
 

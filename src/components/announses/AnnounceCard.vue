@@ -1,106 +1,3 @@
-<template>
-  <q-card v-if="Announce && (Announce.isShow || editMode)" square class="eventbox tdno" separator>
-    <router-link :to="'/announce/'+Announce.id">
-      <q-img :ratio="1080/608" :src="sketchUrl" fit="fill">
-      </q-img>
-    </router-link>
-    <q-card-section color="info" expand-separator>
-      <q-badge
-        v-if="Announce.completed === false"
-        class="absolute bage"
-        color="green-6"
-        rounded
-        transparent
-      >
-        Скоро
-      </q-badge>
-      <q-badge v-if="Announce.age" rounded style="background-color: orange;" floating>{{ Announce.age + '+' }}</q-badge>
-      <q-item v-ripple>
-        <q-item-section avatar>
-          <q-icon name="schedule">
-          </q-icon>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label caption>{{ fDateTime(AnnounceEditable.datetime) }}</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item clickable v-ripple :href="Announce.Hall.map" target="_blank">
-        <q-item-section avatar>
-          <q-icon color="primary" name="place"></q-icon>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label caption>
-            <span class="mapLink">{{ Announce.Hall.name }}</span>
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-card-section>
-    <q-separator inset></q-separator>
-    <q-card-section>
-      <div class="text-subtitle1 text-center prog-name" v-html="Announce.progName"></div>
-    </q-card-section>
-    <q-card-section class="text-body2 text-center">
-      <div v-html="Announce.sdescr"></div>
-    </q-card-section>
-    <q-card-section class="space">
-      <div></div>
-    </q-card-section>
-    <q-separator inset></q-separator>
-    <q-card-section v-if="Announce.youtubeId">
-      <a :href="'https://www.youtube.com/watch?v=' + Announce.youtubeId" target="_blank">
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon color="primary" name="ion-logo-youtube"></q-icon>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label caption>
-              <span class="mapLink">Смотреть видео</span>
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </a>
-    </q-card-section>
-    <template v-if="Announce.pay">
-      <q-separator inset></q-separator>
-      <q-card-section class="text-body2 text-center">
-        <q-btn v-if="Announce.pay === 3 && !Announce.completed && Announce.ticketLink" label="Купить билет"
-               :href="Announce.ticketLink"></q-btn>
-        <template v-else>
-          {{ payType() }}
-        </template>
-      </q-card-section>
-    </template>
-    <q-separator inset></q-separator>
-    <q-card-section class="text-body2 text-center">
-      Художественный руководитель и главный дирижер - <b>Тигран Ахназарян</b>.
-    </q-card-section>
-    <template v-if="editMode">
-      <q-card-section v-if="!AnnounceEditable.Poster.exist" class="text-body2 text-center danger">
-        Афиша не загружена
-      </q-card-section>
-      <q-card-section>
-        <q-toggle v-model="AnnounceEditable.isShow" @update:model-value="saveData(0)" label="вкл" color="green"
-                  checked-icon="check" unchecked-icon="clear">
-          <q-tooltip>Опубликовать</q-tooltip>
-        </q-toggle>
-      </q-card-section>
-      <q-card-section>
-        <DialogConfirm
-          @onOk="delAnnounce"
-          label="Удалить"
-          color="red"
-          title="Удаление анонса"
-          message="
-          Будет удалена запись об анонсе и связанные с ней изображения.
-          <br><span style='color: red'>
-          Это действие нельзя отменить.</span><br>
-          Вы действительно хотите это сделать?">
-        </DialogConfirm>
-      </q-card-section>
-    </template>
-  </q-card>
-</template>
-
 <script setup>
 import DialogConfirm from '../DialogConfirm.vue'
 import {useQuasar} from 'quasar'
@@ -137,17 +34,18 @@ const props = defineProps({
 })
 const AnnounceEditable = ref(props.Announce)
 
-const sketchUrl = computed(() => {
-  let size = 480
-  if (q.platform.is.mobile) {
-    size = 1080
-  }
-  return String(process.env.API) +
-    props.Announce.Sketch.folder +
-    '/' + size + '/' +
-    props.Announce.Sketch.fileName +
-    '?ver=' + props.Announce.Sketch.md5
-})
+function sketchUrl() {
+  let size = q.platform.is.mobile ? 1080 : 480
+
+  return apiUrl
+    + '/img/posters/topp'
+    + '/' + size
+    + '/poster_'
+    + props.Announce.id
+    + '.jpg'
+    + '?ver='
+    + props.Announce.verString
+}
 
 onMounted(() => {
   //console.log(AnnounceEditable)
@@ -201,6 +99,106 @@ function payType() {
   return ''
 }
 </script>
+
+<template>
+  <q-card v-if="Announce && (Announce.isShow || editMode)" square class="eventbox tdno" separator>
+    <router-link :to="'/announce/'+Announce.id">
+      <q-img :ratio="1080/608" :src="sketchUrl()" fit="fill" :key="Announce.verString">
+      </q-img>
+    </router-link>
+    <q-card-section color="info" expand-separator>
+      <q-badge
+        v-if="Announce.completed === false"
+        class="absolute bage"
+        color="green-6"
+        rounded
+        transparent
+      >
+        Скоро
+      </q-badge>
+      <q-badge v-if="Announce.age" rounded style="background-color: orange;" floating>{{ Announce.age + '+' }}</q-badge>
+      <q-item v-ripple dense>
+        <q-item-section avatar>
+          <q-icon name="schedule">
+          </q-icon>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption>{{ fDateTime(AnnounceEditable.eventTime) }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item clickable v-ripple :href="Announce.Hall.map" target="_blank" dense>
+        <q-item-section avatar>
+          <q-icon color="primary" name="place"></q-icon>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption>
+            <span class="mapLink">{{ Announce.Hall.name }}</span>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-card-section>
+    <q-separator inset></q-separator>
+    <q-card-section>
+      <div class="text-subtitle1 text-center prog-name" v-html="Announce.progName"></div>
+    </q-card-section>
+    <q-card-section class="text-body2 text-center">
+      <div v-html="Announce.sdescr"></div>
+    </q-card-section>
+    <q-card-section class="space">
+      <div></div>
+    </q-card-section>
+    <q-separator inset></q-separator>
+    <q-card-section v-if="Announce.youtubeId">
+      <a :href="'https://www.youtube.com/watch?v=' + Announce.youtubeId" target="_blank">
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon color="primary" name="ion-logo-youtube"></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label caption>
+              <span class="mapLink">Смотреть видео</span>
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </a>
+    </q-card-section>
+    <template v-if="Announce.pay">
+      <q-separator inset></q-separator>
+      <q-card-section class="text-body2 text-center">
+        <q-btn v-if="Announce.pay === 3 && !Announce.completed && Announce.ticketLink" label="Купить билет"
+               :href="Announce.ticketLink"></q-btn>
+        <template v-else>
+          {{ payType() }}
+        </template>
+      </q-card-section>
+    </template>
+    <q-separator inset></q-separator>
+    <q-card-section class="text-body2 text-center">
+      Художественный руководитель и главный дирижер - <b>Тигран Ахназарян</b>.
+    </q-card-section>
+    <template v-if="editMode">
+      <q-card-section>
+        <q-toggle v-model="AnnounceEditable.isShow" @update:model-value="saveData(0)" label="вкл" color="green"
+                  checked-icon="check" unchecked-icon="clear">
+          <q-tooltip>Опубликовать</q-tooltip>
+        </q-toggle>
+      </q-card-section>
+      <q-card-section>
+        <DialogConfirm
+          @onOk="delAnnounce"
+          label="Удалить"
+          color="red"
+          title="Удаление анонса"
+          message="
+          Будет удалена запись об анонсе и связанные с ней изображения.
+          <br><span style='color: red'>
+          Это действие нельзя отменить.</span><br>
+          Вы действительно хотите это сделать?">
+        </DialogConfirm>
+      </q-card-section>
+    </template>
+  </q-card>
+</template>
 
 <style scoped>
 .space {

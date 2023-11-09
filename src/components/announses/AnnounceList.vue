@@ -61,8 +61,8 @@ watch(() => props.evYear, () => {
   loadAnnounces()
 })
 
-const sortFromOld = (d1, d2) => (d1.datetime < d2.datetime) ? 1 : -1
-const sortFromNew = (d1, d2) => (d1.datetime > d2.datetime) ? 1 : -1
+const sortFromOld = (d1, d2) => (d1.eventTime < d2.eventTime) ? 1 : -1
+const sortFromNew = (d1, d2) => (d1.eventTime > d2.eventTime) ? 1 : -1
 const sortedList = computed(() => {
   if (!announceList.value || !announceList.value.length) {
     return []

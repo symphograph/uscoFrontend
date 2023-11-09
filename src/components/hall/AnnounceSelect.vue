@@ -37,7 +37,7 @@ function sketchUrl(Sketch) {
       <q-item dense>
         <q-item-section>
           <q-item-label>{{ selectedAnnounce.progName }}</q-item-label>
-          <q-item-label caption>{{ selectedAnnounce.datetime }} | {{ selectedAnnounce.Hall.name }}</q-item-label>
+          <q-item-label caption>{{ selectedAnnounce.eventTime }} | {{ selectedAnnounce.Hall.name }}</q-item-label>
         </q-item-section>
       </q-item>
     </template>
@@ -59,7 +59,7 @@ function sketchUrl(Sketch) {
             {{ scope.opt.Hall.name }}
           </q-item-label>
           <q-item-label caption>
-            {{ scope.opt.datetime }}
+            {{ scope.opt.eventTime }}
           </q-item-label>
         </q-item-section>
         <q-item-section side>

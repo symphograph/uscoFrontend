@@ -1,16 +1,12 @@
 <template>
   <div class="eventbox">
-    <q-img
-      v-if="Announce.verLink"
-      :ratio="Announce.Poster.width/Announce.Poster.height"
-      initial-ratio="1080/1534"
-      :src="imgUrl"></q-img>
+    <q-img :src="imgUrl"></q-img>
   </div>
   <div class="eventboxin">
     <div class="text">
       <p v-if="Announce.progName"><b>{{ Announce.progName }}</b></p>
       <br>
-      <p><b>{{ fDateTime(Announce.datetime) }}</b></p>
+      <p><b>{{ fDateTime(Announce.eventTime) }}</b></p>
       <br>
       <div v-html="Announce.description"></div>
       <br>
@@ -30,33 +26,31 @@
 </template>
 
 <script setup>
-import moment from 'moment'
-import { computed, ref } from 'vue'
+import {computed, inject} from 'vue'
 import { useQuasar } from 'quasar'
 import { fDateTime } from 'src/myFuncts.js'
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const props = defineProps({
-  Announce: ref(null)
-})
+const Announce = inject('Announce')
 
 const imgUrl = computed(() => {
-  let size = 480
-  if (q.platform.is.mobile) {
-    size = 1080
-  }
-  return apiUrl +
-    String(props.Announce.Poster.folder) +
-    '/' + String(size) + '/' +
-    props.Announce.Sketch.fileName +
-    '?ver=' + props.Announce.Poster.md5
+  let size = q.platform.is.mobile ? 1080 : 480
+
+  return apiUrl
+    + '/img/posters'
+    + '/' + size
+    + '/poster_'
+    + Announce.value.id
+    + '.jpg'
+    + '?ver='
+    + Announce.value.verString
 })
 
 function vkHref () {
   return 'https://vk.com/share.php?' +
-    'url=' + apiUrl + '/event.php?evid=' + String(props.Announce.id) +
-    '&title=' + String(props.Announce.progName) +
+    'url=' + apiUrl + '/event.php?evid=' + String(Announce.value.id) +
+    '&title=' + String(Announce.value.progName) +
     '&noparse=true' +
     '&image=' + String(imgUrl)
 }
