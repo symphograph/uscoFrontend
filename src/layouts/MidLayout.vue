@@ -13,12 +13,40 @@
 
 import MainFooter from "components/main/footer/MainFooter.vue";
 import MainHeader from "components/main/header/MainHeader.vue";
-import {inject, onBeforeMount} from "vue";
+import {inject, provide, onBeforeMount, ref} from "vue";
 import AnderHeader from "components/main/header/AnderHeader.vue";
 import {Dark} from "quasar";
 
 const AccessToken = inject('AccessToken')
 const isOptionsLoaded = inject('isOptionsLoaded')
+
+const authTypes = ref([
+  {
+    id: 2,
+    label: 'Телеграм',
+    url: 'auth/telegram/login.php',
+    img: '/img/auth/telegram.svg'
+  },
+  {
+    id: 3,
+    label: 'MailRu',
+    url: 'auth/mailru/login.php',
+    img: '/img/auth/mailru.svg'
+  },
+  {
+    id: 4,
+    label: 'Discord',
+    url: 'auth/discord/login.php',
+    img: '/img/auth/discord.svg'
+  },
+  {
+    id: 4,
+    label: 'VКонтакте',
+    url: 'auth/vkontakte/login.php',
+    img: '/img/auth/vkontakte.svg'
+  }
+])
+provide('authTypes', authTypes)
 
 onBeforeMount(() => {
   Dark.set(false)
