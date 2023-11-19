@@ -38,7 +38,7 @@ function sketchUrl() {
   let size = q.platform.is.mobile ? 1080 : 480
 
   return apiUrl
-    + '/img/posters/topp'
+    + '/img/posters/sketch'
     + '/' + size
     + '/poster_'
     + props.Announce.id
@@ -85,8 +85,25 @@ function delAnnounce() {
     })
 }
 
-function changeShow() {
-  emit('changeShow')
+function hideOrShow() {
+  api.post(apiUrl + 'api/event/announce.php', {
+    params: {
+      method: AnnounceEditable.value.isShow ? 'show' : 'hide',
+      announceId: AnnounceEditable.value.id,
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      emit('changeShow', AnnounceEditable.value.id)
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+      AnnounceEditable.value.isShow = !AnnounceEditable.value.isShow
+    })
+    .finally(() => {
+    })
 }
 
 function payType() {
@@ -178,7 +195,7 @@ function payType() {
     </q-card-section>
     <template v-if="editMode">
       <q-card-section>
-        <q-toggle v-model="AnnounceEditable.isShow" @update:model-value="saveData(0)" label="вкл" color="green"
+        <q-toggle v-model="AnnounceEditable.isShow" @update:model-value="hideOrShow()" label="вкл" color="green"
                   checked-icon="check" unchecked-icon="clear">
           <q-tooltip>Опубликовать</q-tooltip>
         </q-toggle>

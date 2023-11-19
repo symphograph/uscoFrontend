@@ -4,6 +4,7 @@
     :key="announce.id"
     :Announce="announce"
     @IamDeleted="loadAnnounces()"
+    @changeShow="(announceId) => changeShow(announceId)"
   ></AnnounceCard>
 </template>
 
@@ -51,6 +52,11 @@ function loadAnnounces() {
     .finally(() => {
       progress.value = false
     })
+}
+
+function changeShow(announceId) {
+  // const announce = announceList.value.find(el => el.id === announceId)
+  // announce.isShow = !announce.isShow
 }
 
 onMounted(() => {

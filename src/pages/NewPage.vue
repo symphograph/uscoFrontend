@@ -1,3 +1,75 @@
+<script setup>
+import {useMeta, useQuasar} from 'quasar'
+import {api} from 'boot/axios'
+import NewEditor from 'components/news/NewEditor.vue'
+import {inject, onMounted, provide, ref} from 'vue'
+import {useRoute} from 'vue-router'
+import {notifyError} from "src/myFuncts";
+
+const id = ref(0)
+const newData = ref(null)
+provide('newData', newData)
+
+const q = useQuasar()
+const apiUrl = String(process.env.API)
+const route = useRoute()
+const editMode = inject('editMode')
+const pTitle = ref('Новость')
+const isError = ref(false)
+
+useMeta(() => {
+  return {
+    title: pTitle.value
+  }
+})
+
+
+
+function ratio(fileName) {
+  let img = findImg(fileName)
+  if (img[0].width > img[0].height) {
+    return 1920 / 1080
+  }
+  if (img[0].width <= img[0].height) {
+    return 1080 / 1920
+  }
+}
+
+function findImg(fileName) {
+  return newData.value.Images.filter(item => {
+    return item.fileName.includes(fileName);
+  });
+}
+
+function imgUrl(imgFileName) {
+  return apiUrl + '/img/entry/photo/' + newData.value.id + '/1080/' + imgFileName;
+}
+
+function loadData() {
+  api.post(apiUrl + 'api/news/entry.php', {
+    params: {
+      method: 'get',
+      id: route.params.id
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      newData.value = response?.data?.data ?? null
+      pTitle.value = newData?.value?.title ?? ''
+    })
+    .catch((error) => {
+      isError.value = true
+      q.notify(notifyError(error))
+    })
+}
+
+onMounted(() => {
+  loadData()
+})
+</script>
+
 <template>
   <div class="content" v-if="newData || editMode">
     <NewEditor
@@ -12,7 +84,6 @@
             <template v-if="row.type === 'text'">
               <section v-if="row.content !== '\n'" v-html="row.content"></section>
               <br v-else>
-              <br>
             </template>
             <div
               v-if="row.type === 'img'"
@@ -37,12 +108,12 @@
             </a>
           </div>
           <div
-            v-for="(img, idx) in newData.unusedImages"
+            v-for="(imgFileName, idx) in newData.unusedImages"
             class="newsImg"
             :key="idx"
           >
             <q-img
-              :src="imgUrl(img)"
+              :src="imgUrl(imgFileName)"
               fit="fill"
             >
             </q-img>
@@ -61,72 +132,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import {useMeta, useQuasar} from 'quasar'
-import {api} from 'boot/axios'
-import NewEditor from 'components/news/NewEditor.vue'
-import {inject, onMounted, provide, ref} from 'vue'
-import {useRoute} from 'vue-router'
-import {notifyError} from "src/myFuncts";
-
-const id = ref(0)
-const newData = ref(null)
-provide('newData', newData)
-
-const q = useQuasar()
-const apiUrl = String(process.env.API)
-const route = useRoute()
-const editMode = inject('editMode')
-const pTitle = ref('Новость')
-
-useMeta(() => {
-  return {
-    title: pTitle.value
-  }
-})
-
-
-function ratio(fileName) {
-  let img = findImg(fileName)
-  if (img[0].width > img[0].height) {
-    return 1920 / 1080
-  }
-  if (img[0].width <= img[0].height) {
-    return 1080 / 1920
-  }
-}
-
-function findImg(fileName) {
-  return newData.value.Images.filter(item => {
-    return item.fileName.includes(fileName);
-  });
-}
-
-function imgUrl(img) {
-  return apiUrl + '/img/entry/1080/' + newData.value.id + '/' + img;
-}
-
-function loadData() {
-  api.post(apiUrl + 'api/news/entry.php', {
-    params: {
-      method: 'get',
-      id: route.params.id
-    }
-  })
-    .then((response) => {
-      newData.value = response?.data?.data ?? null
-      pTitle.value = newData?.value?.title ?? ''
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-}
-
-onMounted(() => {
-  loadData()
-})
-</script>
 
 <style>
 .imagesArea {

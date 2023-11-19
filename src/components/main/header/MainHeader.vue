@@ -151,7 +151,7 @@ const tabList = ref(
             id: 1,
             name: 'Новости ЮССО',
             caption: 'Новости оркестра',
-            url: '/news/usco',
+            url: '/news/usso',
             ava: '/img/logo/logo_init.svg',
             icon: ''
           },

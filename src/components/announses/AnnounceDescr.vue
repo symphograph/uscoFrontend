@@ -38,7 +38,7 @@ const imgUrl = computed(() => {
   let size = q.platform.is.mobile ? 1080 : 480
 
   return apiUrl
-    + '/img/posters'
+    + '/img/posters/poster'
     + '/' + size
     + '/poster_'
     + Announce.value.id

@@ -1,168 +1,9 @@
-<template>
-  <div v-if="newDataE" class="newsarea">
-    <q-input label="Заголовок"
-             type="text"
-             v-model="newDataE.title"
-    ></q-input>
-    <br>
-    <div id="descr" style="
-      padding: 1em;
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: wrap">
-      <div class="nimg_block">
-        <q-img :ratio="1080/684"
-               :src="apiUrl + newDataE.img"
-        ></q-img>
-      </div>
-      <q-btn
-        size="0.7em"
-        round
-        color="red"
-        icon="delete"
-        class="absolute"
-        style="transform: translateY(-50%);"
-        @click="delPw(newDataE.img)"
-      ></q-btn>
-      <div style="
-      width: calc(100% - 260px);
-      padding: 0 1em;
-      margin: 1em auto 0;
-      min-width: 300px;"
-      >
-        <q-input label="Краткое описание"
-                 type="textarea"
-                 v-model="newDataE.descr"
-                 outlined
-        ></q-input>
-      </div>
-    </div>
-
-    <div class="inputArea">
-      <div class="input">
-        <q-input
-          type="date"
-          v-model="newDataE.date"
-          label="Дата публикации"
-        ></q-input>
-        <q-input v-model="newDataE.refName"
-                 label="Текст ссылки на источник"
-                 type="text"
-        ></q-input>
-        <q-input v-model="newDataE.refLink"
-                 label="Адрес ссылки на источник"
-                 type="text"
-                 placeholder="https://example.com"
-        ></q-input>
-      </div>
-      <div id="categs"
-           class="input">
-        <q-list bordered padding>
-          <q-item-label header>Показывать в категориях</q-item-label>
-          <template v-for="tab in categs" :key="tab.id">
-            <q-item tag="label" v-ripple>
-              <q-item-section>
-                <q-item-label>{{ tab.name }}</q-item-label>
-                <q-item-label caption>{{ tab.caption }}</q-item-label>
-              </q-item-section>
-              <q-item-section side top>
-                <q-toggle color="green" v-model="newDataE.categs[tab.id]" val="friend"/>
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-list>
-      </div>
-      <div id="uploaderArea"
-           class="input">
-        <div class="uploaderArea">
-          <q-uploader
-            label="Загрузить эскиз"
-            :factory="factoryFnMini"
-            max-file-size="50000000"
-            ref="uploader"
-            @uploaded="uploaded"
-            @failed="failed"
-            padding="0"
-            margin="0"
-            bordered
-
-          />
-        </div>
-      </div>
-      <div id="uploaderArea2"
-           class="input">
-        <div class="uploaderArea">
-          <q-uploader
-            input-style="max-width: 300px; padding: 0"
-            label="Загрузить фотографии"
-            :factory="factoryFn"
-            max-file-size="50000000"
-            ref="uploader"
-            @uploaded="uploaded"
-            @failed="failed"
-            multiple
-            batch
-            padding="0"
-            margin="0"
-            bordered
-
-          />
-        </div>
-      </div>
-    </div>
-    <div class="imagesArea">
-      <template v-for="(img, key) in newDataE.Images" :key="key">
-        <q-card>
-          <q-img
-            :ratio="96/54"
-            :src="apiUrl + '/img/entry/1080/' + newDataE.id + '/'  + img.fileName"
-          >
-          </q-img>
-          <q-card-section>
-            <q-btn
-              size="0.7em"
-              round
-              color="red"
-              icon="delete"
-              class="absolute"
-              style="top: 0; right: 0.5em; transform: translateY(-50%);"
-              @click="delImg(img.fileName,key)"
-            ></q-btn>
-            <div class="row no-wrap">
-              <q-btn
-                padding="0.5em 1em"
-                @click="copy(img.fileName)"
-              >
-                <q-icon name="content_copy"></q-icon>
-                Код вставки
-              </q-btn>
-            </div>
-          </q-card-section>
-        </q-card>
-      </template>
-    </div>
-    <q-input label="Текст новости"
-             type="textarea"
-             outlined
-             input-style="{padding: 5em}"
-             padding="1em"
-             v-model="newDataE.markdown"
-             dense
-    ></q-input>
-    <br><br>
-    <q-btn label="Сохранить" @click="save(0)"></q-btn>
-    <br><br>
-  </div>
-  <br><br>
-
-</template>
-
 <script setup>
 import {copyToClipboard} from 'quasar'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {inject, ref} from 'vue'
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/myFuncts";
 
 
@@ -171,6 +12,7 @@ const newDataE = inject('newData')
 const apiUrl = String(process.env.API)
 const q = useQuasar()
 const route = useRoute()
+const router = useRouter()
 const emit = defineEmits(['uploaded'])
 const uploader = ref(null)
 const AccessToken = inject('AccessToken')
@@ -205,9 +47,21 @@ const categs = ref([
   }
 ])
 
+function sketchUrl() {
+  let size = q.platform.is.mobile ? 1080 : 260
+
+  return apiUrl
+    + '/img/entry/sketch'
+    + '/' + size
+    + '/entry_'
+    + newDataE.value.id
+    + '.jpg'
+    + '?ver='
+    + (newDataE.value?.verString ?? 'jhj')
+}
 
 function copy(val) {
-  val = '\n![](' + val + ')'
+  val = '![](' + val + ')'
   copyToClipboard(val)
     .then(() => {
       q.notify({
@@ -223,15 +77,19 @@ function copy(val) {
     })
 }
 
-function delImg(img, key) {
+function delImg(fileName, key) {
 
-  api.post(apiUrl + 'api/news/img/del.php', {
+  api.post(apiUrl + 'api/news/photo.php', {
     params: {
-      id: route.params.id,
-      img: img
+      entryId: route.params.id,
+      fileName: fileName,
+      method: 'del'
     }
   })
     .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
       q.notify(notifyOK(response?.data?.result ?? ''))
       newDataE.value.Images.splice(key, 1)
       emit('uploaded')
@@ -243,23 +101,23 @@ function delImg(img, key) {
 
 function delPw(img) {
 
-  api.post(apiUrl + 'api/news/pw/del.php', {
+  api.post(apiUrl + 'api/news/sketch.php', {
     params: {
-      id: route.params.id,
-      img: img
+      method: 'del',
+      entryId: route.params.id
     }
   })
     .then((response) => {
-      newDataE.value.img = '/img/entry/default.svg'
+      emit('uploaded')
     })
     .catch((error) => {
       q.notify(notifyError(error))
     })
 }
 
-function factoryFnMini() {
+function addSketch() {
   return {
-    url: apiUrl + 'api/news/pw/add.php',
+    url: apiUrl + 'api/news/sketch.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -267,15 +125,18 @@ function factoryFnMini() {
       }
     ],
     formFields: [{
-      name: 'id',
+      name: 'entryId',
       value: newDataE.value.id
+    }, {
+      name: 'method',
+      value: 'add'
     }]
   }
 }
 
-function factoryFn() {
+function addPhoto() {
   return {
-    url: apiUrl + 'api/news/img/add.php',
+    url: apiUrl + 'api/news/photo.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -283,8 +144,11 @@ function factoryFn() {
       }
     ],
     formFields: [{
-      name: 'id',
+      name: 'entryId',
       value: newDataE.value.id
+    }, {
+      name: 'method',
+      value: 'add'
     }]
   }
 }
@@ -328,8 +192,212 @@ function save(addNew = 0) {
     })
 }
 
+function delEntry() {
 
+  api.post(apiUrl + 'api/news/entry.php', {
+    params: {
+      method: 'del',
+      entryId: newDataE.value.id,
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      router.push({path: '/news/all'})
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
+
+function hideOrShow() {
+  api.post(apiUrl + 'api/news/entry.php', {
+    params: {
+      method: newDataE.value.isShow ? 'hide' : 'show',
+      entryId: newDataE.value.id,
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      newDataE.value.isShow = !newDataE.value.isShow
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+    .finally(() => {
+    })
+}
 </script>
+
+<template>
+  <div v-if="newDataE" class="newsarea">
+    <q-input label="Заголовок"
+             type="text"
+             v-model="newDataE.title"
+    ></q-input>
+    <br>
+    <div id="descr" style="
+      padding: 1em;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap">
+      <div class="nimg_block" style="position: relative">
+        <q-img :ratio="1920/1080"
+               :src="sketchUrl()"
+               fit="fill"
+        ></q-img>
+        <q-btn
+          size="0.7em"
+          round
+          color="red"
+          icon="delete"
+          style="transform: translateY(-50%); right: 1em; z-index: 100; position: absolute; top: 2em"
+          @click="delPw(newDataE.img)"
+        ></q-btn>
+      </div>
+
+      <div style="
+      width: calc(100% - 260px);
+      padding: 0 1em;
+      margin: 1em auto 0;
+      min-width: 300px;"
+      >
+        <q-input label="Краткое описание"
+                 type="textarea"
+                 v-model="newDataE.descr"
+                 outlined
+        ></q-input>
+      </div>
+    </div>
+
+    <div class="inputArea">
+      <div class="input">
+        <q-input
+          type="date"
+          v-model="newDataE.date"
+          label="Дата публикации"
+        ></q-input>
+        <q-input v-model="newDataE.refName"
+                 label="Текст ссылки на источник"
+                 type="text"
+        ></q-input>
+        <q-input v-model="newDataE.refLink"
+                 label="Адрес ссылки на источник"
+                 type="text"
+                 placeholder="https://example.com"
+        ></q-input>
+      </div>
+      <div id="categs"
+           class="input">
+        <q-list bordered padding>
+          <q-item-label header>Показывать в категориях</q-item-label>
+          <template v-for="categ in newDataE.categs" :key="categ.id">
+            <q-item tag="label" v-ripple>
+              <q-item-section>
+                <q-item-label>{{ categ.label }}</q-item-label>
+                <q-item-label caption>{{ categ.caption }}</q-item-label>
+              </q-item-section>
+              <q-item-section side top>
+                <q-toggle color="green" v-model="categ.checked" val="friend"/>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-list>
+      </div>
+      <div id="uploaderArea"
+           class="input">
+        <div class="uploaderArea">
+          <q-uploader
+            label="Загрузить эскиз"
+            :factory="addSketch"
+            max-file-size="50000000"
+            ref="uploader"
+            @uploaded="uploaded"
+            @failed="failed"
+            padding="0"
+            margin="0"
+            bordered
+
+          />
+        </div>
+      </div>
+      <div id="uploaderArea2"
+           class="input">
+        <div class="uploaderArea">
+          <q-uploader
+            input-style="max-width: 300px; padding: 0"
+            label="Загрузить фотографии"
+            :factory="addPhoto"
+            max-file-size="50000000"
+            ref="uploader"
+            @uploaded="uploaded"
+            @failed="failed"
+            multiple
+            batch
+            padding="0"
+            margin="0"
+            bordered
+
+          />
+        </div>
+      </div>
+    </div>
+    <div class="imagesArea">
+      <template v-for="(img, key) in newDataE.Images" :key="key">
+        <q-card>
+          <q-img
+            :ratio="96/54"
+            :src="apiUrl + '/img/entry/photo/' + newDataE.id + '/260/'  + img"
+          >
+          </q-img>
+          <q-card-section>
+            <q-btn
+              size="0.7em"
+              round
+              color="red"
+              icon="delete"
+              class="absolute"
+              style="top: 0; right: 0.5em; transform: translateY(-50%);"
+              @click="delImg(img,key)"
+            ></q-btn>
+            <div class="row no-wrap">
+              <q-btn
+                padding="0.5em 1em"
+                icon="content_copy"
+                label="Код"
+                @click="copy(img)"
+              >
+              </q-btn>
+            </div>
+          </q-card-section>
+        </q-card>
+      </template>
+    </div>
+    <q-input label="Текст новости"
+             type="textarea"
+             outlined
+             input-style="{padding: 5em}"
+             padding="1em"
+             v-model="newDataE.markdown"
+             dense
+    ></q-input>
+    <div style="display: flex; justify-content: flex-end; grid-gap:1em; padding: 1em;">
+      <q-btn label="Удалить" color="red" @click="delEntry()"></q-btn>
+      <q-btn label="Скрыть" color="orange" v-if="newDataE.isShow" outline @click="hideOrShow()">
+      </q-btn>
+      <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>
+      <q-btn label="Сохранить" color="green" @click="save(0)"></q-btn>
+    </div>
+    <br><br>
+
+    <br><br>
+  </div>
+  <br><br>
+
+</template>
 
 <style scoped>
 .uploaderArea {
@@ -354,7 +422,7 @@ function save(addNew = 0) {
 
 .nimg_block {
   width: 260px;
-  height: 162px;
+  height: 146px;
   overflow: hidden;
   box-shadow: 1px 2px 2px #555353;
   margin: 0 auto;
