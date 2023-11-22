@@ -2,7 +2,7 @@
   <div class="narea">
     <div class="nimg_block">
       <div>
-        <q-item :to="link()" dense class="no-padding">
+        <q-item :href="link()" dense class="no-padding">
           <q-img
             :src="imgUrl()"
             :ratio="1920/1080"
