@@ -255,6 +255,10 @@ const blocks = [
       {
         href: 'documents/Order39-20.pdf',
         text: 'Приказ №39/20 от 14.12.2020'
+      },
+      {
+        href: 'documents/corruptUSSO2023.pdf',
+        text: 'Отчет за 2023'
       }
 
     ]
