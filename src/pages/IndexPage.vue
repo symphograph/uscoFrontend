@@ -23,8 +23,7 @@ import NewsList from 'components/news/NewsList.vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
 import {inject, onMounted, provide, ref} from 'vue'
 import { useMeta } from 'quasar'
-import {api} from "boot/axios";
-import {notifyError} from "src/myFuncts";
+
 
 const metaData = {
   title: 'Новости'
