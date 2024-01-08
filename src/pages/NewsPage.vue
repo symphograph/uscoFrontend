@@ -6,7 +6,7 @@
         <q-btn v-if="editMode" label="Добавить"
                @click="addEntry"
         ></q-btn>
-        <q-select v-model="evYear" :options="years" emit-value></q-select>
+        <q-select v-model="evYear" :options="Years()" emit-value></q-select>
         <!--        <NewsSelect></NewsSelect>-->
       </div>
     </div>
@@ -30,7 +30,7 @@ const router = useRouter()
 const q = useQuasar()
 
 const editMode = inject('editMode')
-const years = ref([2018, 2019, 2020, 2021, 2022, 2023])
+
 const evYear = ref(new Date().getFullYear())
 const limit = ref(100)
 
@@ -56,6 +56,14 @@ function addEntry () {
       q.notify(notifyError(error))
     })
 
+}
+
+function Years () {
+  let arr = []
+  for(let year = 2018; year <= new Date().getFullYear(); year++){
+    arr.push(year)
+  }
+  return arr.reverse()
 }
 
 const title = computed(() => {

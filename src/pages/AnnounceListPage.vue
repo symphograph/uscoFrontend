@@ -8,7 +8,7 @@
                  label="Добавить"
                  @click="addAnnounce"
           ></q-btn>
-          <q-select v-model="evYear" :options="years" emit-value></q-select>
+          <q-select v-model="evYear" :options="Years()" emit-value></q-select>
           <q-select v-model="moSort" :options="options"></q-select>
         </div>
       </div>
@@ -60,11 +60,18 @@ const options = ref([
   }
 ])
 
-const years = [2023, 2022, 2021, 2020, 2019, 2018]
 const evYear = ref(new Date().getFullYear())
 
 const announceList = ref([])
 provide('announceList', announceList)
+
+function Years () {
+  let arr = []
+  for(let year = 2018; year <= new Date().getFullYear(); year++){
+    arr.push(year)
+  }
+  return arr.reverse()
+}
 
 function addAnnounce () {
       api.post(apiUrl + 'api/event/announce.php', {
