@@ -20,7 +20,7 @@
             <q-uploader
               v-model="model"
               style="max-width: 300px"
-              label="Загрузить эскиз 1080:684"
+              label="Загрузить эскиз 16:9"
               :factory="addSketch"
               ref="uploader"
               @uploaded="uploaded"
