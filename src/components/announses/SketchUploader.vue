@@ -1,8 +1,9 @@
 <script setup>
 import {Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css';
+import 'vue-advanced-cropper/dist/theme.compact.css';
 import {computed, inject, ref} from "vue";
-import {notifyError, notifyOK} from "src/myFuncts";
+import {notifyError} from "src/myFuncts";
 import {useQuasar} from "quasar";
 
 const apiUrl = String(process.env.API)
@@ -34,7 +35,7 @@ const result = ref({
 })
 const pwUrl = inject('pwUrl')
 
-function change({coordinates, image}) {
+function change() {
   updateBlob()
 }
 
@@ -94,7 +95,7 @@ function failed(info) {
   q.notify(notifyError(null, msg))
 }
 
-function onUploaded(info) {
+function onUploaded() {
   refUploader.value.reset()
   pwUrl.value = ''
   emit('onUploaded')
