@@ -52,7 +52,7 @@ const pwUrl = ref('')
 provide('pwUrl', pwUrl)
 
 function sketchUrl() {
-  if(pwUrl.value){
+  if (pwUrl.value) {
     return pwUrl.value
   }
   let size = q.platform.is.mobile ? 1080 : 260
@@ -106,7 +106,7 @@ function delImg(fileName, key) {
     })
 }
 
-function delPw(img) {
+function delPw() {
 
   api.post(apiUrl + 'api/news/sketch.php', {
     params: {
@@ -115,30 +115,14 @@ function delPw(img) {
     }
   })
     .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
       emit('uploaded')
     })
     .catch((error) => {
       q.notify(notifyError(error))
     })
-}
-
-function addSketch() {
-  return {
-    url: apiUrl + 'api/news/sketch.php',
-    headers: [
-      {
-        name: 'ACCESSTOKEN',
-        value: AccessToken.value
-      }
-    ],
-    formFields: [{
-      name: 'entryId',
-      value: newDataE.value.id
-    }, {
-      name: 'method',
-      value: 'add'
-    }]
-  }
 }
 
 function addPhoto() {
@@ -160,15 +144,14 @@ function addPhoto() {
   }
 }
 
-function uploaded(info) {
-  q.notify(notifyOK('Загружено'))
-  emit('uploaded')
+function uploaded() {
   uploader.value.reset()
+  save()
 }
 
-function failed (info) {
+function failed(info) {
   let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
-  q.notify(notifyError(null ,msg))
+  q.notify(notifyError(null, msg))
 }
 
 function categsFilter() {
@@ -269,11 +252,10 @@ function hideOrShow() {
       </div>
 
       <div style="
-      width: calc(100% - 260px);
-      padding: 0 1em;
-      margin: 1em auto 0;
-      min-width: 300px;"
-      >
+        width: calc(100% - 260px);
+        padding: 0 1em;
+        margin: 1em auto 0;
+        min-width: 300px;">
         <SketchUploader :id="newDataE.id"
                         :type="'news'"
                         @onUploaded="uploaded"></SketchUploader>
@@ -291,10 +273,9 @@ function hideOrShow() {
 
     <div class="inputArea">
       <div class="input">
-        <q-input
-          type="date"
-          v-model="newDataE.date"
-          label="Дата публикации"
+        <q-input type="date"
+                 v-model="newDataE.date"
+                 label="Дата публикации"
         ></q-input>
         <q-input v-model="newDataE.refName"
                  label="Текст ссылки на источник"
