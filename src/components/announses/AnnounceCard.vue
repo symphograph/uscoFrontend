@@ -30,11 +30,15 @@ const payTypes = ref([
 ])
 
 const props = defineProps({
-  Announce: ref(false)
+  Announce: ref(false),
+  pwUrl: String
 })
 const AnnounceEditable = ref(props.Announce)
 
 function sketchUrl() {
+  if(props.pwUrl){
+    return props.pwUrl
+  }
   let size = q.platform.is.mobile ? 1080 : 480
 
   return apiUrl
@@ -115,6 +119,28 @@ function payType() {
   }
   return ''
 }
+
+function delPw() {
+  console.log('delPW')
+}
+function delSketch() {
+  api.post(apiUrl + 'api/event/sketch.php', {
+    params: {
+      method: 'del',
+      announceId: props.Announce.id
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      emit('posterUploaded')
+      q.notify(notifyOK(response?.data?.result ?? ''))
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
 </script>
 
 <template>
@@ -122,6 +148,15 @@ function payType() {
     <router-link :to="'/announce/'+Announce.id">
       <q-img :ratio="1080/608" :src="sketchUrl()" fit="fill" :key="Announce.verString">
       </q-img>
+      <q-btn
+        v-if="editMode && !pwUrl"
+        size="0.7em"
+        round
+        color="red"
+        icon="delete"
+        style="transform: translateY(-50%); right: 1em; z-index: 100; position: absolute; top: 2em"
+        @click="delSketch()"
+      ></q-btn>
     </router-link>
     <q-card-section color="info" expand-separator>
       <q-badge

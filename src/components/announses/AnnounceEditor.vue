@@ -7,26 +7,26 @@
           @IamDeleted="IamDeleted"
           @newAnnounce="reload"
           ref="rAnnounceCard"
-          :Announce="Announce">
+          :Announce="Announce"
+          :pwUrl="pwUrl"
+        >
         </AnnounceCard>
       </div>
       <div class="editor">
         <div style="display: flex; justify-content: space-between">
           <DateTime v-model:date="Announce.eventTime" @update:date="test()"></DateTime>
         </div>
-        <br>
+        <br><hr>
         <div class="uploads">
-          <div>
-            <q-uploader
-              v-model="model"
-              style="max-width: 300px"
-              label="Загрузить эскиз 16:9"
-              :factory="addSketch"
-              ref="uploader"
-              @uploaded="uploaded"
-              @failed="failed"
-            />
+          <div style="width: 100%">
+            <SketchUploader :id="Announce.id"
+                            :type="'event'"
+                            @onUploaded="uploaded"></SketchUploader>
           </div>
+
+        </div>
+        <br><hr>
+        <div class="uploads">
           <div>
             <q-uploader
               v-model="model"
@@ -38,10 +38,10 @@
               @failed="failed"
             />
           </div>
+          <q-btn label="Удалить афишу" icon="delete" @click="delPoster()"></q-btn>
         </div>
         <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
-          <q-btn label="Удалить эскиз" icon="delete" @click="delSketch()"></q-btn>
-          <q-btn label="Удалить афишу" icon="delete" @click="delPoster()"></q-btn>
+
         </div>
 
 
@@ -96,9 +96,10 @@ import DateTime from 'components/announses/DateTime.vue'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import AnnounceCard from 'components/announses/AnnounceCard.vue'
-import {inject, ref} from 'vue'
+import {inject, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/myFuncts";
+import SketchUploader from "components/announses/SketchUploader.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -107,6 +108,8 @@ const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
 const Halls = inject('Halls')
+const pwUrl = ref('')
+provide('pwUrl', pwUrl)
 
 const emit = defineEmits(['reload', 'posterUploaded'])
 
@@ -146,27 +149,6 @@ const rAnnounceCard = ref(null)
 function addPoster(files) {
   return {
     url: apiUrl + 'api/event/poster.php',
-    headers: [
-      {
-        name: 'ACCESSTOKEN',
-        value: AccessToken.value
-      }
-    ],
-    formFields: [
-      {
-        name: 'announceId',
-        value: Announce.value.id
-      },{
-        name: 'method',
-        value: 'add',
-      }
-    ]
-  }
-}
-
-function addSketch(files) {
-  return {
-    url: apiUrl + 'api/event/sketch.php',
     headers: [
       {
         name: 'ACCESSTOKEN',

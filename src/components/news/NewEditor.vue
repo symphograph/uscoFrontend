@@ -2,9 +2,10 @@
 import {copyToClipboard} from 'quasar'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
-import {inject, ref} from 'vue'
+import {inject, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/myFuncts";
+import SketchUploader from "components/announses/SketchUploader.vue";
 
 
 const newDataE = inject('newData')
@@ -47,7 +48,13 @@ const categs = ref([
   }
 ])
 
+const pwUrl = ref('')
+provide('pwUrl', pwUrl)
+
 function sketchUrl() {
+  if(pwUrl.value){
+    return pwUrl.value
+  }
   let size = q.platform.is.mobile ? 1080 : 260
 
   return apiUrl
@@ -248,8 +255,10 @@ function hideOrShow() {
         <q-img :ratio="1920/1080"
                :src="sketchUrl()"
                fit="fill"
+               :pwUrl="pwUrl"
         ></q-img>
         <q-btn
+          v-if="!pwUrl"
           size="0.7em"
           round
           color="red"
@@ -265,12 +274,19 @@ function hideOrShow() {
       margin: 1em auto 0;
       min-width: 300px;"
       >
-        <q-input label="Краткое описание"
-                 type="textarea"
-                 v-model="newDataE.descr"
-                 outlined
-        ></q-input>
+        <SketchUploader :id="newDataE.id"
+                        :type="'news'"
+                        @onUploaded="uploaded"></SketchUploader>
+
       </div>
+    </div>
+    <div class="inputArea">
+      <q-input label="Краткое описание"
+               style="width: 100%"
+               type="textarea"
+               v-model="newDataE.descr"
+               outlined
+      ></q-input>
     </div>
 
     <div class="inputArea">
@@ -306,23 +322,6 @@ function hideOrShow() {
             </q-item>
           </template>
         </q-list>
-      </div>
-      <div id="uploaderArea"
-           class="input">
-        <div class="uploaderArea">
-          <q-uploader
-            label="Загрузить эскиз"
-            :factory="addSketch"
-            max-file-size="50000000"
-            ref="uploader"
-            @uploaded="uploaded"
-            @failed="failed"
-            padding="0"
-            margin="0"
-            bordered
-
-          />
-        </div>
       </div>
       <div id="uploaderArea2"
            class="input">

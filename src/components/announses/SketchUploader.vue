@@ -1,0 +1,230 @@
+<script setup>
+import {Cropper } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css';
+import {computed, inject, ref} from "vue";
+import {notifyError, notifyOK} from "src/myFuncts";
+import {useQuasar} from "quasar";
+
+const apiUrl = String(process.env.API)
+const q = useQuasar()
+
+const props = defineProps({
+  id: Number,
+  type: String
+})
+const AccessToken = inject('AccessToken')
+
+const refCropper = ref()
+const refUploader = ref()
+const model = {}
+
+const emit = defineEmits(['onUploaded'])
+
+
+const img = ref('')
+const blob = ref('')
+const image = ref({
+  src: '',
+  type: ''
+})
+
+const result = ref({
+  coordinates: null,
+  image: null
+})
+const pwUrl = inject('pwUrl')
+
+function change({coordinates, image}) {
+  updateBlob()
+}
+
+function getMimeType(file, fallback = null) {
+  const byteArray = (new Uint8Array(file)).subarray(0, 4);
+  let header = '';
+  for (let i = 0; i < byteArray.length; i++) {
+    header += byteArray[i].toString(16);
+  }
+  switch (header) {
+    case "89504e47":
+      return "image/png";
+    case "47494638":
+      return "image/gif";
+    case "ffd8ffe0":
+    case "ffd8ffe1":
+    case "ffd8ffe2":
+    case "ffd8ffe3":
+    case "ffd8ffe8":
+      return "image/jpeg";
+    default:
+      return fallback;
+  }
+}
+
+function updateBlob() {
+  const {canvas} = refCropper.value.getResult();
+
+  canvas.toBlob((blobb) => {
+    blob.value = blobb
+    pwUrl.value = URL.createObjectURL(blobb);
+  }, '');
+}
+
+function crop() {
+  updateBlob()
+  const source = refUploader.value.queuedFiles[0]
+  const fileName = source.name.replace(/[\[\]]/g, '_')
+  const file = new File([blob.value], fileName, {type: source.type});
+
+  refUploader.value.reset()
+  refUploader.value.addFiles([file])
+  refUploader.value.upload()
+}
+
+function onAdd(ffff) {
+  img.value = URL.createObjectURL(ffff[0]);
+}
+
+function onRemove() {
+  img.value = ''
+  pwUrl.value = ''
+}
+
+function failed(info) {
+  let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
+  q.notify(notifyError(null, msg))
+}
+
+function onUploaded(info) {
+  refUploader.value.reset()
+  pwUrl.value = ''
+  emit('onUploaded')
+}
+
+function uploadSketch() {
+  return {
+    url: apiUrl + `api/${props.type}/sketch.php`,
+    headers: [
+      {
+        name: 'ACCESSTOKEN',
+        value: AccessToken.value
+      }
+    ],
+    formFields: [
+      {
+        name: 'id',
+        value: props.id
+      }, {
+        name: 'method',
+        value: 'add',
+      }
+    ]
+  }
+}
+
+function defaultSize({ imageSize, visibleArea }) {
+  return {
+    width: (visibleArea || imageSize).width,
+    height: (visibleArea || imageSize).height,
+  };
+}
+
+const defaultPosition = {
+  left: 0,
+  top: 0
+}
+
+const unStrictRatio = ref(false)
+
+const stencil = computed(() => {
+  if(!unStrictRatio.value) {
+    return {aspectRatio: 1920/1080}
+  }
+  return {}
+})
+
+
+</script>
+
+<template>
+    <q-uploader
+      v-model="model"
+      accept="image/*"
+      style="width: 100%"
+      label="Загрузить эскиз 16:9"
+      :factory="uploadSketch"
+      :multiple="false"
+      hide-upload-btn
+      ref="refUploader"
+      @added="onAdd"
+      @removed="onRemove"
+      @uploaded="onUploaded"
+      @failed="failed"
+      no-thumbnails
+    >
+      <template v-slot:header="scope">
+        <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+          <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
+            <q-tooltip>Remove Uploaded Files</q-tooltip>
+          </q-btn>
+          <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+          <div class="col">
+            <div class="q-uploader__title">Загрузить эскиз</div>
+            <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+          </div>
+          <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+            <q-uploader-add-trigger />
+            <q-tooltip>Выбрать файл</q-tooltip>
+          </q-btn>
+          <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="crop" round dense flat >
+            <q-tooltip>Загрузить</q-tooltip>
+          </q-btn>
+
+          <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
+            <q-tooltip>Abort Upload</q-tooltip>
+          </q-btn>
+        </div>
+      </template>
+    </q-uploader>
+  <template v-if="refUploader?.queuedFiles.length">
+    <q-card dark style="width: 100%">
+      <q-card-section>
+        <cropper
+          class="cropper"
+          ref="refCropper"
+          :src="img"
+          :canvas="{width: 1920, height: 1080}"
+          :stencil-props="stencil"
+          :default-size="defaultSize"
+          :default-position="defaultPosition"
+          @change="change"
+        ></cropper>
+      </q-card-section>
+      <q-card-actions align="between">
+        <q-toggle v-model="unStrictRatio" label="Игнорировать соотношение сторон" color="red">
+          <q-tooltip self="top middle" class="bg-red text-black text-body2">
+            <ul>
+              <li>Картинку может растянуть или сплющить.</li>
+              <li>Квадраты станут прямоугольниками.</li>
+              <li>Круги станут овалами.</li>
+              <li>Люди будут выглядеть неестественно толстыми или худыми.</li>
+              <li>Изображение потеряет четкость</li>
+            </ul>
+
+          </q-tooltip>
+        </q-toggle>
+        <q-btn label="Готово" color="green" @click="crop"></q-btn>
+      </q-card-actions>
+
+
+    </q-card>
+
+  </template>
+
+</template>
+
+<style scoped>
+.cropper {
+  width: 100%;
+  background: #DDD;
+}
+</style>
