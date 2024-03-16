@@ -1,6 +1,5 @@
 <template>
   <div class="newscol">
-    <q-linear-progress v-if="progress" indeterminate color="secondary" class="q-mt-sm"/>
     <template v-if="Items?.length">
       <template v-for="item in Items" :key="item.id">
         <NewItem v-if="item.isShow || editMode"
@@ -8,12 +7,14 @@
                  @hideOrShow="(entryId) => { hideOrShow(entryId)}"
                  @delEntry="(entryId) => {delEntry(entryId)}"
         ></NewItem>
+        <q-separator></q-separator>
       </template>
     </template>
     <h5 v-if="!Items && !progress" class="noEntyes">
       Ошибка при загрузке. Попробуйте обновить страницу.
     </h5>
   </div>
+
 </template>
 
 <script setup>
@@ -33,17 +34,12 @@ const editMode = inject('editMode')
 const Items = ref([])
 
 const props = defineProps({
-  query: ref(null),
-  category: ref(null),
-  year: ref(null),
-  limit: ref(null)
-
+  category: String,
+  year: Number,
+  limit: Number
 })
 const categ = ref(props.category)
-watch(() => props.query, () => {
-  //Items.value = null
-  loadData()
-}, {deep: true})
+
 
 watch(route, (newpath) => {
 
@@ -88,6 +84,10 @@ function delEntry(entryId) {
     Items.value.splice(index, 1);
   }
 }
+
+defineExpose({
+  loadData
+})
 
 onMounted(() => {
   loadData()

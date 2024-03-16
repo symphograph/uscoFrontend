@@ -1,372 +1,227 @@
+<script setup>
+import {useMeta, useQuasar} from 'quasar'
+import {computed, inject, onBeforeMount, provide, ref, watch} from "vue";
+import DocFolder from "components/docs/DocFolder.vue";
+import UploadDialog from "components/docs/UploadDialog.vue";
+import {delElement, getMeta, keyTranslit, notifyError, notifyOK} from "src/myFuncts";
+import {api} from "boot/axios";
+import SelectSort from "components/docs/SelectSort.vue";
+import AddFolderDialog from "components/docs/AddFolderDialog.vue";
+import TrashFolder from "components/docs/TrashFolder.vue";
+import FilteredList from "components/docs/FilteredList.vue";
+import RenameFolderDialog from "components/docs/RenameFolderDialog.vue";
+import PaidServices from "components/docs/PaidServices.vue";
+import MatTechBase from "components/docs/MatTechBase.vue";
+
+
+const metaData = getMeta('Документы')
+useMeta(metaData)
+
+const q = useQuasar()
+const apiUrl = String(process.env.API)
+const editMode = inject('editMode')
+const trashRef = ref()
+const filterInput = ref(null)
+
+const translatedFilterInput = computed(() =>
+  keyTranslit(filterInput.value)
+)
+provide('filterInput', translatedFilterInput)
+
+const folderId = ref()
+provide('folderId', folderId)
+
+const folderList = ref([])
+provide('folderList', folderList)
+
+const sortType = ref()
+provide('sortType', sortType)
+
+const sortFolderFn = (a, b) => a.sortPos - b.sortPos
+const sortedFolders = computed(() =>
+  folderList.value.slice().sort(sortFolderFn)
+)
+provide('sortedFolders', sortedFolders)
+
+
+
+const dialog = ref(false)
+provide('dialog', dialog)
+
+const folderNameDialog = ref(false)
+provide('folderNameDialog', folderNameDialog)
+
+const createFolderDialog = ref(false)
+provide('createFolderDialog', createFolderDialog)
+
+
+const collapseTrigger = ref(false)
+provide('collapseTrigger', collapseTrigger)
+
+function collapseFolders() {
+  collapseTrigger.value = !collapseTrigger.value
+}
+
+function onUploaded() {
+  loadList()
+}
+
+function loadList() {
+  const formData = {
+    params: {
+      method: 'list'
+    }
+  }
+  api.post(apiUrl + 'api/docs/folder.php', formData)
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+
+      if (folderList.value.length) {
+        folderList.value.push({sortPos: 0})
+      }
+
+      folderList.value = response.data.data.list
+
+      if (editMode.value) {
+        trashRef.value.loadTrash()
+      }
+
+
+
+    })
+    .catch((error) => {
+      console.log(error)
+      q.notify(notifyError(error))
+    })
+}
+
+provide('loadList', loadList)
+
+function onDelDoc(evt) {
+  //const folder = folderList.value.find(el => el.id === evt.folderId);
+  //delElement(folder.docs, 'id', evt.docId)
+  loadList()
+  q.notify(notifyOK('Готово'))
+}
+
+function onDelFolder(id) {
+  delElement(folderList.value, 'id', id)
+  trashRef.value.loadTrash()
+  q.notify(notifyOK('Готово'))
+}
+
+function onCreateDialog() {
+  loadList()
+}
+
+watch(() => editMode.value, () => {
+  filterInput.value = null
+  loadList()
+});
+
+onBeforeMount(() => {
+  loadList()
+  sortType.value = 'title'
+})
+</script>
+
 <template>
   <div class="content">
-    <div class="filesarea">
-      <div class="p_title">Документы</div>
-      <br>
-      <template v-for="block in blocks" :key="block.title">
-        <details open="open">
-          <summary>{{ block.title }}</summary>
-          <div class="docarea">
-            <template v-for="(link, idx) in block.links" :key="idx">
-              <p>
-                <a :class="['flink', !link.href ? 'disabled' : '']" :href="api + link.href">
-                  {{ link.text }}
-                </a>
-              </p><br>
+    <div class="filesArea">
+      <q-item class="p_title">
+        <q-item-section>Документы</q-item-section>
+        <template v-if="editMode">
+          <q-item-section side>
+            <q-btn label="Новая папка" icon="folder" class="goldBtn" @click="createFolderDialog = true"></q-btn>
+          </q-item-section>
+        </template>
+        <q-item-section side>
+          <SelectSort></SelectSort>
+        </q-item-section>
+        <q-item-section side>
+          <q-input v-model="filterInput" type="search" borderless filled dense clearable style="width: 10em">
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
             </template>
-          </div>
-        </details>
-        <br>
-        <hr>
-        <br>
-      </template>
-      <details open="open">
-        <summary>Платные услуги</summary>
-        <br>
-        <a class="flink" :href="api + 'documents/provisionOnPaidServices.pdf'">
-          Положение о платных услугах
-        </a>
-        <br>
-        <ol>
-          <li>Организация и проведение концерта для детей детских садов, школьников, студентов.<br>
-            <span>Стоимость: Договорная</span><br></li>
+          </q-input>
+        </q-item-section>
+        <q-item-section side>
+          <q-btn icon="unfold_less"
+                 @click="() => { collapseFolders() }">
+            <q-tooltip>Свернуть все папки</q-tooltip>
+          </q-btn>
+        </q-item-section>
+      </q-item>
+      <br>
 
-          <li>Концерт с приглашением солиста из Сахалинского края<br>
-            <span>Стоимость: Договорная</span><br></li>
-          <li>Концерт с приглашением солиста из другого федерального округа<br>
-            <span>Стоимость: Договорная</span><br></li>
-          <li>Концерт без участия приглашенного солиста<br>
-            <span>Стоимость: Договорная</span><br></li>
-          <li>Организация и (или) проведение выездного концерта<br>
-            <span>Стоимость: Договорная</span><br></li>
-        </ol>
-        <div class="tel"><a href="tel:+74242300518">+7-4242-300-518</a></div>
-        <br>
-      </details>
+      <template v-if="folderList.length">
+        <q-list v-if="!filterInput">
+          <template v-for="(folder, idx) in sortedFolders" :key="folder.id">
+            <DocFolder :folder="folder"
+                       :idx="idx"
+                       :folderId="folder.id"
+                       @onDelFolder="(id) => onDelFolder(id)"
+                       @onDelete="(evt) => onDelDoc(evt)">
+
+            </DocFolder>
+          </template>
+
+          <template v-if="editMode">
+            <TrashFolder
+              ref="trashRef"
+              @cleared="loadList()"
+            ></TrashFolder>
+          </template>
+        </q-list>
+        <template v-else>
+          <FilteredList></FilteredList>
+        </template>
+
+      </template>
+
+
+      <br>
+      <hr>
+      <br>
+      <PaidServices></PaidServices>
       <br>
       <hr>
       <br>
 
-      <q-table :expanded="[]"
-               title="Материально-техническая база"
-               :pagination="mtb.initialPagination"
-               :columns="mtb.columns"
-               :rows="mtb.rows"
-               hide-bottom
-               :grid="$q.screen.xs"
-               separator="cell"
-      >
-      </q-table>
-
+      <MatTechBase></MatTechBase>
     </div>
-
   </div>
+  <UploadDialog @fileUploaded="onUploaded()"></UploadDialog>
+  <AddFolderDialog @created="onCreateDialog()"></AddFolderDialog>
+  <RenameFolderDialog></RenameFolderDialog>
 </template>
-
-<script setup>
-import { useMeta } from 'quasar'
-
-const metaData = {
-  title: 'Документы'
-}
-useMeta(metaData)
-
-const api = String(process.env.API)
-const blocks = [
-  {
-    title: 'Учредительные документы',
-    links: [
-      {
-        href: 'documents/ustav_2018_09_17_with_egrul.pdf',
-        text: 'Устав учреждения от 17.09.2018'
-      },
-      {
-        href: 'documents/ustav_edit_2019-01-16.pdf',
-        text: 'Изменения в Устав от 16.01.2019'
-      },
-      {
-        href: 'documents/ustav_edit_2020-04-14.pdf',
-        text: 'Изменения в Устав от 14.04.2020'
-      },
-      {
-        href: 'documents/ustav_edit_2023-04-10.pdf',
-        text: 'Изменения в Устав от 10.04.2023'
-      },
-      {
-        href: 'documents/Certificate_of_registration_2023-04-10.pdf',
-        text: 'Свидетельство о постановке на учет от 10.04.2023'
-      },
-      {
-        href: 'documents/extractFromEGRN.pdf',
-        text: 'Выписка из ЕГРН'
-      },
-      {
-        href: 'ofdocs/inn.pdf',
-        text: 'ИНН/ОГРН: 6501109377/1026500550086'
-      },
-      {
-        href: '',
-        text: 'КПП: 650101001'
-      },
-      {
-        href: '',
-        text: 'ОКПО: 55655001'
-      }
-    ]
-  },
-  {
-    title: 'ФХД',
-    links: [
-      {
-        href: 'documents/Plan_FHD_2018.pdf',
-        text: 'План ФХД 2018'
-      },
-      {
-        href: 'documents/Plan_FHD_2019.pdf',
-        text: 'План ФХД 2019'
-      },
-      {
-        href: 'documents/Plan_FHD_2020.pdf',
-        text: 'План ФХД 2020'
-      },
-      {
-        href: 'documents/Plan_FHD_2021.pdf',
-        text: 'План ФХД 2021'
-      },
-      {
-        href: 'documents/Plan_FHD_2022.pdf',
-        text: 'План ФХД 2022'
-      },
-      {
-        href: 'documents/Performance_reportFHD.pdf',
-        text: 'Отчет об исполнении ФХД'
-      },
-      {
-        href: 'documents/Performance_reportFHD1.pdf',
-        text: 'Отчет об исполнении ФХД1'
-      },
-      {
-        href: 'documents/Performance_reportFHD2.pdf',
-        text: 'Отчет об исполнении ФХД2'
-      },
-      {
-        href: 'documents/salary.pdf',
-        text: 'Заработная плата руководителей'
-      }
-    ]
-  },
-  {
-    title: 'Муниципальное задание',
-    links: [
-      {
-        href: 'documents/MUP_Task_2018.pdf',
-        text: 'Муниципальное задание 2018'
-      },
-      {
-        href: 'documents/MUP_Task_2019.pdf',
-        text: 'Муниципальное задание 2019'
-      },
-      {
-        href: 'documents/MUP_Task_2020.pdf',
-        text: 'Муниципальное задание 2020'
-      },
-      {
-        href: 'documents/MUP_Task_2021.pdf',
-        text: 'Муниципальное задание 2021'
-      },
-      {
-        href: 'documents/MUP_Task_2021edit.pdf',
-        text: 'Муниципальное задание 2021 изменения'
-      },
-      {
-        href: 'documents/MUP_Task_2022.pdf',
-        text: 'Муниципальное задание 2022'
-      },
-      {
-        href: 'documents/MUP_Task_2022edit.pdf',
-        text: 'Муниципальное задание 2022 изменения'
-      },
-      {
-        href: 'documents/MUP_Task_2023.pdf',
-        text: 'Муниципальное задание 2023'
-      },
-      {
-        href: 'documents/MUP_Task_2023edit.pdf',
-        text: 'Муниципальное задание 2023 изменения'
-      },
-      {
-        href: 'documents/report_MTask_2018.doc',
-        text: 'Отчеты по выполнению Муниципального задания 2018'
-      },
-      {
-        href: 'documents/report_MTask_2019.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 2019'
-      },
-      {
-        href: 'documents/report_MTask_2020.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 2020'
-      },
-      {
-        href: 'documents/report_MTask_2021.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 2021'
-      },
-      {
-        href: 'documents/report_MTask_2022.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 2022'
-      },
-      {
-        href: 'documents/report_MTask_2023_q2.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 2кв 2023'
-      },
-      {
-        href: 'documents/report_MTask_2023_q3.pdf',
-        text: 'Отчеты по выполнению Муниципального задания 3кв 2023'
-      },
-
-    ]
-  },
-  {
-    title: 'Антикоррупционная деятельность',
-    links: [
-      {
-        href: 'documents/CorruptPlan_2023-2024.doc',
-        text: 'План мероприятий Муниципального бюджетного учреждения «Южно-Сахалинский симфонический оркестр» по противодействию коррупции на 2023-2024 годы'
-      },
-      {
-        href: 'documents/AboutConflictDiscords.pdf',
-        text: 'Положение «О конфликте интересов в Муниципальном бюджетном учреждении «Южно-Сахалинский симфонический оркестр»'
-      },
-      {
-        href: 'documents/AboutUncorruptPolicy.pdf',
-        text: 'Положение «Об антикоррупционной политике в Муниципальном бюджетном учреждении «Южно-Сахалинский симфонический оркестр»'
-      },
-      {
-        href: 'documents/BusinessGiftExchangeRules.pdf',
-        text: 'Правила обмена деловыми подарками и знаками делового гостеприимства в Муниципальном бюджетном учреждении «Южно-Сахалинский симфонический оркестр»'
-      },
-      {
-        href: 'documents/ProfessionalCodeOfEthics.pdf',
-        text: 'Кодекс профессиональной этики и служебного поведения работников Муниципального бюджетного учреждения «Южно-Сахалинский симфонический оркестр»'
-      },
-      {
-        href: 'documents/Order38-20.pdf',
-        text: 'Приказ №38/20 от 14.12.2020'
-      },
-      {
-        href: 'documents/Order39-20.pdf',
-        text: 'Приказ №39/20 от 14.12.2020'
-      },
-      {
-        href: 'documents/corruptUSSO2023.pdf',
-        text: 'Отчет за 2023'
-      }
-
-    ]
-  },
-  {
-    title: 'Результаты проведения специальной оценки условий труда',
-    links: [
-      {
-        href: 'documents/AssessmentOfWorkingConditions.pdf',
-        text: 'Оценка условий труда ЮССО'
-      }
-    ]
-  },
-  {
-    title: 'Локальные нормативные акты',
-    links: [
-      {
-        href: 'documents/EnergyEfficiencyProgram_2022-2024.pdf',
-        text: 'Программа энергоэффективности ЮССО 2022-2024'
-      }
-    ]
-  }
-]
-
-const mtb = {
-  columns: [
-    {
-      name: 'Наименование',
-      label: 'Наименование',
-      align: 'center',
-      required: true,
-      bold: true,
-      field: row => row.name,
-      format: val => `${val}`,
-      style: 'white-space: normal'
-    },
-    {
-      name: 'data',
-      align: 'center',
-      label: 'Показатели по учреждению',
-      field: row => row.data,
-      format: val => `${val}`,
-      style: 'white-space: normal'
-    }
-  ],
-  rows: [
-    {
-      name: 'Учреждение занимает отдельное здание, арендует (у кого), совместно с другими организациями (какими)',
-      data: 'Арендует часть здания у ООО «Либерти»'
-    },
-    {
-      name: 'Система отопления здания',
-      data: 'Централизованное теплоснабжение'
-    },
-    {
-      name: 'Наличие водопровода в здании (да \\ нет)',
-      data: 'Да'
-    },
-    {
-      name: 'Наличие канализации в здании (да \\ нет)',
-      data: 'Да'
-    },
-    {
-      name: 'Наличие средств противопожарной защиты',
-      data: 'Имеется'
-    },
-    {
-      name: 'Наличие средств пожарного оповещения',
-      data: 'Здания оборудованы автоматической пожарной сигнализацией, системами управления и оповещения людей'
-    },
-    {
-      name: 'Техническое состояние здания (удовлетворительное, требует кап. ремонта, аварийное, требует текущего ремонта, подлежит сносу)',
-      data: 'Удовлетворительное'
-    },
-    {
-      name: 'Дополнительные оборудования здания',
-      data: 'Пандус для инвалидов'
-    },
-    {
-      name: 'Сооружения на прилегающей территории здания',
-      data: 'Парковочная зона'
-    }
-  ],
-  initialPagination: {
-    sortBy: 'desc',
-    descending: false,
-    page: 1,
-    rowsPerPage: 0
-    // rowsNumber: xx if getting data from a server
-  }
-}
-
-
-</script>
 
 <style>
 * {
   margin: 0;
 }
 
-.filesarea {
-  max-width: 800px;
-  margin: auto;
-  padding: 30px;
+.q-expansion-item--popup > .q-expansion-item__container {
+  //border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
 }
 
-.docarea {
-  padding: 1em 2em;
+.goldBtn {
+  color: goldenrod;
+  border: 1px solid goldenrod;
+  width: max-content;
+}
+
+.ext {
+  /*filter: sepia(0.7);*/
+}
+
+.filesArea {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1em;
 }
 
 summary {
@@ -376,15 +231,13 @@ summary {
   color: #ba892f;
 }
 
-.filesarea a {
-  color: #333366;
-}
+
+
 
 .flink {
   vertical-align: middle;
   text-decoration: none;
   font-size: 18px;
-  /* margin-left: 1em; */
   color: #2f2e2e;
   transition: 300ms;
 }
@@ -425,4 +278,5 @@ ol span {
 th {
   font-weight: bold;
 }
+
 </style>

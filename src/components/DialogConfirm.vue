@@ -21,7 +21,8 @@ function confirm (message, title) {
     message: message,
     cancel: true,
     persistent: true,
-    html: true
+    html: true,
+    dark: true,
   }).onOk(() => {
     // console.log('>>>> OK')
   }).onOk(() => {

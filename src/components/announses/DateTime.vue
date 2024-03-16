@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md" style="max-width: 300px; padding: 0">
-    <q-input filled v-model="Announce.eventTime"  @update:modelValue="emit('update:date')">
+    <q-input filled v-model="Announce.eventTime" mask="####-##-## ##:##">
       <template v-slot:prepend>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -30,6 +30,7 @@
 
 <script setup>
 import {inject, ref} from 'vue'
+import {isDate} from "src/myFuncts";
 const Announce = inject('Announce')
 const props = defineProps({
   evDateTime: ref('2019-02-01 12:44')

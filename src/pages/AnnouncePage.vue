@@ -1,39 +1,27 @@
-<template>
-  <div class="content">
-    <AnnounceEditor v-if="editMode && Announce"
-                  @posterUploaded="loadData"
-                  @reload="loadData"
-    ></AnnounceEditor>
-    <div class="eventboxl">
-      <AnnounceDescr v-if="Announce"></AnnounceDescr>
-    </div>
-  </div>
-
-</template>
-
 <script setup>
-import { useMeta, useQuasar } from 'quasar'
-import { api } from 'boot/axios'
-import AnnounceDescr from 'components/announses/AnnounceDescr.vue'
+import {useMeta, useQuasar} from 'quasar'
+import {api} from 'boot/axios'
 import AnnounceEditor from 'components/announses/AnnounceEditor.vue'
+import AnnounceDescr from 'components/announses/AnnounceDescr.vue';
 import {ref, inject, onMounted, provide} from 'vue'
-import { useRoute } from 'vue-router'
-import {notifyError} from "src/myFuncts";
+import {useRoute} from 'vue-router'
+import {getMeta, notifyError} from 'src/myFuncts.js';
+import PageTitle from "components/main/PageTitle.vue";
 
-const metaData = {
-  title: 'Анонс'
-}
+
+const metaData = getMeta('Анонс')
 useMeta(metaData)
 
 const q = useQuasar()
 const editMode = inject('editMode')
 const apiUrl = String(process.env.API)
 const route = useRoute()
+const editorRef = ref()
 
 const Announce = ref(null)
 provide('Announce', Announce)
 
-function loadData () {
+function loadData() {
 
   api.post(apiUrl + 'api/event/announce.php', {
     params: {
@@ -55,6 +43,17 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <AnnounceEditor v-if="editMode && Announce"
+                  @posterUploaded="loadData"
+                  @reload="loadData"
+                  ref="editorRef"
+  ></AnnounceEditor>
+  <div class="eventboxl">
+    <AnnounceDescr v-if="Announce" @delPoster="() => { editorRef.delPoster() }"></AnnounceDescr>
+  </div>
+</template>
+
 <style scoped>
 * {
   margin: 0;
@@ -65,6 +64,9 @@ onMounted(() => {
   flex-wrap: wrap;
   justify-content: space-around;
   margin: 0 auto;
-  max-width: 1200px;
+  /*max-width: 1200px;*/
+  padding: 1em 0;
 }
+
+
 </style>

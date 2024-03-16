@@ -1,5 +1,5 @@
 <template>
-  <div v-if="tabList" class="q-pa-md" style="max-width: 350px">
+  <div v-if="tabList" class="q-pa-md" style="max-width: 350px;">
     <q-list separator>
       <q-item clickable v-close-popup tabindex="0" to="/">
         <q-item-section avatar>
@@ -19,6 +19,7 @@
           expand-separator
           :icon="tab.icon"
           :label="tab.label"
+          :header-style="{color: 'var(--dTitle)'}"
           :caption="tab.caption"
           default-closed
         >
@@ -51,6 +52,17 @@
           <q-toggle v-model="editMode" left-label color="red"></q-toggle>
         </q-item-section>
       </q-item>
+      <q-item clickable>
+        <q-item-section>
+          <q-toggle checked-icon="nightlight"
+                    unchecked-icon="light_mode"
+                    left-label
+                    v-model="darkTrigger"
+                    dense
+                    label="Цветовая тема"
+                    @update:modelValue="darkSwitch()"></q-toggle>
+        </q-item-section>
+      </q-item>
         <TelegramForm
           v-if="jwt_decode(AccessToken).authType !== 'telegram'"
           :AccessToken="AccessToken"
@@ -71,8 +83,20 @@ const editMode = inject('editMode')
 const admin = inject('admin')
 const AccessToken = inject('AccessToken')
 const SessionToken = inject('SessionToken')
+
+const darkTrigger = inject('darkTrigger')
+const darkSwitch = inject('darkSwitch')
 </script>
 
 <style scoped>
 
+.q-list, .q-item {
+  color: #312a6b;
+}
+.q-list--dark, .q-item--dark {
+  color: goldenrod !important;
+}
+.drTitle {
+  color: var(--dTitle);
+}
 </style>

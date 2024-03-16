@@ -2,13 +2,16 @@
 import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import NewEditor from 'components/news/NewEditor.vue'
-import {inject, onMounted, provide, ref} from 'vue'
+import PageTitle from "components/main/PageTitle.vue";
+import {ref, inject, onMounted, provide, computed} from 'vue'
 import {useRoute} from 'vue-router'
-import {notifyError} from "src/myFuncts";
+import {getMeta, imgUrl, notifyError} from "src/myFuncts";
+import EntryPhoto from "components/news/EntryPhoto.vue";
+
 
 const id = ref(0)
-const newData = ref(null)
-provide('newData', newData)
+const Entry = ref(null)
+provide('Entry', Entry)
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
@@ -16,36 +19,16 @@ const route = useRoute()
 const editMode = inject('editMode')
 const pTitle = ref('Новость')
 const isError = ref(false)
+const loading = ref(true)
+const editorRef = ref()
 
-useMeta(() => {
-  return {
-    title: pTitle.value
-  }
-})
+const metaData = getMeta(pTitle.value || 'Новость')
+useMeta(metaData)
 
-
-
-function ratio(fileName) {
-  let img = findImg(fileName)
-  if (img[0].width > img[0].height) {
-    return 1920 / 1080
-  }
-  if (img[0].width <= img[0].height) {
-    return 1080 / 1920
-  }
-}
-
-function findImg(fileName) {
-  return newData.value.Images.filter(item => {
-    return item.fileName.includes(fileName);
-  });
-}
-
-function imgUrl(imgFileName) {
-  return apiUrl + '/img/entry/photo/' + newData.value.id + '/1080/' + imgFileName;
-}
 
 function loadData() {
+
+  loading.value = true
   api.post(apiUrl + 'api/news/entry.php', {
     params: {
       method: 'get',
@@ -56,73 +39,95 @@ function loadData() {
       if (!!!response?.data?.result) {
         throw new Error();
       }
-      newData.value = response?.data?.data ?? null
-      pTitle.value = newData?.value?.title ?? ''
+      Entry.value = response?.data?.data ?? null
+      pTitle.value = Entry?.value?.title ?? ''
+      const metaData = getMeta(pTitle.value || 'Новость')
+      useMeta(metaData)
     })
     .catch((error) => {
       isError.value = true
       q.notify(notifyError(error))
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
+const usedPhotos = computed(() => {
+  let sections = Entry.value.parsedMD.filter(el => el.type === 'img')
+
+  return sections
+    .map(section => Entry.value.Photos.find(photo => photo.id === section.fileId))
+    .filter(Boolean)
+})
+
+const unusedPhotos = computed(() => {
+  const usedPhotoIds = usedPhotos.value.map(photo => photo.id);
+  return Entry.value.Photos.filter(photo => !usedPhotoIds.includes(photo.id));
+})
+function onDelPhoto(id) {
+  if(editMode.value){
+    editorRef.value.unlinkPhoto(id)
+  }
+
+}
 onMounted(() => {
   loadData()
 })
 </script>
 
 <template>
-  <div class="content" v-if="newData || editMode">
+
+  <div class="contentArea" v-if="editMode && Entry">
     <NewEditor
-      v-if="editMode && newData"
+      v-if="editMode && Entry"
       @uploaded="loadData()"
+      ref="editorRef"
     ></NewEditor>
-    <div class="newsarea" v-if="newData">
-      <div class="p_title">{{ newData.title }}</div>
-      <div class="narea">
-        <div class="text">
-          <template v-for="(row, idx) in newData.parsedMD" :key="idx">
-            <template v-if="row.type === 'text'">
-              <section v-if="row.content !== '\n'" v-html="row.content"></section>
-              <br v-else>
-            </template>
-            <div
-              v-if="row.type === 'img'"
-              class="newsImg"
-            >
-              <q-img
-                :src="imgUrl(row.content)"
-                fit="fill"
-              >
-              </q-img>
-            </div>
-            <div class="vitem" v-if="row.type === 'video'">
-              <q-video
-                :ratio="16/9"
-                :src="'https://www.youtube.com/embed/' + row.content"
-              ></q-video>
-            </div>
-          </template>
-          <div v-if="newData.refLink">Источник:
-            <a :href="newData.refLink" target="_blank">
-              {{ newData.refName }}
-            </a>
-          </div>
-          <div
-            v-for="(imgFileName, idx) in newData.unusedImages"
-            class="newsImg"
-            :key="idx"
-          >
-            <q-img
-              :src="imgUrl(imgFileName)"
-              fit="fill"
-            >
-            </q-img>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="content" v-else>
+
+  <PageTitle :title="Entry?.title || 'Заголовок'" :loading="loading"></PageTitle>
+  <div class="contentArea" v-if="Entry">
+    <template v-for="(row, idx) in Entry.parsedMD" :key="idx">
+
+      <div v-if="row.type === 'text'" class="textBlock">
+        <section v-if="row.content !== '\n'" v-html="row.content"></section>
+        <br v-else>
+      </div>
+      <template v-if="row.type === 'img'">
+        <EntryPhoto :id="row.fileId" :md5="row.md5" :ext="row.ext" @onDel="onDelPhoto"></EntryPhoto>
+      </template>
+
+      <div v-if="row.type === 'video'" class="videoItem">
+        <q-video
+          :ratio="16/9"
+          :src="'https://www.youtube.com/embed/' + row.content"
+        ></q-video>
+      </div>
+    </template>
+
+    <template v-if="Entry.refLink">
+      <q-separator spaced="1em"></q-separator>
+      <q-item clickable :href="Entry.refLink">
+        <q-item-section avatar>
+          <q-icon name="link"></q-icon>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>Источник: {{ Entry.refName }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </template>
+
+    <template v-if="unusedPhotos.length">
+      <q-separator spaced="2em"></q-separator>
+      <template v-for="(img, idx) in unusedPhotos" :key="idx">
+        <EntryPhoto :id="img.id" :ext="img.ext" :md5="img.md5" @onDel="onDelPhoto"></EntryPhoto>
+      </template>
+    </template>
+
+
+  </div>
+  <div class="content" v-else-if="!loading">
     <div class="newsarea">
       <div class="narea">
         <div class="text">
@@ -141,22 +146,24 @@ onMounted(() => {
   grid-gap: 2vw;
 }
 
-.newsarea {
+.textBlock {
+  overflow-x: hidden;
+  padding: 0 1em;
+}
+
+.contentArea {
   max-width: 900px;
   margin: auto;
+  color: var(--mainText);
+  font-size: 16px;
+  padding: 1em 0;
 }
 
 .text img {
   box-shadow: 0 0 0.5em black;
 }
 
-.newsImg {
-  width: 100%;
-  box-shadow: 0 0 0.5em black;
-  margin: 1em 0;
-}
-
-.vitem {
+.videoItem {
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;
@@ -177,7 +184,7 @@ li {
 }
 
 blockquote {
-  padding: 1em;
+  padding: 0 1em;
   border-left: 3px solid #6b4c07;
 }
 </style>

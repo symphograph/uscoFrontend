@@ -107,7 +107,7 @@ onMounted(() => {
 }
 
 .group {
-  border: 1px solid rgba(242, 237, 232, 1.00);
+  /*border: 1px solid rgba(242, 237, 232, 1.00);*/
   border-radius: 3px;
   min-width: 260px;
   padding: 1.5em 1em;
@@ -116,20 +116,21 @@ onMounted(() => {
   float: left;
   min-height: 210px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-image: -webkit-linear-gradient(
+  background-image: var(--cardGradient);
+  /*background-image: -webkit-linear-gradient(
     270deg, rgba(248, 244, 238, 1.00) 0%, rgba(237, 225, 209, 1.00) 100%);
   background-image: -moz-linear-gradient(270deg, rgba(248, 244, 238, 1.00) 0%, rgba(237, 225, 209, 1.00) 100%);
   background-image: -o-linear-gradient(270deg, rgba(248, 244, 238, 1.00) 0%, rgba(237, 225, 209, 1.00) 100%);
   background-image: linear-gradient(
-    180deg, rgba(248, 244, 238, 1.00) 0%, rgba(237, 225, 209, 1.00) 100%);
-  text-shadow: 1px 1px 1px rgb(255 255 255);
+    180deg, rgba(248, 244, 238, 1.00) 0%, rgba(237, 225, 209, 1.00) 100%);*/
+  text-shadow: var(--texturedText);
   box-shadow: 1px 1px 1px rgb(108 77 12 / 78%);
 }
 
 .groupname {
   font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
   font-size: 20px;
-  color: #312a6b;
+  color: var(--docTitle);
 }
 
 @media screen and (min-device-width: 800px) {

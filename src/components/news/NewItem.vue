@@ -1,61 +1,9 @@
-<template>
-  <div class="narea">
-    <div class="nimg_block">
-      <div>
-        <q-item :href="link()" dense class="no-padding">
-          <q-img
-            :src="imgUrl()"
-            :ratio="1920/1080"
-            fit="fill"
-            placeholder-src="/img/news/default_1920x1080.png"
-          >
-            <template v-slot:error>
-              <q-img src="/img/news/default_1920x1080.png"
-                     :ratio="1920/960"
-                     fit="fill"
-              ></q-img>
-            </template>
-          </q-img>
-        </q-item>
-      </div>
-    </div>
-    <div class="tcol">
-      <div class="ntitle">
-        <a :href="link()">
-          {{ item.title }}
-        </a>
-      </div>
-      <br>
-      <a :href="link()">
-        {{ item.descr }}
-      </a>
-      <br><br>
-      <span class="ndate">{{ fDate(item.date) }}</span>
-      <br>
-    </div>
-  </div>
-  <template v-if="editMode">
-    <div style="display: flex; justify-content: right; grid-gap: 1em">
-
-      <q-btn color="red" icon="delete" outline @click="delEntry()"><q-tooltip anchor="top middle">Удалить</q-tooltip></q-btn>
-      <q-btn label="Скрыть" color="orange" v-if="isShow" outline @click="hideOrShow()">
-      </q-btn>
-      <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>
-      <q-btn icon="edit" outline :to="'/new/' + item.id">
-        <q-tooltip anchor="top middle">Редактировать</q-tooltip>
-      </q-btn>
-    </div>
-  </template>
-  <br>
-  <hr>
-  <br>
-</template>
-
 <script setup>
 import {inject, ref} from 'vue'
 import {fDate, notifyError, notifyOK} from 'src/myFuncts.js'
 import {useQuasar} from "quasar";
 import {api} from "boot/axios";
+import SketchImg from "components/SketchImg.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -104,13 +52,12 @@ function sketchUrl() {
 
 function link () {
   if (props.item?.announceId) {
-    return '/announce/' + props.item.announceId
+    return {to: '/announce/' + props.item.announceId, href: undefined}
   }
-  if(props.item?.refLink){
-    return props.item.refLink
+  if(props.item?.isExternal){
+    return {to: undefined, href: props.item.refLink}
   }
-  return '/new/' + props.item.id
-
+  return {to: '/new/' +props.item.id, href: undefined}
 }
 
 function hideOrShow() {
@@ -155,27 +102,82 @@ function delEntry() {
 }
 </script>
 
+<template>
+  <div class="narea">
+    <div class="nimg_block">
+      <div>
+        <q-item :href="link().href" :to="link().to" dense class="no-padding" target="_blank">
+          <SketchImg :ext="item?.sketch?.ext || ''"
+                     :md5="item?.sketch?.md5 || ''"
+                     :size="$q.platform.is.desktop ? 260 : 1080">
+          </SketchImg>
+        </q-item>
+      </div>
+    </div>
+    <div class="tcol">
+      <q-item clickable :href="link().href" :to="link().to" target="_blank">
+        <q-item-section>
+          <q-item-label class="ItemHeader text-h6">
+            {{ item.title }}
+          </q-item-label>
+          <q-item-label>
+            <span class="mainText">{{ item.descr }}</span>
+          </q-item-label>
+          <q-item-label caption>{{ fDate(item.date) }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </div>
+    <template v-if="editMode">
+      <div style="display: flex; justify-content: right; grid-gap: 1em;">
+        <q-btn color="red" icon="delete" outline @click="delEntry()"><q-tooltip anchor="top middle">Удалить</q-tooltip></q-btn>
+        <q-btn label="Скрыть" color="orange" v-if="isShow" outline @click="hideOrShow()">
+        </q-btn>
+        <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>
+        <q-btn icon="edit" outline :to="'/new/' + item.id">
+          <q-tooltip anchor="top middle">Редактировать</q-tooltip>
+        </q-btn>
+      </div>
+    </template>
+  </div>
+
+
+</template>
+
 <style scoped>
+.ItemHeader {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
 .ntitle {
   font-size: 20px;
   /*padding: 20px;*/
+}
+
+.ntitle a:hover {
+  text-decoration: underline;
+}
+
+.ntitle a {
+  text-decoration: none;
+  font-family: 'Open Sans Condensed', sans-serif;
+  color: #000000;
 }
 
 .narea {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  padding: 1em 0;
 }
 
 .nimg_block {
   width: 260px;
   height: 146px;
   overflow: hidden;
-  box-shadow: 1px 2px 2px #555353;
+  box-shadow: 1px 2px 8px #1d2125;
 }
 
 .nimg_block:hover {
-  box-shadow: 1px 2px 5px #000000;
+  box-shadow: 1px 2px 17px #000000;
 }
 
 .tcol {

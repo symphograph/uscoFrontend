@@ -1,7 +1,21 @@
+<script setup>
+import {useMeta, useQuasar} from 'quasar'
+import {getMeta} from "src/myFuncts";
+import PageTitle from "components/main/PageTitle.vue";
+import {computed} from "vue";
+
+const metaData = getMeta('Александр Зражаев')
+useMeta(metaData)
+
+const q = useQuasar()
+
+const blockClass = computed(() => q.platform.is.desktop ? 'contentBlock' : 'contentBlock-m')
+</script>
+
 <template>
-  <div class="content">
-    <div class="text">
-      <div class="p_title">Александр Зражаев</div>
+  <PageTitle :title="metaData.title"></PageTitle>
+  <div class="contentArea">
+    <div :class="blockClass">
       <p>Художественный руководитель и дирижер Южно-Сахалинского камерного оркестра (1999 - 2016)</p>
 
       <p>Заслуженный работник культуры Российской Федерации (2006)</p>
@@ -33,20 +47,27 @@
       "За заслуги перед городом Южно-Сахалинском".
       <br><br>
       Александр Зражаев скончался в 2017 году после продолжительной болезни.
-
     </div>
   </div>
 </template>
 
-<script setup>
-import { useMeta } from 'quasar'
-
-const metaData = {
-  title: 'Александр Зражаев'
-}
-useMeta(metaData)
-</script>
-
 <style scoped>
+.contentArea {
+  max-width: 900px;
+  margin: auto;
+  color: var(--mainText);
+  font-size: 18px;
+  padding: 1em 0;
+}
 
+.contentBlock {
+  text-align: justify;
+  font-size: 18px;
+}
+
+.contentBlock-m {
+  padding: 0 1em;
+  text-align: start;
+  font-size: 16px;
+}
 </style>

@@ -6,94 +6,34 @@ const routes = [
       {
         path: '/',
         component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/IndexPage.vue')}]
+        children: [
+          {path: '', component: () => import('pages/IndexPage.vue')},
+          {path: 'vacancies', component: () => import('pages/VacanciesPage.vue')},
+          {path: 'announces', component: () => import('pages/AnnounceListPage.vue')},
+          {path: 'contacts', component: () => import('pages/ContactPage.vue')},
+          {path: 'announce/:evid', component: () => import('pages/AnnouncePage.vue')},
+          {path: 'conductor', component: () => import('pages/ConductorPage.vue')},
+          {path: 'history', component: () => import('pages/HistoryPage.vue')},
+          {path: 'AlexandrZrazaev', component: () => import('pages/AlexandrZrazaev.vue')},
+          {path: 'pdn', component: () => import('pages/PdnInfo.vue')},
+          {path: 'video', component: () => import('pages/VideoPage.vue')},
+          {path: 'news/:category', component: () => import('pages/NewsPage.vue')},
+          {path: 'new/:id', component: () => import('pages/NewPage.vue')},
+          {path: 'corrupt', component: () => import('pages/CorruptPage.vue')},
+          {path: 'docs', component: () => import('pages/DocsPage.vue')},
+          {path: 'staff', component: () => import('pages/StaffPage.vue')},
+          {path: 'gallery/:album', component: () => import('pages/GalleryPage.vue')},
+          {path: 'gallery', component: () => import('pages/GalleryPage.vue')},
+          {path: 'login', component: () => import('pages/LoginPage.vue')}
+        ]
       },
-      {
-        path: 'vacancies',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/VacanciesPage.vue')}]
-      },
+
       {
         path: '/main',
         component: () => import('layouts/MidLayout.vue'),
         children: [{path: '', component: () => import('pages/MainInfo.vue')}]
       },
-      {
-        path: '/contacts',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/ContactPage.vue')}]
-      },
 
-      {
-        path: '/pdn',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/PdnInfo.vue')}]
-      },
-      {
-        path: '/announces',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/AnnounceListPage.vue')}]
-      },
-      {
-        path: '/announce/:evid',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/AnnouncePage.vue')}]
-      },
-      {
-        path: '/conductor',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/ConductorPage.vue')}]
-      },
-      {
-        path: '/history',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/HistoryPage.vue')}]
-      },
-      {
-        path: '/AlexandrZrazaev',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/AlexandrZrazaev.vue')}]
-      },
-      {
-        path: '/video',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/VideoPage.vue')}]
-      },
-      {
-        path: '/news/:category',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/NewsPage.vue')}]
-      },
-      {
-        path: '/new/:id',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/NewPage.vue')}]
-      },
-      {
-        path: '/corrupt',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/CorruptPage.vue')}]
-      },
-      {
-        path: '/docs',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/DocsPage.vue')}]
-      },
-      {
-        path: '/staff',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/StaffPage.vue')}]
-      },
-      {
-        path: '/gallery/:album',
-        component: () => import('layouts/PhotoLayout.vue'),
-        children: [{path: '', component: () => import('pages/GalleryPage.vue')}]
-      },
-      {
-        path: '/gallery',
-        component: () => import('layouts/PhotoLayout.vue'),
-        children: [{path: '', component: () => import('pages/GalleryPage.vue')}]
-      },
       {
         path: '/hall',
         component: () => import('layouts/PhotoLayout.vue'),
@@ -121,7 +61,6 @@ const routes = [
     component: () => import('layouts/RootLayout.vue'),
     children: [{path: '', component: () => import('pages/service/MainTenance.vue')}]
   },
-
 
   // Always leave this as last one,
   // but you can also remove it AlexandrZrazaev

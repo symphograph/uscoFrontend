@@ -1,56 +1,45 @@
-<template>
-  <div class="eventsarea">
-    <div class="p_title">
-      <div>{{ title }}</div>
-      <div class="selectors">
-        <q-btn v-if="editMode" label="Добавить"
-               @click="addEntry"
-        ></q-btn>
-        <q-select v-model="evYear" :options="Years()" emit-value></q-select>
-        <!--        <NewsSelect></NewsSelect>-->
-      </div>
-    </div>
-    <br>
-    <NewsList :query="query" :year="evYear" :limit="100" :category="category"></NewsList>
-
-  </div>
-</template>
-
 <script setup>
-import { computed, inject, ref } from 'vue'
+import {computed, inject, nextTick, ref} from 'vue'
 import NewsList from 'components/news/NewsList.vue'
-import { useMeta, useQuasar } from 'quasar'
-import { api } from 'boot/axios'
-import { useRoute, useRouter } from 'vue-router'
-import {notifyError} from "src/myFuncts";
+import {useMeta, useQuasar} from 'quasar'
+import {api} from 'boot/axios'
+import {useRoute, useRouter} from 'vue-router'
+import {getMeta, notifyError} from "src/myFuncts";
 
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
-
+const progress = inject('progress')
 const editMode = inject('editMode')
 
 const evYear = ref(new Date().getFullYear())
-const limit = ref(100)
+const listRef = ref()
+
+function onSetYear() {
+  console.log(evYear)
+  nextTick(() => {
+    listRef.value.loadData()
+  })
+}
 
 const titles = ref({
   all: 'Все новости',
   euterpe: 'Новости Эвтерпы',
-  partners: 'Новости партнеров',
-  usco: 'Новости оркестра'
+  other: 'Новости партнеров',
+  usso: 'Новости оркестра'
 })
 
-function addEntry () {
+function addEntry() {
 
   api.post(apiUrl + 'api/news/entry.php', {
     params: {
-        method: 'add'
+      method: 'add'
     }
   })
     .then((response) => {
       route.params.id = response.data.data.id
-      router.push({ path: '/new/' + response.data.data.id })
+      router.push({path: '/new/' + response.data.data.id})
     })
     .catch((error) => {
       q.notify(notifyError(error))
@@ -58,38 +47,53 @@ function addEntry () {
 
 }
 
-function Years () {
+function Years() {
   let arr = []
-  for(let year = 2018; year <= new Date().getFullYear(); year++){
+  for (let year = 2018; year <= new Date().getFullYear(); year++) {
     arr.push(year)
   }
   return arr.reverse()
 }
 
 const title = computed(() => {
-  return titles[route.params.category]
+  return titles.value[route.params.category]
 })
 
-const metaData = {
-  title: 'Новости'
-}
+const metaData = getMeta(title.value)
 useMeta(metaData)
 
 const category = ref(route.params.category)
-/*
-const category = computed(() => {
-  return route.params.category
-})
-*/
-const query = computed(()=>{
-  return {
-    year: evYear.value,
-    category: category.value,
-    limit: 100
-  }
-})
 
 </script>
+
+<template>
+  <div class="pageToolbar" :class="$q.platform.is.desktop ? 'no-wrap' : 'wrap'">
+    <q-toolbar>
+      <q-toolbar-title>
+        {{ title }}
+      </q-toolbar-title>
+    </q-toolbar>
+    <q-toolbar>
+      <q-space></q-space>
+      <div class="selectors">
+        <q-btn
+          v-if="editMode"
+          label="Добавить"
+          @click="addEntry"
+        ></q-btn>
+        <q-select v-model="evYear"
+                  :options="Years()"
+                  emit-value
+                  borderless
+                  @update:model-value="onSetYear()">
+        </q-select>
+      </div>
+    </q-toolbar>
+  </div>
+  <q-linear-progress v-if="progress" indeterminate color="secondary"/>
+
+  <NewsList :year="evYear" :limit="100" :category="category" ref="listRef"></NewsList>
+</template>
 
 <style scoped>
 .eventsarea {

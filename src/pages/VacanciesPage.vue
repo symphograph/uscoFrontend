@@ -1,68 +1,92 @@
-<template>
-  <div class="content">
-    <div class="eventsarea">
-      <div class="text">
-        <br><br>
-        <em>Группа струнных инструментов:</em>
-        <ul>
-          <li>Контрабас: концертмейстер группы</li>
-          <li>Скрипка: солист-концертмейстер оркестра</li>
-        </ul>
-        <br><br>
-
-        <em>Группа деревянных духовых инструментов:</em>
-        <ul>
-          <li>Гобой: первый солист-концертмейстер группы</li>
-          <li>Гобой: второй-регулятор первого</li>
-          <li>Кларнет: первый солист-концертмейстер группы</li>
-          <li>Фагот: первый солист-концертмейстер группы</li>
-        </ul>
-        <br><br>
-
-        <em>Группа медных духовых инструментов:</em>
-        <ul>
-          <li>Труба: первый солист-концертмейстер группы</li>
-          <li>Тромбон: второй-регулятор первого</li>
-        </ul>
-        <br><br>
-
-        <em>Группа ударных инструментов:</em>
-        <ul>
-          <li>Ударные: концертмейстер группы</li>
-        </ul>
-        <br><br>
-
-        <ul>
-          <li>Заработная плата от 60.000р. (по результатам собеседования и прослушивания).</li>
-          <li>Полный соц. пакет, включая оплату проезда к месту отдыха раз в два года.</li>
-          <li>Различные социальные выплаты и премии.</li>
-          <li>Возможность сольных выступлений с оркестром, дополнительной преподавательской деятельности.</li>
-          <li>Международная гастрольная деятельность.</li>
-          <li>Интересная творческая работа в молодом, развивающемся коллективе.</li>
-        </ul>
-        <br><br>
-
-        Резюме и видеозаписи отправлять по эл. почте: <a href="mailto:erazhisht@gmail.com">erazhisht@gmail.com</a><br>
-        или на моб.: <a href="tel:+79841341238">+7-984-134-12-38</a> (WhatsApp)
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { useMeta } from 'quasar'
-import {nextTick, onMounted, ref, watch} from "vue";
+import {useMeta, useQuasar} from 'quasar'
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {getMeta} from "src/myFuncts";
+import WhatsApp from "components/contacts/WhatsApp.vue";
+import EMail from "components/contacts/EMail.vue";
+import PageTitle from "components/main/PageTitle.vue";
 
-const metaData = {
-  title: 'Вакансии'
-}
+const metaData = getMeta('Вакансии')
 useMeta(metaData)
+
+const q = useQuasar()
+const blockClass = computed(() => q.platform.is.desktop ? 'contentBlock' : 'contentBlock-m')
 
 onMounted(() => {
 
 })
 </script>
 
-<style scoped>
+<template>
+  <PageTitle :title="metaData.title"></PageTitle>
+  <div class="contentArea">
+    <div :class="blockClass" >
+      <br><br>
+      <em>Группа струнных инструментов:</em>
+      <ul>
+        <li>Контрабас: концертмейстер группы</li>
+        <li>Скрипка: солист-концертмейстер оркестра</li>
+      </ul>
+      <br><br>
 
+      <em>Группа деревянных духовых инструментов:</em>
+      <ul>
+        <li>Гобой: первый солист-концертмейстер группы</li>
+        <li>Гобой: второй-регулятор первого</li>
+        <li>Кларнет: первый солист-концертмейстер группы</li>
+        <li>Фагот: первый солист-концертмейстер группы</li>
+      </ul>
+      <br><br>
+
+      <em>Группа медных духовых инструментов:</em>
+      <ul>
+        <li>Труба: первый солист-концертмейстер группы</li>
+        <li>Тромбон: второй-регулятор первого</li>
+      </ul>
+      <br><br>
+
+      <em>Группа ударных инструментов:</em>
+      <ul>
+        <li>Ударные: концертмейстер группы</li>
+      </ul>
+      <br><br>
+
+      <ul>
+        <li>Заработная плата от 60.000р. (по результатам собеседования и прослушивания).</li>
+        <li>Полный соц. пакет, включая оплату проезда к месту отдыха раз в два года.</li>
+        <li>Различные социальные выплаты и премии.</li>
+        <li>Возможность сольных выступлений с оркестром, дополнительной преподавательской деятельности.</li>
+        <li>Международная гастрольная деятельность.</li>
+        <li>Интересная творческая работа в молодом, развивающемся коллективе.</li>
+      </ul>
+      <br><br>
+    </div>
+    <q-list>
+      <q-item-label header>Контакты для отправки резюме:</q-item-label>
+      <EMail email="erazhisht@gmail.com"></EMail>
+      <WhatsApp phone-number="+7-(984)-134-12-38"></WhatsApp>
+    </q-list>
+  </div>
+
+</template>
+
+<style scoped>
+.contentArea {
+  max-width: 900px;
+  margin: auto;
+  color: var(--mainText);
+  font-size: 18px;
+  padding: 1em 0;
+}
+
+.contentBlock {
+  text-align: justify;
+  font-size: 18px;
+}
+
+.contentBlock-m {
+  padding: 0 1em;
+  text-align: start;
+  font-size: 16px;
+}
 </style>

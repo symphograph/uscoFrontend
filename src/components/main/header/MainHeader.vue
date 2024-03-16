@@ -1,62 +1,15 @@
-<template>
-  <q-header v-if="tabList" class="bg-header text-white bg absolute-top" height-hint="48">
-    <q-btn class="absolute" style="top: 0.5em; left: 1em; z-index: 1" dense flat round icon="menu" v-model="drawer"
-           @click="moveDrawer"/>
-    <q-tabs inline-label class="bg-primary text-white shadow-2 mobile-hide" align="center">
-      <q-item clickable to="/">
-        <q-avatar square>
-          <img src="/usso.logo.svg">
-        </q-avatar>
-      </q-item>
-      <template v-for="tab in tabList" :key="tab.id">
-        <q-btn-dropdown v-if="tab.expand" stretch flat :label="tab.label">
-          <q-list style="width: 18em;">
-            <q-item-label header>{{ tab.caption }}</q-item-label>
-            <q-item v-for="li in tab.tabs" :key="li.id" clickable v-close-popup tabindex="0" :to="li.url">
-              <q-item-section avatar>
-                <q-avatar v-if="li.ava" color="seconfary" text-color="white">
-                  <img :src="li.ava">
-                </q-avatar>
-                <q-avatar v-if="li.icon" :icon="li.icon" color="#ecd872" text-color="secondary"></q-avatar>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label color="primary">{{ li.name }}</q-item-label>
-                <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-        <q-route-tab v-else :to="tab.url" :label="tab.label"/>
-      </template>
-      <q-item clickable onclick="finevision.activate_navbar()">
-        <q-tooltip class="bg-gray" :offset="[10, 10]">
-          Версия для слабовидящих
-        </q-tooltip>
-        <q-avatar text-color="white">
-          <img src="/icons/glasses2.svg">
-        </q-avatar>
-      </q-item>
-      <q-item v-if="admin" clickable @click="editMode = !editMode">
-        <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'"></q-avatar>
-      </q-item>
-    </q-tabs>
-  </q-header>
-  <!-- drawer content -->
-  <q-drawer v-model="leftDrawerOpen" side="left" elevated overlay behavior="mobile">
-    <DrawerContent></DrawerContent>
-  </q-drawer>
-</template>
-
 <script setup>
-import { ref, provide, inject } from 'vue'
-import DrawerContent from "components/main/header/DrawerContent.vue";
 
-const drawer = ref(0)
-const emit = defineEmits(['moveDraver'])
-const editMode = inject('editMode')
-const lvl = inject('lvl')
-const admin = inject('admin')
+import {inject, onMounted, provide, ref} from "vue";
+import DrawerContent from "components/main/header/DrawerContent.vue";
+import {useQuasar} from "quasar";
+
+const $q = useQuasar()
+const toggleLeftDrawer = inject('toggleLeftDrawer')
 const leftDrawerOpen = inject('leftDrawerOpen')
+
+const admin = inject('admin')
+const editMode = inject('editMode')
 
 const tabList = ref(
   [
@@ -66,7 +19,7 @@ const tabList = ref(
       label: 'ЮССО',
       caption: 'Об оркестре',
       ava: '',
-      icon: '/img:usso.logo.svg',
+      icon: 'img:/usso.logo.svg',
       tabs:
         [
           {
@@ -118,7 +71,7 @@ const tabList = ref(
     {
       id: 4,
       expand: true,
-      label: 'медиа',
+      label: 'Медиа',
       caption: 'Фото и видео',
       tabs:
         [
@@ -223,49 +176,93 @@ const tabList = ref(
   ])
 provide('tabList', tabList)
 
-function moveDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
+const darkTrigger = inject('darkTrigger')
+const darkSwitch = inject('darkSwitch')
+
+function fineVision() {
+  console.log('test fineVision')
 }
 
+onMounted(() => {
 
+})
 </script>
 
-<style>
-.q-list {
-  color: #2f2e2e;
+<template>
+  <q-header elevated class="bg-primary text-white">
+    <q-item dense>
+      <q-item-section avatar>
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer"></q-btn>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-item dense clickable to="/">
+          <q-avatar square>
+            <img src="/usso.logo.svg">
+          </q-avatar>
+        </q-item>
+      </q-item-section>
+      <q-item-section>
+        <q-tabs inline-label class="mobile-hide" dense>
+          <template v-for="tab in tabList" :key="tab.id">
+            <q-btn-dropdown v-if="tab.expand" stretch flat :label="tab.label" dense>
+              <q-list class="listBg">
+                <q-item-label header>{{ tab.caption }}</q-item-label>
+                <template v-for="li in tab.tabs" :key="li.id">
+                  <q-item clickable v-close-popup tabindex="0" :to="li.url">
+                    <q-item-section avatar>
+                      <q-avatar v-if="li.ava">
+                        <img :src="li.ava">
+                      </q-avatar>
+                      <q-avatar v-if="li.icon" :icon="li.icon"></q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label >{{ li.name }}</q-item-label>
+                      <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+            </q-btn-dropdown>
+            <q-route-tab v-else :to="tab.url" :label="tab.label" d/>
+          </template>
+          <q-item clickable @click="fineVision()" dense>
+            <q-tooltip class="bg-gray" :offset="[10, 10]">
+              Версия для слабовидящих
+            </q-tooltip>
+            <q-avatar text-color="white">
+              <img src="/icons/glasses2.svg">
+            </q-avatar>
+          </q-item>
+          <q-item v-if="admin" clickable @click="editMode = !editMode" dense>
+            <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'"></q-avatar>
+          </q-item>
+        </q-tabs>
+      </q-item-section>
+
+        <q-item-section side v-if="$q.platform.is.desktop">
+          <q-toggle checked-icon="nightlight"
+                    unchecked-icon="light_mode"
+                    v-model="darkTrigger"
+                    dense
+                    @update:modelValue="darkSwitch()">
+          </q-toggle>
+        </q-item-section>
+
+
+    </q-item>
+  </q-header>
+  <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" elevated style="background-color: var(--drContentBg)">
+    <DrawerContent></DrawerContent>
+  </q-drawer>
+
+</template>
+
+<style scoped lang="scss">
+.listBg {
+  background-color: var(--cardBg);
 }
 
-
-
-
-.q-toolbar__title a {
-  text-decoration: none;
+.listBg--dark {
+  background-color: #ffffff;
 }
-
-
-
-.topin a {
-  text-decoration: none;
-}
-
-
-
-.top-container {
-  /*height: 300px;*/
-}
-
-.mytoolbar {
-  box-shadow: 0 5px 7px #2f2e2e99;
-}
-
-.header-image {
-
-}
-
-.topline {
-  background: none;
-
-}
-
-
 </style>

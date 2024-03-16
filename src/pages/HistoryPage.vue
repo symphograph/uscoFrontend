@@ -1,12 +1,28 @@
+<script setup>
+import {useMeta, useQuasar} from 'quasar'
+import {getMeta} from "src/myFuncts";
+import {computed} from "vue";
+import PageTitle from "components/main/PageTitle.vue";
+
+const metaData = getMeta('История')
+useMeta(metaData)
+
+const q = useQuasar()
+const blockClass = computed(() => q.platform.is.desktop ? 'contentBlock' : 'contentBlock-m')
+</script>
 <template>
-  <div class="content">
-    <div class="text">
-      <div class="p_title">История</div><br>
+  <PageTitle title="История"></PageTitle>
+  <div class="contentArea">
+    <div :class="blockClass">
       Южно-Сахалинский Камерный (теперь симфонический) Оркестр основан в 1999 году заслуженным
-      работником культуры Сахалинской области, скрипачом <a href="/AlexandrZrazaev">Александром Зражаевым</a>. За 20
+      работником культуры Сахалинской области, скрипачом
+      <RouterLink to="/AlexandrZrazaev">Александром Зражаевым</RouterLink>
+      . За 20
       лет своего существования коллектив стал неотъемлемой частью культурной жизни
       Сахалинской области и Дальневосточного региона. С 2016 года художественный
-      руководитель и главный дирижер оркестра <a href="/conductor">Тигран Ахназарян</a>.
+      руководитель и главный дирижер оркестра
+      <RouterLink to="/conductor">Тигран Ахназарян</RouterLink>
+      .
       <br><br>ЮССО проводит большую концертную и просветительскую деятельность,
       насчитывающую более 700 выступлений, подготовлено много совместных концертных
       выступлений с музыкантами из России, Японии, Южной Кореи, США, Израиля. Оркестр
@@ -43,15 +59,24 @@
     </div>
   </div>
 </template>
-<script setup>
-import { useMeta } from 'quasar'
-
-const metaData = {
-  title: 'История'
-}
-useMeta(metaData)
-</script>
 
 <style scoped>
+.contentArea {
+  max-width: 900px;
+  margin: auto;
+  color: var(--mainText);
+  font-size: 18px;
+  padding: 1em 0;
+}
 
+.contentBlock {
+  text-align: justify;
+  font-size: 18px;
+}
+
+.contentBlock-m {
+  padding: 0 1em;
+  text-align: start;
+  font-size: 16px;
+}
 </style>

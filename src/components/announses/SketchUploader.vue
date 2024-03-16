@@ -202,13 +202,14 @@ const stencil = computed(() => {
       </q-card-section>
       <q-card-actions align="between">
         <q-toggle v-model="unStrictRatio" label="Игнорировать соотношение сторон" color="red">
-          <q-tooltip self="top middle" class="bg-red text-black text-body2">
+          <q-tooltip self="top middle" class="bg-red text-black text-body2" :delay="300">
             <ul>
               <li>Картинку может растянуть или сплющить.</li>
               <li>Квадраты станут прямоугольниками.</li>
               <li>Круги станут овалами.</li>
               <li>Люди будут выглядеть неестественно толстыми или худыми.</li>
               <li>Изображение потеряет четкость</li>
+              <li>Изменение пропорций изображения может восприниматься как следствие употребления наркотических веществ</li>
             </ul>
 
           </q-tooltip>

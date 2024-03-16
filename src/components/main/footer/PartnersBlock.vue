@@ -36,6 +36,37 @@
 </template>
 
 <style scoped>
+.partners {
+  font-size: 25px;
+  text-transform: uppercase;
+  padding: 40px 0 40px;
+  overflow: auto;
+  width: 100%;
+  margin: auto;
+}
+
+.parttitle {
+  margin: auto;
+  text-align: center;
+  font-family: abel,serif;
+  height: 70px;
+}
+
+.rmh {
+  background-image: url(/img/rmh.png);
+  width: 147px;
+  height: 83px;
+  background-size: 147px;
+  margin: auto auto;
+}
+
+.logorow {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
 .exxonbox {
   width: 250px;
   height: 220px;

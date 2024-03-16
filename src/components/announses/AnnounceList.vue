@@ -5,6 +5,7 @@
     :Announce="announce"
     @IamDeleted="loadAnnounces()"
     @changeShow="(announceId) => changeShow(announceId)"
+    :compact="compactCard"
   ></AnnounceCard>
 </template>
 
@@ -23,6 +24,7 @@ const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
 const progress = inject('progress')
+const compactCard = inject('compactCard')
 
 const announceList = inject('announceList')
 const Halls = inject('Halls')
@@ -74,9 +76,9 @@ const sortedList = computed(() => {
     return []
   }
   switch (props.sort) {
-    case 0:
+    case 'dateDesc':
       return [...announceList.value].sort(sortFromOld)
-    case 1:
+    case 'dateAsc':
       return [...announceList.value].sort(sortFromNew)
     default:
       return announceList.value
