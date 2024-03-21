@@ -1,0 +1,1 @@
+import{P as o}from"./LocalStorage.343075e2.js";import{aU as r,a as s}from"./index.f8bce937.js";const m={__name:"AuthCallback",setup(u){const a=r();function e(){var t;a.push({path:(t=o.getItem("lastPath"))!=null?t:"/"})}return s(()=>{e()}),()=>{}}};export{m as default};
