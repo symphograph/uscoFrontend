@@ -1,6 +1,6 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
-import {getMeta} from "src/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import {computed} from "vue";
 import PageTitle from "components/main/PageTitle.vue";
 

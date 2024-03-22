@@ -4,7 +4,7 @@ import NewsList from 'components/news/NewsList.vue'
 import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
-import {getMeta, notifyError} from "src/myFuncts";
+import {getMeta, notifyError} from "src/js/myFuncts";
 
 const apiUrl = String(process.env.API)
 const route = useRoute()

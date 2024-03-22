@@ -4,7 +4,7 @@ import AnnounceList from 'components/announses/AnnounceList.vue'
 import {useQuasar, useMeta} from 'quasar'
 import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
-import {getMeta, notifyError, notifyOK} from "src/myFuncts";
+import {getMeta, notifyError, notifyOK} from "src/js/myFuncts";
 import SelectSort from "components/announses/SelectSort.vue";
 
 

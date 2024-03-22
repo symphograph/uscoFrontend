@@ -3,6 +3,7 @@ import {onMounted, provide, ref, watch} from "vue";
 import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
 import {useRoute} from "vue-router";
+import {myNotify} from "src/js/myFuncts";
 
 const metaData = {
   meta: {
@@ -79,6 +80,8 @@ function showCookieConfirm () {
 }
 
 onMounted(() => {
+  myNotify.q = useQuasar()
+
   LocalStorage.set('lastPath',route.path)
   console.log('mainLayout Mounted')
   showCookieConfirm()

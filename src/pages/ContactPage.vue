@@ -1,7 +1,7 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
 import {computed, ref} from 'vue'
-import {getMeta} from "src/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import PhoneNumber from "components/contacts/PhoneNumber.vue";
 import EMail from "components/contacts/EMail.vue";
 import PageTitle from "components/main/PageTitle.vue";

@@ -1,6 +1,6 @@
 <script setup>
 
-import {imgUrl} from "src/myFuncts";
+import {imgUrl} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import {inject} from "vue";
 

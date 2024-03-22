@@ -43,7 +43,7 @@ import {api} from 'boot/axios'
 import {useQuasar} from 'quasar'
 import AlbumSelect from 'components/AlbumSelect.vue'
 import {useRoute} from 'vue-router'
-import {notifyError} from "src/myFuncts";
+import {notifyError} from "src/js/myFuncts";
 import SriperComponent from "components/SriperComponent.vue";
 
 

@@ -1,6 +1,6 @@
 <script setup>
 import {computed, inject, ref} from "vue";
-import {userIdByJWT} from "src/myFuncts";
+import {userIdByJWT} from "src/js/myFuncts";
 
 const props = defineProps({
   cell: Object,

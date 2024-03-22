@@ -1,6 +1,6 @@
 <script setup>
 
-import {imgUrl} from "src/myFuncts";
+import {imgUrl} from "src/js/myFuncts";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {inject} from "vue";
 

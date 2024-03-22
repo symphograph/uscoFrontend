@@ -1,7 +1,7 @@
 <script setup>
 import {computed, inject, nextTick, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {authTypeByJWT, notifyError, notifyOK, userIdByJWT} from "src/myFuncts";
+import {authTypeByJWT, notifyError, notifyOK, userIdByJWT} from "src/js/myFuncts";
 import {useMeta, useQuasar} from "quasar";
 import HallUserCell from "components/hall/cells/HallUserCell.vue";
 import {useRoute} from "vue-router";

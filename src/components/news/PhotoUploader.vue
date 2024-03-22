@@ -1,6 +1,6 @@
 <script setup>
 
-import {copy, imgUrl, notifyError} from "src/myFuncts";
+import {copy, imgUrl, notifyError} from "src/js/myFuncts";
 import {inject, onUnmounted, ref, watch} from "vue";
 import {api} from "boot/axios";
 import {useQuasar} from "quasar";

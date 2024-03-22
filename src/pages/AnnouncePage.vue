@@ -5,7 +5,7 @@ import AnnounceEditor from 'components/announses/AnnounceEditor.vue'
 import AnnounceDescr from 'components/announses/AnnounceDescr.vue';
 import {ref, inject, onMounted, provide} from 'vue'
 import {useRoute} from 'vue-router'
-import {getMeta, notifyError} from 'src/myFuncts.js';
+import {getMeta, notifyError} from 'src/js/myFuncts';
 import PageTitle from "components/main/PageTitle.vue";
 
 

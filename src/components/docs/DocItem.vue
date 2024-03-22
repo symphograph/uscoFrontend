@@ -1,6 +1,6 @@
 <script setup>
 
-import {delElement, fDate, getMD5Path, notifyError, notifyOK} from "src/myFuncts";
+import {delElement, fDate, getMD5Path, notifyError, notifyOK} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import {inject} from "vue";
 import BtnDelete from "components/main/BtnDelete.vue";

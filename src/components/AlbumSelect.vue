@@ -2,7 +2,7 @@
 
 import {computed, inject, onMounted} from 'vue'
 import {api} from "boot/axios";
-import {notifyError} from "src/myFuncts";
+import {notifyError} from "src/js/myFuncts";
 import {useRoute} from "vue-router";
 import {useQuasar} from "quasar";
 

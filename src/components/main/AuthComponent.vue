@@ -5,7 +5,7 @@
 import {LocalStorage, useQuasar} from "quasar";
 import {inject, onBeforeMount, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {checkPowers, isExpired, notifyError, notifyWarning} from "src/myFuncts";
+import {checkPowers, isExpired, notifyError, notifyWarning} from "src/js/myFuncts";
 import {useRoute} from "vue-router";
 
 //const jwtDecode = jwtDecode()

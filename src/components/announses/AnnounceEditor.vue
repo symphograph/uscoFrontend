@@ -5,7 +5,7 @@ import {api} from 'boot/axios'
 import AnnounceCard from 'components/announses/AnnounceCard.vue'
 import {inject, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {notifyError, notifyOK} from "src/myFuncts";
+import {notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
 
 const apiUrl = String(process.env.API)

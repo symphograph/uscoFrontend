@@ -3,7 +3,7 @@ import {useMeta, useQuasar} from 'quasar'
 import {computed, inject, onBeforeMount, provide, ref, watch} from "vue";
 import DocFolder from "components/docs/DocFolder.vue";
 import UploadDialog from "components/docs/UploadDialog.vue";
-import {delElement, getMeta, keyTranslit, notifyError, notifyOK} from "src/myFuncts";
+import {delElement, getMeta, keyTranslit, notifyError, notifyOK} from "src/js/myFuncts";
 import {api} from "boot/axios";
 import SelectSort from "components/docs/SelectSort.vue";
 import AddFolderDialog from "components/docs/AddFolderDialog.vue";

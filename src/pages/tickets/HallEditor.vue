@@ -1,7 +1,7 @@
 <script setup>
 import {computed, nextTick, onBeforeMount, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {notifyError, notifyOK} from "src/myFuncts";
+import {notifyError, notifyOK} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import HallCreatorMenu from "components/hall/HallCreatorMenu.vue";
 import HallTable from "components/hall/HallTable.vue";

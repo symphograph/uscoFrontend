@@ -3,7 +3,7 @@
 import {computed, inject, onMounted, ref} from "vue";
 import 'src/css/dialog.css'
 import {api} from "boot/axios";
-import {notifyError} from "src/myFuncts";
+import {notifyError} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 
 const q = useQuasar()

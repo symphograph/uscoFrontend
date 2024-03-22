@@ -1,7 +1,7 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
 import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {getMeta} from "src/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import WhatsApp from "components/contacts/WhatsApp.vue";
 import EMail from "components/contacts/EMail.vue";
 import PageTitle from "components/main/PageTitle.vue";

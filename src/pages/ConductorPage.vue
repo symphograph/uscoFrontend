@@ -1,7 +1,7 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
 import PageTitle from "components/main/PageTitle.vue";
-import {getMeta} from "src/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import {computed} from "vue";
 
 const metaData = getMeta('Тигран Ахназарян')

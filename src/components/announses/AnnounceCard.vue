@@ -4,7 +4,7 @@ import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {inject, onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {fDateTime, imgUrl, notifyError, notifyOK} from 'src/myFuncts.js'
+import {fDateTime, imgUrl, notifyError, notifyOK} from 'src/js/myFuncts'
 import BtnDelete from "components/main/BtnDelete.vue";
 
 

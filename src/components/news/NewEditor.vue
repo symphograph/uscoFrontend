@@ -1,13 +1,12 @@
 <script setup>
-import {copyToClipboard, useMeta} from 'quasar'
+
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {getMD5Path, getMeta, imgUrl, notifyError, notifyOK} from "src/myFuncts";
+import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
-import SketchImg from "components/SketchImg.vue";
 
 
 const Entry = inject('Entry')
@@ -70,7 +69,7 @@ function delPw() {
   api.post(apiUrl + 'api/news/sketch.php', {
     params: {
       method: 'unlink',
-      entryId: route.params.id
+      id: route.params.id
     }
   })
     .then((response) => {

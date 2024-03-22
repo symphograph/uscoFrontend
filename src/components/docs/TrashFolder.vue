@@ -2,7 +2,7 @@
 
 import {computed, inject, onMounted, ref, watch} from "vue";
 import {useQuasar} from "quasar";
-import {fDate, notifyError} from "src/myFuncts";
+import {fDate, notifyError} from "src/js/myFuncts";
 import DocItem from "components/docs/DocItem.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {api} from "boot/axios";

@@ -30,7 +30,7 @@
 
 <script setup>
 import {inject, ref} from 'vue'
-import {isDate} from "src/myFuncts";
+import {isDate} from "src/js/myFuncts";
 const Announce = inject('Announce')
 const props = defineProps({
   evDateTime: ref('2019-02-01 12:44')

@@ -1,7 +1,7 @@
 <script setup>
 
 import {computed, ref} from "vue";
-import {copy} from "src/myFuncts";
+import {copy} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 
 const q = useQuasar()

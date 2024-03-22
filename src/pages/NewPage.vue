@@ -5,7 +5,7 @@ import NewEditor from 'components/news/NewEditor.vue'
 import PageTitle from "components/main/PageTitle.vue";
 import {ref, inject, onMounted, provide, computed} from 'vue'
 import {useRoute} from 'vue-router'
-import {getMeta, imgUrl, notifyError} from "src/myFuncts";
+import {getMeta, imgUrl, notifyError} from "src/js/myFuncts";
 import EntryPhoto from "components/news/EntryPhoto.vue";
 
 

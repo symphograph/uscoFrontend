@@ -2,7 +2,7 @@
 
 import {computed, inject, onBeforeMount, onMounted, ref} from "vue";
 
-import {fDate} from "src/myFuncts";
+import {fDate} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import DocItem from "components/docs/DocItem.vue";
 

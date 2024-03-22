@@ -1,6 +1,6 @@
 <script setup>
 import {inject, ref} from 'vue'
-import {fDate, notifyError, notifyOK} from 'src/myFuncts.js'
+import {fDate, notifyError, notifyOK} from 'src/js/myFuncts'
 import {useQuasar} from "quasar";
 import {api} from "boot/axios";
 import SketchImg from "components/SketchImg.vue";

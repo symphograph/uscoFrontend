@@ -1,7 +1,7 @@
 <script setup>
 import {computed, inject} from 'vue'
 import {useQuasar} from 'quasar'
-import {fDateTime, imgUrl, notifyError} from 'src/myFuncts.js'
+import {fDateTime, imgUrl, notifyError} from 'src/js/myFuncts'
 import PhoneNumber from "components/contacts/PhoneNumber.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {api} from "boot/axios";

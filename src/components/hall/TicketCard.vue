@@ -1,7 +1,7 @@
 <script setup>
 import {useQuasar} from "quasar";
 import {inject, ref} from "vue";
-import {fDateTime} from "src/myFuncts";
+import {fDateTime} from "src/js/myFuncts";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()

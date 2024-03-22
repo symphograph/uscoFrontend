@@ -1,8 +1,21 @@
 import moment from 'moment'
 import {copyToClipboard, useQuasar} from "quasar";
 import jwt_decode from "jwt-decode";
-import { ref } from 'vue';
 
+export class myNotify {
+
+  static q = useQuasar()
+  static ok(msg){
+    const params  = {
+      color: 'positive',
+      position: 'center',
+      message: msg ?? 'Готово',
+      timeout: 100,
+      closeBtn: 'x'
+    }
+    this.q.notify(params)
+  }
+}
 
 export function rateInfo (val) {
   let rates = [1, 0.5, 'гпх', 'гпх', 0.25]

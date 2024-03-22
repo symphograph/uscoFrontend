@@ -48,7 +48,7 @@ import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import draggable from 'vuedraggable'
 import { inject, onMounted, ref } from 'vue'
-import {notifyError} from "src/myFuncts";
+import {notifyError} from "src/js/myFuncts";
 
 
 const q = useQuasar()

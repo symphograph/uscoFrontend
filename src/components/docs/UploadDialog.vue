@@ -10,7 +10,7 @@ import {
   notifyError,
   notifyOK,
   fDate, fDateAnyFormat, isDate
-} from "src/myFuncts";
+} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 
 const q = useQuasar()
