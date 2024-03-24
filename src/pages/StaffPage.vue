@@ -1,3 +1,61 @@
+<script setup>
+import moment from 'moment'
+import { useMeta, useQuasar } from 'quasar'
+import { api } from 'boot/axios'
+import draggable from 'vuedraggable'
+import { inject, onMounted, ref } from 'vue'
+import {getMeta, notifyError} from "src/js/myFuncts";
+
+
+const q = useQuasar()
+const apiUrl = String(process.env.API)
+const editMode = inject('editMode')
+const enabled = ref(true)
+const groups = ref([])
+const condDate = ref(moment(new Date()).format('YYYY-MM-DD'))
+
+const metaData = getMeta('Состав оркестра')
+useMeta(metaData)
+
+    function loadData () {
+      api.post(apiUrl + 'api/staff/list.php', {
+        params: {
+          date: condDate.value
+        }
+      })
+        .then((response) => {
+          groups.value = Object.values(response?.data?.data ?? [])
+          console.log(groups.value)
+        })
+        .catch((error) => {
+          groups.value = []
+          q.notify(notifyError(error))
+        })
+    }
+    function staffEdit () {
+      api.post(String(process.env.API) + '/api/staff/update.php', {
+        params: {
+          groups: groups.value,
+          date: condDate.value
+        }
+      })
+        .then((response) => {
+          // console.log('ok')
+        })
+        .catch((error) => {
+          q.notify(notifyError(error))
+        })
+    }
+    function goToPers (id) {
+
+      //window.open(String(process.env.STAFF) + '/pers/' + id, '_blank');
+    }
+onMounted(() => {
+  loadData()
+})
+
+</script>
+
 <template>
   <div class="content">
     <div class="eventsarea">
@@ -34,71 +92,11 @@
             </draggable>
           </div>
         </template>
-        <!--        <StaffGroup v-for="group in groups" :group="group"></StaffGroup>-->
       </div>
       <q-btn v-if="editMode" @click="staffEdit">Сохранить</q-btn>
     </div>
   </div>
 </template>
-
-<script setup>
-import StaffGroup from 'components/StaffGroup.vue'
-import moment from 'moment'
-import { useMeta, useQuasar } from 'quasar'
-import { api } from 'boot/axios'
-import draggable from 'vuedraggable'
-import { inject, onMounted, ref } from 'vue'
-import {notifyError} from "src/js/myFuncts";
-
-
-const q = useQuasar()
-const apiUrl = String(process.env.API)
-const editMode = inject('editMode')
-const enabled = ref(true)
-const groups = ref([])
-const condDate = ref(moment(new Date()).format('YYYY-MM-DD'))
-
-const metaData = {
-  title: 'Состав оркестра'
-}
-useMeta(metaData)
-
-    function loadData () {
-      api.post(apiUrl + 'api/staff/list.php', {
-        params: {
-          date: condDate.value
-        }
-      })
-        .then((response) => {
-          groups.value = response?.data?.data ?? []
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
-    }
-    function staffEdit () {
-      api.post(String(process.env.API) + '/api/staff/update.php', {
-        params: {
-          groups: groups.value,
-          date: condDate.value
-        }
-      })
-        .then((response) => {
-          // console.log('ok')
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
-    }
-    function goToPers (id) {
-
-      //window.open(String(process.env.STAFF) + '/pers/' + id, '_blank');
-    }
-onMounted(() => {
-  loadData()
-})
-
-</script>
 
 <style scoped>
 .gridarea {
