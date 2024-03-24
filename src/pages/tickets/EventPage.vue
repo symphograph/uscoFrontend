@@ -1,13 +1,14 @@
 <script setup>
 import {computed, inject, nextTick, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {authTypeByJWT, notifyError, notifyOK, userIdByJWT} from "src/js/myFuncts";
+import { notifyError} from "src/js/myFuncts";
 import {useMeta, useQuasar} from "quasar";
 import HallUserCell from "components/hall/cells/HallUserCell.vue";
 import {useRoute} from "vue-router";
 import TicketCard from "components/hall/TicketCard.vue";
 import { scroll } from 'quasar'
 import DialogLogin from "components/hall/DialogLogin.vue";
+import { myUser } from 'src/js/myAuth';
 const { getHorizontalScrollPosition, setHorizontalScrollPosition } = scroll
 
 const apiUrl = String(process.env.API)
@@ -54,8 +55,8 @@ const progress = inject('progress')
 
 const AccessToken = inject('AccessToken')
 const SessionToken = inject('SessionToken')
-const userId = userIdByJWT(AccessToken.value) * 1
-const authType = authTypeByJWT(AccessToken.value)
+const userId = myUser.self.id
+const authType = myUser.self.authType
 
 const Announce = ref({})
 provide('Announce', Announce)

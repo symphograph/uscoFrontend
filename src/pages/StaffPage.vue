@@ -21,7 +21,7 @@
               <template #item="{ element, index }">
                 <q-item :clickable="editMode" @click="goToPers(element.persId)">
                   <q-item-section avatar>
-                    <q-avatar size="50px">
+                    <q-avatar size="50px" @click="() => {console.log(element)}">
                       <img :src="apiUrl + element.ava" :alt="index">
                     </q-avatar>
                   </q-item-section>
@@ -91,7 +91,8 @@ useMeta(metaData)
         })
     }
     function goToPers (id) {
-      window.open(String(process.env.STAFF) + '/pers/' + id, '_blank');
+
+      //window.open(String(process.env.STAFF) + '/pers/' + id, '_blank');
     }
 onMounted(() => {
   loadData()

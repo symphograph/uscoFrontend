@@ -1,21 +1,7 @@
 import moment from 'moment'
 import {copyToClipboard, useQuasar} from "quasar";
-import jwt_decode from "jwt-decode";
 
-export class myNotify {
 
-  static q = useQuasar()
-  static ok(msg){
-    const params  = {
-      color: 'positive',
-      position: 'center',
-      message: msg ?? 'Готово',
-      timeout: 100,
-      closeBtn: 'x'
-    }
-    this.q.notify(params)
-  }
-}
 
 export function rateInfo (val) {
   let rates = [1, 0.5, 'гпх', 'гпх', 0.25]
@@ -122,23 +108,6 @@ export function isExpired(error) {
     'Token is Expired',
     'tokens is empty'
   ].includes(error?.response?.data?.error)
-}
-
-export function powersByJWT(jwt) {
-  return jwt_decode(jwt).powers ?? []
-}
-
-export function userIdByJWT(jwt) {
-  return jwt_decode(jwt).uid ?? 0
-}
-
-export function authTypeByJWT(jwt) {
-  return jwt_decode(jwt).authType ?? 0
-}
-
-export function checkPowers(allowed, AccessToken) {
-  let powers = powersByJWT(AccessToken)
-  return allowed.some(l=>powers.includes(l))
 }
 
 export function dynamicForm(path, params, method = 'post') {
@@ -317,6 +286,3 @@ export function imgUrl(apiUrl, md5, ext, size = 0) {
   }
   return `${apiUrl}/img/sized/${size}/${getMD5Path(md5)}/${md5}.${ext}`
 }
-
-
-

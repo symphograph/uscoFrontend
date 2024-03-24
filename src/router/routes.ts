@@ -1,4 +1,6 @@
-const routes = [
+import { RouteRecordRaw } from 'vue-router';
+
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -68,6 +70,6 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/service/Error404Page.vue')
   }
-]
+];
 
-export default routes
+export default routes;

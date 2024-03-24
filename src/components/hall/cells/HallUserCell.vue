@@ -1,6 +1,6 @@
 <script setup>
 import {computed, inject, ref} from "vue";
-import {userIdByJWT} from "src/js/myFuncts";
+import {myJWT} from "src/js/myAuth";
 
 const props = defineProps({
   cell: Object,
@@ -17,7 +17,7 @@ const emit = defineEmits(['reserve', 'returnTicket'])
 const prevPriceType = ref('Invite')
 const prevTicket = ref(0)
 const AccessToken = inject('AccessToken')
-const userId = userIdByJWT(AccessToken.value)*1
+const userId = myJWT.userId()
 
 function findTicket(id) {
   return HallPlan.value.tickets.find(el => el.cellid === id) ?? false

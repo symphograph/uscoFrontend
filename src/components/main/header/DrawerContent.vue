@@ -1,3 +1,18 @@
+<script setup>
+import { inject, ref } from 'vue'
+import TelegramForm from "components/main/TelegramForm.vue";
+import { myUser } from 'src/js/myAuth';
+
+const tabList = inject('tabList')
+const editMode = inject('editMode')
+const admin = inject('admin')
+const AccessToken = inject('AccessToken')
+const SessionToken = inject('SessionToken')
+
+const darkTrigger = inject('darkTrigger')
+const darkSwitch = inject('darkSwitch')
+</script>
+
 <template>
   <div v-if="tabList" class="q-pa-md" style="max-width: 350px;">
     <q-list separator>
@@ -64,7 +79,7 @@
         </q-item-section>
       </q-item>
         <TelegramForm
-          v-if="jwt_decode(AccessToken).authType !== 'telegram'"
+          v-if="myUser.self.authType !== 'telegram'"
           :AccessToken="AccessToken"
           :SessionToken="SessionToken"
         ></TelegramForm>
@@ -73,20 +88,7 @@
 
 </template>
 
-<script setup>
-import { inject, ref } from 'vue'
-import TelegramForm from "components/main/TelegramForm.vue";
-import jwt_decode from "jwt-decode";
 
-const tabList = inject('tabList')
-const editMode = inject('editMode')
-const admin = inject('admin')
-const AccessToken = inject('AccessToken')
-const SessionToken = inject('SessionToken')
-
-const darkTrigger = inject('darkTrigger')
-const darkSwitch = inject('darkSwitch')
-</script>
 
 <style scoped>
 

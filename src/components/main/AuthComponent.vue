@@ -5,10 +5,11 @@
 import {LocalStorage, useQuasar} from "quasar";
 import {inject, onBeforeMount, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {checkPowers, isExpired, notifyError, notifyWarning} from "src/js/myFuncts";
+import {isExpired, notifyError, notifyWarning} from "src/js/myFuncts";
 import {useRoute} from "vue-router";
+import {myUser} from "src/js/myAuth";
 
-//const jwtDecode = jwtDecode()
+
 const q = useQuasar()
 const apiUrl = String(process.env.API)
 const route = useRoute()
@@ -19,6 +20,7 @@ const admin = inject('admin')
 const Halls = inject('Halls')
 
 function loadOptions () {
+  console.log('loadOptions started')
   api.post(apiUrl + 'api/get/options.php', {
     params: {
 
@@ -43,6 +45,7 @@ function loadOptions () {
 
 const AccessToken = inject('AccessToken')
 const SessionToken = inject('SessionToken')
+//const User = inject('User')
 
 const SessionTokenName = 'SessionToken'
 const AccessTokenName = 'AccessToken'
@@ -59,11 +62,13 @@ function setToken(name, value, expires = '90d') {
   if(name === AccessTokenName){
     api.defaults.headers.common['AccessToken'] = value
     AccessToken.value = value
+    myUser.self.AccessToken = value
     loadOptions()
   }
 
   if(name === SessionTokenName){
     SessionToken.value = value
+    myUser.self.SessionToken = value
   }
 }
 
@@ -99,7 +104,7 @@ function refreshAccessToken () {
       }
       setToken('SessionToken', response?.data?.data.SessionToken ?? '')
       setToken('AccessToken', response?.data?.data.AccessToken ?? '')
-      admin.value = checkPowers([4], AccessToken.value)
+      admin.value = myUser.self.isPermit([4])
 
     })
     .catch((error) => {
@@ -130,6 +135,7 @@ onBeforeMount(() => {
   if(!process.env.isDebug){
     api.defaults.headers.common['Accept'] = "application/json"
   }
+  myUser.self = new myUser()
 })
 
 onMounted(() => {
@@ -139,6 +145,10 @@ onMounted(() => {
   } else {
     SessionToken.value = q.cookies.getAll()[SessionTokenName] ?? ''
     AccessToken.value = q.cookies.getAll()[AccessTokenName] ?? ''
+    myUser.self = new myUser(
+      q.cookies.getAll()[AccessTokenName] ?? '',
+      q.cookies.getAll()[SessionTokenName] ?? ''
+    )
     refreshAccessToken()
   }
 })

@@ -6,7 +6,7 @@ import NewsList from 'components/news/NewsList.vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
 import {inject, onMounted, provide, ref} from 'vue'
 import {useMeta, useQuasar} from 'quasar'
-import {getMeta, myNotify} from "src/js/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 
 const q = useQuasar()
 const compactCard = ref(false)
@@ -45,7 +45,7 @@ const progress = inject('progress')
  }
 
 onMounted(() => {
-  myNotify.ok()
+
 })
 </script>
 

@@ -3,7 +3,7 @@ import {onMounted, provide, ref, watch} from "vue";
 import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
 import {useRoute} from "vue-router";
-import {myNotify} from "src/js/myFuncts";
+
 
 const metaData = {
   meta: {
@@ -20,6 +20,9 @@ const q = useQuasar()
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const refAuth = ref()
+
+//const User = ref(new myUser())
+//provide('User', User)
 
 const progress = ref(false)
 provide('progress', progress)
@@ -80,7 +83,7 @@ function showCookieConfirm () {
 }
 
 onMounted(() => {
-  myNotify.q = useQuasar()
+
 
   LocalStorage.set('lastPath',route.path)
   console.log('mainLayout Mounted')

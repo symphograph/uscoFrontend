@@ -68,6 +68,7 @@ onMounted(() => {
     darkTrigger.value = true
     $q.dark.set(LocalStorage.getItem('dark'))
   }
+  document.body.style.backgroundImage = "url('/img/header-bg.jpg')";
 })
 </script>
 
@@ -132,7 +133,6 @@ body, body.body--dark {
   background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url(/img/header-bg.jpg);
 }
 
 .mainText {
