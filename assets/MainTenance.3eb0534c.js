@@ -1,1 +1,0 @@
-import{_ as n,d as t,e as a,h as o,z as c,G as r}from"./index.f8bce937.js";const s={};function _(f,l){const e=t("H1");return a(),o(e,null,{default:c(()=>[r("\u0422\u0435\u0445\u043D\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0440\u0430\u0431\u043E\u0442\u044B")]),_:1})}var p=n(s,[["render",_]]);export{p as default};
