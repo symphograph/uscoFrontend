@@ -33,7 +33,6 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import {ref} from "vue";
-import jwt_decode from "jwt-decode";
 import TelegramForm from "components/main/TelegramForm.vue";
 import VkontakteForm from "components/main/VkontakteForm.vue";
 
