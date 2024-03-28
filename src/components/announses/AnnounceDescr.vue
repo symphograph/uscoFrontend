@@ -56,14 +56,16 @@ function delPoster() {
 
 <template>
   <div class="posterArea relative-position" v-if="Announce.poster">
-    <div style="position: absolute; right: 1em; top:1em; z-index: 10">
-      <BtnDelete throw-confirm
-                 title="Удалить афишу"
-                 tooltip="Удалить афишу"
-                 @onOk="delPoster()"
-      >
-      </BtnDelete>
-    </div>
+    <template v-if="editMode">
+      <div style="position: absolute; right: 1em; top:1em; z-index: 10">
+        <BtnDelete throw-confirm
+                   title="Удалить афишу"
+                   tooltip="Удалить афишу"
+                   @onOk="delPoster()"
+        >
+        </BtnDelete>
+      </div>
+    </template>
     <q-item v-if="Announce.poster.status === 'process'">
       <q-img></q-img>
       <q-item-section>
