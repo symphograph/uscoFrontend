@@ -14,6 +14,8 @@ const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
+
+const Announce = inject('Announce')
 const Halls = inject('Halls')
 const pwUrl = ref('')
 provide('pwUrl', pwUrl)
