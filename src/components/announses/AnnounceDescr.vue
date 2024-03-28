@@ -64,11 +64,18 @@ function delPoster() {
       >
       </BtnDelete>
     </div>
-    <q-img :src="posterUrl">
+    <q-item v-if="Announce.poster.status === 'process'">
+      <q-img></q-img>
+      <q-item-section>
+        <q-inner-loading showing label="Обработка"></q-inner-loading>
+      </q-item-section>
+    </q-item>
+    <q-img :src="posterUrl" v-else>
       <template v-slot:error>
         <img src="/img/news/default_sketch.svg"/>
       </template>
     </q-img>
+
   </div>
   <div class="eventboxin">
     <q-card class="transparent no-padding" flat>

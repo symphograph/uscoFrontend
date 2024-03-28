@@ -64,6 +64,7 @@ function getMimeType(file, fallback = null) {
 let currentMimeType = 'image/jpeg';
 function onAdd(ffff) {
   img.value = URL.createObjectURL(ffff[0]);
+  currentMimeType = ffff[0].type;
 }
 
 function updateBlob() {
@@ -152,7 +153,6 @@ const stencil = computed(() => {
       v-model="model"
       accept="image/*"
       style="width: 100%"
-      label="Загрузить эскиз 16:9"
       :factory="uploadSketch"
       :multiple="false"
       hide-upload-btn

@@ -3,7 +3,7 @@ import DateTime from 'components/announses/DateTime.vue'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import AnnounceCard from 'components/announses/AnnounceCard.vue'
-import {inject, provide, ref} from 'vue'
+import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
@@ -47,8 +47,7 @@ const paySelect = [
   }
 ]
 
-const uploader = ref(null)
-const uploader2 = ref(null)
+const posterUploader = ref(null)
 const rAnnounceCard = ref(null)
 
 
@@ -73,10 +72,29 @@ function addPoster(files) {
   }
 }
 
-function uploaded(info) {
+function sketchUploaded(info) {
   q.notify(notifyOK('Загружено'))
   emit('posterUploaded')
 }
+
+function posterUploaded(info) {
+  q.notify(notifyOK('Загружено'))
+  emit('posterUploaded')
+  posterUploader.value.reset()
+  photoWatcher.value = true
+}
+
+const photoWatcher = ref(false)
+let intervalId = null;
+watch(photoWatcher, (newValue) => {
+  console.log('photoWatcher')
+  if (newValue && !intervalId) {
+    intervalId = setInterval(loadPoster, 3000);
+  } else if (!newValue && intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+});
 
 function failed(info) {
   let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
@@ -124,10 +142,48 @@ function updateMarkdown() {
     })
 }
 
+
+
+function loadPoster() {
+  api.post(apiUrl + 'api/event/poster.php', {
+    params: {
+      method: 'get',
+      announceId: route.params.evid
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+
+      Announce.value.poster = response?.data?.data ?? null
+      if (Announce.value?.poster?.status !== 'process') {
+        photoWatcher.value = false
+      }
+    })
+    .catch((error) => {
+      photoWatcher.value = false
+      q.notify(notifyError(error))
+    })
+    .finally(() => {
+
+    })
+}
+
 defineExpose({
 
 })
 
+onMounted(() => {
+  //photoWatcher.value = true
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+
+})
 </script>
 
 <template>
@@ -154,7 +210,7 @@ defineExpose({
           <div style="width: 100%">
             <SketchUploader :id="Announce.id"
                             :type="'event'"
-                            @onUploaded="uploaded"></SketchUploader>
+                            @onUploaded="sketchUploaded"></SketchUploader>
           </div>
 
         </div>
@@ -207,8 +263,8 @@ defineExpose({
             style="width: 100%"
             label="Загрузить афишу"
             :factory="addPoster"
-            ref="uploader2"
-            @uploaded="uploaded"
+            ref="posterUploader"
+            @uploaded="posterUploaded"
             @failed="failed"
             no-thumbnails
           />
