@@ -17,8 +17,6 @@ const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['uploaded'])
 
-const AccessToken = inject('AccessToken')
-
 const categs = ref([
   {
     id: 1,

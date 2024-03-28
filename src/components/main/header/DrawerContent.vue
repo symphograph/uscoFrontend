@@ -6,8 +6,6 @@ import { myUser } from 'src/js/myAuth';
 const tabList = inject('tabList')
 const editMode = inject('editMode')
 const admin = inject('admin')
-const AccessToken = inject('AccessToken')
-const SessionToken = inject('SessionToken')
 
 const darkTrigger = inject('darkTrigger')
 const darkSwitch = inject('darkSwitch')
@@ -80,8 +78,8 @@ const darkSwitch = inject('darkSwitch')
       </q-item>
         <TelegramForm
           v-if="myUser.self.authType !== 'telegram'"
-          :AccessToken="AccessToken"
-          :SessionToken="SessionToken"
+          :AccessToken="myUser.self.AccessToken"
+          :SessionToken="myUser.self.SessionToken"
         ></TelegramForm>
     </q-list>
   </div>

@@ -37,8 +37,7 @@ const props = defineProps({
   AccessToken: String,
   SessionToken: String
 })
-//const AccessToken = inject('AccessToken')
-//const SessionToken = inject('SessionToken')
+
 const SelfDomain = String(process.env.SelfDomain)
 const authUrl = String(process.env.Auth)
 

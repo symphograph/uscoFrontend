@@ -1,19 +1,24 @@
 <script setup>
-import {Cropper } from 'vue-advanced-cropper'
+import {CircleStencil, Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css';
-import 'vue-advanced-cropper/dist/theme.compact.css';
+//import 'vue-advanced-cropper/dist/theme.compact.css';
 import {computed, inject, ref} from "vue";
 import {notifyError} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import {myUser} from "src/js/myAuth";
 
 const apiUrl = String(process.env.API)
+const apiStaff = String(process.env.apiStaff)
 const q = useQuasar()
 
 const props = defineProps({
-  id: Number,
+  persId: {
+    type: Number,
+    required: true
+  },
   type: String
 })
+
 
 const refCropper = ref()
 const refUploader = ref()
@@ -61,19 +66,7 @@ function getMimeType(file, fallback = null) {
   }
 }
 
-let currentMimeType = 'image/jpeg';
-function onAdd(ffff) {
-  img.value = URL.createObjectURL(ffff[0]);
-}
 
-function updateBlob() {
-  const {canvas} = refCropper.value.getResult();
-
-  canvas.toBlob((blobb) => {
-    blob.value = blobb
-    pwUrl.value = URL.createObjectURL(blobb);
-  }, currentMimeType);
-}
 
 function crop() {
   updateBlob()
@@ -84,6 +77,21 @@ function crop() {
   refUploader.value.reset()
   refUploader.value.addFiles([file])
   refUploader.value.upload()
+}
+
+let currentMimeType = 'image/jpeg';
+function onAdd(ffff) {
+  img.value = URL.createObjectURL(ffff[0]);
+  currentMimeType = ffff[0].type;
+}
+
+function updateBlob() {
+  const {canvas} = refCropper.value.getResult();
+
+  canvas.toBlob((blobb) => {
+    blob.value = blobb
+    pwUrl.value = URL.createObjectURL(blobb);
+  }, currentMimeType);
 }
 
 function onRemove() {
@@ -102,9 +110,9 @@ function onUploaded() {
   emit('onUploaded')
 }
 
-function uploadSketch() {
+function uploadAvatar() {
   return {
-    url: apiUrl + `api/${props.type}/sketch.php`,
+    url: apiStaff + `api/avatar.php`,
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -113,8 +121,8 @@ function uploadSketch() {
     ],
     formFields: [
       {
-        name: 'id',
-        value: props.id
+        name: 'persId',
+        value: props.persId
       }, {
         name: 'method',
         value: 'add',
@@ -139,7 +147,7 @@ const unStrictRatio = ref(false)
 
 const stencil = computed(() => {
   if(!unStrictRatio.value) {
-    return {aspectRatio: 1920/1080}
+    return {aspectRatio: 1, previewClass: 'CircleStencil'}
   }
   return {}
 })
@@ -152,8 +160,9 @@ const stencil = computed(() => {
       v-model="model"
       accept="image/*"
       style="width: 100%"
+      field-name="uploadFileName"
       label="Загрузить эскиз 16:9"
-      :factory="uploadSketch"
+      :factory="uploadAvatar"
       :multiple="false"
       hide-upload-btn
       ref="refUploader"
@@ -165,12 +174,19 @@ const stencil = computed(() => {
     >
       <template v-slot:header="scope">
         <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+          <q-item dense>
+            <q-item-section avatar>
+              <q-avatar>
+                <q-img :src="pwUrl"></q-img>
+              </q-avatar>
+            </q-item-section>
+          </q-item>
           <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
             <q-tooltip>Remove Uploaded Files</q-tooltip>
           </q-btn>
           <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
           <div class="col">
-            <div class="q-uploader__title">Загрузить эскиз</div>
+            <div class="q-uploader__title">Загрузить аватар</div>
             <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
           </div>
           <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
@@ -194,31 +210,17 @@ const stencil = computed(() => {
           class="cropper"
           ref="refCropper"
           :src="img"
-          :canvas="{width: 1920, height: 1080}"
+
           :stencil-props="stencil"
+          :stencil-component="CircleStencil"
           :default-size="defaultSize"
           :default-position="defaultPosition"
           @change="change"
         ></cropper>
       </q-card-section>
-      <q-card-actions align="between">
-        <q-toggle v-model="unStrictRatio" label="Игнорировать соотношение сторон" color="red">
-          <q-tooltip self="top middle" class="bg-red text-black text-body2" :delay="300">
-            <ul>
-              <li>Картинку может растянуть или сплющить.</li>
-              <li>Квадраты станут прямоугольниками.</li>
-              <li>Круги станут овалами.</li>
-              <li>Люди будут выглядеть неестественно толстыми или худыми.</li>
-              <li>Изображение потеряет четкость</li>
-              <li>Изменение пропорций изображения может восприниматься как следствие употребления наркотических веществ</li>
-            </ul>
-
-          </q-tooltip>
-        </q-toggle>
+      <q-card-actions align="right">
         <q-btn label="Готово" color="green" @click="crop"></q-btn>
       </q-card-actions>
-
-
     </q-card>
 
   </template>
@@ -229,5 +231,9 @@ const stencil = computed(() => {
 .cropper {
   width: 100%;
   background: #DDD;
+}
+
+.CircleStencil {
+  border: dashed 1px rgba(255,255,255, 0.25);
 }
 </style>

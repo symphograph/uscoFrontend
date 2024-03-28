@@ -3,8 +3,11 @@ import moment from 'moment'
 import { useMeta, useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 import draggable from 'vuedraggable'
-import { inject, onMounted, ref } from 'vue'
+import {inject, onMounted, provide, ref} from 'vue'
 import {getMeta, notifyError} from "src/js/myFuncts";
+import AvatarDialog from "components/account/AvatarDialog.vue";
+import {myUser} from "src/js/myAuth";
+
 
 
 const q = useQuasar()
@@ -13,6 +16,11 @@ const editMode = inject('editMode')
 const enabled = ref(true)
 const groups = ref([])
 const condDate = ref(moment(new Date()).format('YYYY-MM-DD'))
+const showUploader = ref(false)
+provide('showUploader', showUploader)
+const pwUrl = ref('')
+provide('pwUrl', pwUrl)
+const persId = myUser.self.persId()
 
 const metaData = getMeta('Состав оркестра')
 useMeta(metaData)
@@ -25,7 +33,6 @@ useMeta(metaData)
       })
         .then((response) => {
           groups.value = Object.values(response?.data?.data ?? [])
-          console.log(groups.value)
         })
         .catch((error) => {
           groups.value = []
@@ -47,7 +54,7 @@ useMeta(metaData)
         })
     }
     function goToPers (id) {
-
+      showUploader.value = true
       //window.open(String(process.env.STAFF) + '/pers/' + id, '_blank');
     }
 onMounted(() => {
@@ -77,9 +84,9 @@ onMounted(() => {
               group="people"
             >
               <template #item="{ element, index }">
-                <q-item :clickable="editMode" @click="goToPers(element.persId)">
+                <q-item :clickable="editMode || persId === element.persId" @click="goToPers(element.persId)">
                   <q-item-section avatar>
-                    <q-avatar size="50px" @click="() => {console.log(element)}">
+                    <q-avatar size="50px">
                       <img :src="apiUrl + element.ava" :alt="index">
                     </q-avatar>
                   </q-item-section>
@@ -96,6 +103,7 @@ onMounted(() => {
       <q-btn v-if="editMode" @click="staffEdit">Сохранить</q-btn>
     </div>
   </div>
+<AvatarDialog></AvatarDialog>
 </template>
 
 <style scoped>

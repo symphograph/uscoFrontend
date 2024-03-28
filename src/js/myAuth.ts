@@ -1,7 +1,8 @@
 interface jwtPayload {
   uid: number;
-  powers: Array<number>;
+  powers: number[];
   authType: string;
+  persId: number;
   // другие потенциальные поля...
 }
 
@@ -17,12 +18,12 @@ export class myUser {
   AccessToken: string;
   SessionToken: string;
 
-  constructor(AccessToken: string, SessionToken: string) {
+  constructor(AccessToken: string = '', SessionToken: string = '') {
     this.AccessToken = AccessToken;
     this.SessionToken = SessionToken;
   }
 
-  powers(): Array<number> {
+  powers(): number[] {
     return myJWT.powers(this.AccessToken);
   }
 
@@ -34,8 +35,12 @@ export class myUser {
     return myJWT.userId(this.AccessToken)
   }
 
+  persId(): number {
+    return myJWT.persId(this.AccessToken)
+  }
 
-  isPermit(allowed: Array<number>): boolean
+
+  isPermit(allowed: number[]): boolean
   {
     return allowed.some(l=>this.powers().includes(l))
   }
@@ -43,7 +48,7 @@ export class myUser {
 
 
 export class myJWT {
-  static powers(jwt: string): Array<number> {
+  static powers(jwt: string): number[] {
     const Payload: jwtPayload = this.getPayload(jwt);
     return Payload.powers ?? [];
   }
@@ -72,6 +77,11 @@ export class myJWT {
   static authType(jwt: string): string {
     const Payload: jwtPayload = this.getPayload(jwt);
     return Payload.authType;
+  }
+
+  static persId(jwt: string): number {
+    const Payload: jwtPayload = this.getPayload(jwt);
+    return Payload.persId;
   }
 
 }

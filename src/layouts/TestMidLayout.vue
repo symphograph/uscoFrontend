@@ -5,10 +5,10 @@ import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
 import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
 import {useQuasar} from "quasar";
+import {myUser} from "src/js/myAuth";
 
 
 const $q = useQuasar()
-const AccessToken = inject('AccessToken')
 
 const authTypes = ref([
   {
@@ -66,7 +66,7 @@ onBeforeMount(() => {
 
     <TestMainHeader></TestMainHeader>
 
-    <q-page-container v-if="AccessToken">
+    <q-page-container v-if="myUser.self.AccessToken">
       <q-img src="img/header-bg.jpg" class="mobile-hide" v-if="$route.fullPath === '/test'"></q-img>
       <q-toolbar elevated class="bg-primary text-white shadow-5 scrollTarget">
         <SiteNameDesktop class="desktop-only"></SiteNameDesktop>

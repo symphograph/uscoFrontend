@@ -8,10 +8,9 @@
 <script setup>
 import VideoList from 'components/VideoList.vue'
 import { useMeta } from 'quasar'
+import {getMeta} from "src/js/myFuncts";
 
-const metaData = {
-  title: 'Видео'
-}
+const metaData = getMeta('Видео')
 useMeta(metaData)
 
 const videoLimit = {

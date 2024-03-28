@@ -7,6 +7,7 @@ import {inject, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
+import {myUser} from "src/js/myAuth";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -20,9 +21,6 @@ provide('pwUrl', pwUrl)
 const emit = defineEmits(['reload', 'posterUploaded'])
 
 const model = {}
-const AccessToken = inject('AccessToken')
-
-const Announce = inject('Announce')
 
 function test() {
   //console.log(Announce)
@@ -58,7 +56,7 @@ function addPoster(files) {
     headers: [
       {
         name: 'ACCESSTOKEN',
-        value: AccessToken.value
+        value: myUser.self.AccessToken
       }
     ],
     formFields: [

@@ -1,15 +1,3 @@
-<template>
-  <q-layout v-if="isOptionsLoaded" view="hHh LpR lff">
-    <MainHeader></MainHeader>
-    <AnderHeader></AnderHeader>
-    <q-page-container v-if="AccessToken">
-
-      <router-view/>
-    </q-page-container>
-    <MainFooter></MainFooter>
-  </q-layout>
-</template>
-
 <script setup>
 
 import MainFooter from "components/main/footer/MainFooter.vue";
@@ -17,8 +5,9 @@ import MainHeader from "components/main/header/MainHeader.vue";
 import {inject, provide, onBeforeMount, ref} from "vue";
 import AnderHeader from "components/main/header/AnderHeader.vue";
 import {Dark} from "quasar";
+import {myUser} from "src/js/myAuth";
 
-const AccessToken = inject('AccessToken')
+
 const isOptionsLoaded = inject('isOptionsLoaded')
 
 const authTypes = ref([
@@ -56,6 +45,16 @@ onBeforeMount(() => {
 })
 </script>
 
+<template>
+  <q-layout v-if="isOptionsLoaded" view="hHh LpR lff">
+    <MainHeader></MainHeader>
+    <AnderHeader></AnderHeader>
+    <q-page-container v-if="myUser.self.AccessToken">
+      <router-view/>
+    </q-page-container>
+    <MainFooter></MainFooter>
+  </q-layout>
+</template>
 
 <style>
 body{

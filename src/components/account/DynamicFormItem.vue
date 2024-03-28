@@ -1,9 +1,22 @@
+<script setup>
+import {dynamicForm} from "src/js/myFuncts";
+import {useQuasar} from "quasar";
+import {myUser} from "src/js/myAuth";
+
+const q = useQuasar()
+const props = defineProps({
+  btnLabel: String,
+  icon: String,
+  url: String
+})
+</script>
+
 <template>
       <q-item clickable
               dark
               @click="dynamicForm(url, {
-                AccessToken: AccessToken,
-                SessionToken: SessionToken
+                AccessToken: myUser.self.AccessToken,
+                SessionToken: myUser.self.SessionToken
               })"
       >
         <q-item-section avatar>
@@ -18,24 +31,6 @@
         </q-item-section>
       </q-item>
 </template>
-
-<script setup>
-
-import {inject} from "vue";
-import {dynamicForm} from "src/js/myFuncts";
-import {useQuasar} from "quasar";
-
-const q = useQuasar()
-const props = defineProps({
-  btnLabel: String,
-  icon: String,
-  url: String
-})
-const AccessToken = inject('AccessToken')
-const SessionToken = inject('SessionToken')
-</script>
-
-
 
 <style scoped>
 

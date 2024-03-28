@@ -53,8 +53,6 @@ provide('defaultPricing', Pricing)
 
 const progress = inject('progress')
 
-const AccessToken = inject('AccessToken')
-const SessionToken = inject('SessionToken')
 const userId = myUser.self.id
 const authType = myUser.self.authType
 
@@ -109,8 +107,8 @@ function diaLogin () {
       text: 'Войдите, чтобы сохранить',
       okBtnText: 'В настройки',
       cancelBtnText: 'Не сейчас',
-      AccessToken: AccessToken.value,
-      SessionToken: SessionToken.value
+      AccessToken: myUser.self.AccessToken,
+      SessionToken: myUser.self.SessionToken
       // ...more..props...
     },
     cancel: true,

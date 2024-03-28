@@ -43,9 +43,9 @@ function loadOptions () {
 //--------------------------------------------------------------------
 
 
-const AccessToken = inject('AccessToken')
-const SessionToken = inject('SessionToken')
-//const User = inject('User')
+const AccessToken = ref('')
+const SessionToken = ref('')
+
 
 const SessionTokenName = 'SessionToken'
 const AccessTokenName = 'AccessToken'
@@ -63,7 +63,6 @@ function setToken(name, value, expires = '90d') {
     api.defaults.headers.common['AccessToken'] = value
     AccessToken.value = value
     myUser.self.AccessToken = value
-    loadOptions()
   }
 
   if(name === SessionTokenName){
@@ -82,8 +81,10 @@ function register(){
       if(!!!response?.data?.result){
         throw new Error();
       }
-      setToken('SessionToken', response?.data?.data.SessionToken ?? '')
-      setToken('AccessToken', response?.data?.data.AccessToken ?? '')
+      setToken(AccessTokenName, response?.data?.data.AccessToken ?? '')
+      setToken(SessionTokenName, response?.data?.data.SessionToken ?? '')
+      loadOptions()
+
     })
     .catch((error) => {
       q.notify(notifyError(error))
@@ -94,17 +95,18 @@ provide('register', register)
 function refreshAccessToken () {
   api.post(String(process.env.Auth) + '/api/refresh.php', {
     params: {
-      SessionToken: SessionToken.value,
-      AccessToken: AccessToken.value
+      SessionToken: myUser.self.SessionToken,
+      AccessToken: myUser.self.AccessToken
     }
   })
     .then((response) => {
       if(!!!response?.data?.result){
         throw new Error();
       }
-      setToken('SessionToken', response?.data?.data.SessionToken ?? '')
-      setToken('AccessToken', response?.data?.data.AccessToken ?? '')
+      setToken(SessionTokenName, response?.data?.data.SessionToken ?? '')
+      setToken(AccessTokenName, response?.data?.data.AccessToken ?? '')
       admin.value = myUser.self.isPermit([4])
+      loadOptions()
 
     })
     .catch((error) => {
@@ -117,15 +119,7 @@ function refreshAccessToken () {
 }
 provide('refreshAccessToken', refreshAccessToken)
 
-function refreshIfNeed(error) {
-  if(!isExpired(error)){
-    return false
-  }
-  refreshAccessToken()
-  q.notify(notifyWarning(null, 'Ой! Еще раз, пожалуйста.'))
-  return true
-}
-provide('refreshIfNeed', refreshIfNeed)
+
 defineExpose({
   //fnFromChild
 })
@@ -143,12 +137,8 @@ onMounted(() => {
   if(!!!q.cookies.getAll()[AccessTokenName] || !!!q.cookies.getAll()[SessionTokenName]){
     register()
   } else {
-    SessionToken.value = q.cookies.getAll()[SessionTokenName] ?? ''
-    AccessToken.value = q.cookies.getAll()[AccessTokenName] ?? ''
-    myUser.self = new myUser(
-      q.cookies.getAll()[AccessTokenName] ?? '',
-      q.cookies.getAll()[SessionTokenName] ?? ''
-    )
+    setToken(SessionTokenName, q.cookies.getAll()[SessionTokenName])
+    setToken(AccessTokenName, q.cookies.getAll()[AccessTokenName])
     refreshAccessToken()
   }
 })

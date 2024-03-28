@@ -10,13 +10,11 @@ const props = defineProps({
 const colors = inject('colors')
 const ticketMutable = ref(props.ticket)
 const HallPlan = inject('HallPlan')
-//const selectedMode = inject('selectedMode')
+
 const emit = defineEmits(['reserve', 'returnTicket'])
-//const selectedPrice = inject('selectedPrice')
-//const addCountable = inject('addCountable')
+
 const prevPriceType = ref('Invite')
 const prevTicket = ref(0)
-const AccessToken = inject('AccessToken')
 const userId = myJWT.userId()
 
 function findTicket(id) {

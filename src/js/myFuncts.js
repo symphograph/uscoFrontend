@@ -267,6 +267,7 @@ export function getMeta(title, scale = 1) {
         name: 'viewport',
         content: `initial-scale=${scale}, width=device-width, user-scalable=yes`
       },
+      equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' }
     }
   }
 }

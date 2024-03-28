@@ -17,13 +17,13 @@ const q = useQuasar()
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const editMode = inject('editMode')
-const pTitle = ref('Новость')
 const isError = ref(false)
 const loading = ref(true)
 const editorRef = ref()
 
-const metaData = getMeta(pTitle.value || 'Новость')
-useMeta(metaData)
+useMeta(() => {
+  return getMeta(Entry?.value?.title ?? 'Новость')
+})
 
 
 function loadData() {
@@ -40,9 +40,7 @@ function loadData() {
         throw new Error();
       }
       Entry.value = response?.data?.data ?? null
-      pTitle.value = Entry?.value?.title ?? ''
-      const metaData = getMeta(pTitle.value || 'Новость')
-      useMeta(metaData)
+
     })
     .catch((error) => {
       isError.value = true

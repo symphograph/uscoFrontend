@@ -6,9 +6,10 @@ import {api} from "boot/axios";
 import {useQuasar} from "quasar";
 import {useRoute} from "vue-router";
 import BtnDelete from "components/main/BtnDelete.vue";
+import {myUser} from "src/js/myAuth";
 
 const apiUrl = String(process.env.API)
-const AccessToken = inject('AccessToken')
+
 const q = useQuasar()
 const route = useRoute()
 
@@ -47,7 +48,7 @@ function addPhoto() {
     headers: [
       {
         name: 'ACCESSTOKEN',
-        value: AccessToken.value
+        value: myUser.self.AccessToken
       }
     ],
     formFields: [{

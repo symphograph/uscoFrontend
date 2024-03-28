@@ -1,7 +1,7 @@
 <template>
   <q-layout v-if="isOptionsLoaded" view="hHh lpR lfr">
     <MainHeader></MainHeader>
-    <q-page-container v-if="AccessToken" style="height: 100vh">
+    <q-page-container v-if="myUser.self.AccessToken" style="height: 100vh">
       <router-view/>
     </q-page-container>
   </q-layout>
@@ -9,15 +9,11 @@
 
 <script setup>
 
-import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
-import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
-import MainFooter from "components/main/footer/MainFooter.vue";
 import MainHeader from "components/main/header/MainHeader.vue";
 import {inject, onMounted} from "vue";
 import {Dark, useMeta} from "quasar";
+import {myUser} from "src/js/myAuth";
 
-
-const AccessToken = inject('AccessToken')
 const isOptionsLoaded = inject('isOptionsLoaded')
 
 onMounted(() => {

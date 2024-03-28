@@ -6,10 +6,10 @@ import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
 import {LocalStorage, useQuasar} from "quasar";
 import AnderHeader from "components/main/header/AnderHeader.vue";
+import {myUser} from "src/js/myAuth";
 
 
 const $q = useQuasar()
-const AccessToken = inject('AccessToken')
 const isMounted = ref(false)
 
 const authTypes = ref([
@@ -77,7 +77,7 @@ onMounted(() => {
 
     <MainHeader></MainHeader>
 
-    <q-page-container v-if="AccessToken">
+    <q-page-container v-if="myUser.self.AccessToken">
         <AnderHeader></AnderHeader>
         <div class="bgArea">
           <div class="pageArea">

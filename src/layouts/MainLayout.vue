@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, provide, ref, watch} from "vue";
+import {onBeforeMount, onMounted, provide, ref, watch} from "vue";
 import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
 import {useRoute} from "vue-router";
@@ -37,10 +37,10 @@ const leftDrawerOpen = ref(false)
 provide('leftDrawerOpen', leftDrawerOpen)
 
 const AccessToken = ref('gfdsg')
-provide('AccessToken', AccessToken)
+//provide('AccessToken', AccessToken)
 
 const SessionToken = ref('gfdsg')
-provide('SessionToken', SessionToken)
+//provide('SessionToken', SessionToken)
 
 const isOptionsLoaded = ref(false)
 provide('isOptionsLoaded', isOptionsLoaded)
@@ -81,6 +81,10 @@ function showCookieConfirm () {
     ]
   })
 }
+
+onBeforeMount(() => {
+  console.log('mainLayout beforeMount')
+})
 
 onMounted(() => {
 
