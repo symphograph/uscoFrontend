@@ -102,7 +102,7 @@ function maintenance() {
 }
 
 onBeforeMount(() => {
-  maintenance()
+  //maintenance()
   console.log('mainLayout beforeMount')
 })
 

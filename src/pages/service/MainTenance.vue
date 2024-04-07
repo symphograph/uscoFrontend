@@ -13,6 +13,17 @@
       <q-card-section>
         <q-item-label caption>Мы тут кое-что улучшаем. Скоро всё заработает.</q-item-label>
       </q-card-section>
+      <q-card-section>
+        <q-btn
+          class="q-mt-xl"
+          color="white"
+          text-color="blue"
+          unelevated
+          to="/"
+          label="Попробовать снова"
+          no-caps
+        />
+      </q-card-section>
     </q-card>
   </div>
 </template>
