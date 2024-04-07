@@ -64,12 +64,13 @@ const title = ref('Состав оркестра')
 const metaData = getMeta(title.value)
 useMeta(metaData)
 
-function loadActionDates() {
+function loadActionDates(force = false) {
   actionDates.value = []
   console.log('start loadActionDates')
   return api.post(apiStaff + 'api/staff.php', {
     params: {
-      method: 'actionDates'
+      method: 'actionDates',
+      force: force
     }
   })
     .then((response) => {
@@ -152,6 +153,7 @@ onMounted(() => {
   loadActionDates().then(() => {
     loadData()
   })
+  console.log(moment(new Date()).format('YYYY-MM-DD'))
 
 })
 
@@ -166,6 +168,12 @@ onMounted(() => {
     </q-toolbar>
     <q-toolbar>
       <q-space></q-space>
+      <q-btn icon="update"
+             v-if="myUser.self.isPermit([1,2])"
+             flat
+             @click="loadActionDates(true)">
+        <q-tooltip>Жестко обновить даты</q-tooltip>
+      </q-btn>
       <q-btn icon="edit"
              v-if="myUser.self.isPermit([1,2,3])"
              flat

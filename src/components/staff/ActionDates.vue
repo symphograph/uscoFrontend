@@ -11,10 +11,10 @@ const today = moment(new Date()).format('YYYY-MM-DD')
 const staffEditMode = inject('staffEditMode')
 
 function events() {
-  return actionDates.value.map(date => fDate(date, 'YYYY/MM/DD'));
+  let dates = actionDates.value.map(date => fDate(date, 'YYYY/MM/DD'));
+  dates.push(moment(new Date()).format('YYYY/MM/DD'))
+  return Array.from(new Set(dates)).sort();
 }
-
-
 
 function minYearMonth() {
   const date = actionDates.value[0] ?? undefined
@@ -48,7 +48,7 @@ function nextDate() {
   condDate.value = date
   loadData()
 }
-const disableNext = ref(false)
+
 </script>
 
 <template>
