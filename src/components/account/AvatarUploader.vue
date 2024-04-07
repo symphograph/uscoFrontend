@@ -26,7 +26,7 @@ const model = {}
 
 const emit = defineEmits(['onUploaded'])
 
-
+const original = ref('')
 const img = ref('')
 const blob = ref('')
 const image = ref({
@@ -71,17 +71,19 @@ function getMimeType(file, fallback = null) {
 function crop() {
   updateBlob()
   const source = refUploader.value.queuedFiles[0]
-  const fileName = source.name.replace(/[\[\]]/g, '_')
-  const file = new File([blob.value], fileName, {type: source.type});
+  // const fileName = source.name.replace(/[\[\]]/g, '_')
+  const file = new File([blob.value], 'crop', {type: source.type});
+  const file2 = new File([original.value], 'source', {type: source.type});
 
   refUploader.value.reset()
-  refUploader.value.addFiles([file])
+  refUploader.value.addFiles([file,file2])
   refUploader.value.upload()
 }
 
 let currentMimeType = 'image/jpeg';
 function onAdd(ffff) {
   img.value = URL.createObjectURL(ffff[0]);
+  original.value = ffff[0]
   currentMimeType = ffff[0].type;
 }
 
@@ -160,10 +162,10 @@ const stencil = computed(() => {
       v-model="model"
       accept="image/*"
       style="width: 100%"
-      field-name="uploadFileName"
       label="Загрузить эскиз 16:9"
       :factory="uploadAvatar"
-      :multiple="false"
+      :multiple="true"
+      batch
       hide-upload-btn
       ref="refUploader"
       @added="onAdd"

@@ -1,5 +1,5 @@
 import moment from 'moment'
-import {copyToClipboard, useQuasar} from "quasar";
+import {copyToClipboard} from "quasar";
 
 
 
@@ -74,6 +74,9 @@ export function notifyOK (message = 'Готово') {
   }
 }
 
+/**
+*@returns QNotifyCreateOptions
+ */
 export function notifyError (error, defaultMsg = 'Ой! Не работает :(') {
   return {
     color: 'negative',

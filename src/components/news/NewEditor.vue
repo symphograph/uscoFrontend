@@ -2,7 +2,7 @@
 
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
-import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
+import {computed, inject, onMounted, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
@@ -16,6 +16,11 @@ const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['uploaded'])
+const announces = ref([])
+const selectedAnnounce = computed(() => {
+  if(!announces.value.length) return null
+  return announces.value.find(el => el.id === Event.value?.announceId) || null
+})
 
 const categs = ref([
   {
@@ -163,6 +168,26 @@ function delEntry() {
     })
 }
 
+function loadFutureAnnounces() {
+
+  api.post(apiUrl + 'api/event/announce.php', {
+    params: {
+      method: 'futureList',
+      date: Entry.value.date
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        throw new Error();
+      }
+      announces.value = []
+      announces.value = response?.data?.data || []
+    })
+    .catch((error) => {
+      q.notify(notifyError(error))
+    })
+}
+
 function hideOrShow() {
   api.post(apiUrl + 'api/news/entry.php', {
     params: {
@@ -223,6 +248,7 @@ defineExpose({
 })
 
 onMounted(() => {
+  loadFutureAnnounces()
   //photoWatcher.value = true
 })
 </script>
@@ -282,22 +308,76 @@ onMounted(() => {
         <q-input type="date"
                  v-model="Entry.date"
                  label="Дата публикации"
+                 @change="loadFutureAnnounces()"
         ></q-input>
-        <q-input v-model="Entry.refName"
-                 label="Текст ссылки на источник"
-                 type="text"
-        ></q-input>
-        <q-input v-model="Entry.refLink"
-                 label="Адрес ссылки на источник"
-                 type="text"
-                 placeholder="https://example.com"
+        <q-select v-model="Entry.announceId"
+                  :options="announces"
+                  clearable
+                  emit-value
+                  map-options
+                  option-value="id"
+                  option-label="progName"
+                  label="Перенаправлять на анонс"
+                  stack-label
         >
-          <template v-slot:append>
-            <q-toggle v-model="Entry.isExternal" color="green">
-              <q-tooltip>При клике в ленте открывать источник</q-tooltip>
-            </q-toggle>
+          <template v-slot:selected-item="scope" v-if="announces.length">
+            <q-item v-if="scope.opt">
+              <q-item-section avatar>
+                <q-img width="100px" :src="imgUrl(apiUrl,scope.opt?.sketch?.md5,scope.opt?.sketch?.ext,100)"
+                       :ratio="16/9"
+                       fit="fill"
+                ></q-img>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  {{ scope.opt.progName }}
+                </q-item-label>
+                <q-item-label caption>
+                  {{ scope.opt.eventTime }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
           </template>
-        </q-input>
+          <template v-slot:option="scope" v-if="announces.length">
+              <q-item v-bind="scope.itemProps"
+                      dense
+                      class="optionItem"
+                      v-if="scope.opt.isShow">
+                <q-item-section avatar>
+                  <q-img width="100px" :src="imgUrl(apiUrl,scope.opt?.sketch?.md5,scope.opt?.sketch?.ext,100)"
+                         :ratio="16/9"
+                         fit="fill"
+                  ></q-img>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>
+                    {{ scope.opt.progName }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    {{ scope.opt.eventTime }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+          </template>
+        </q-select>
+        <template v-if="!Entry.announceId">
+          <q-input v-model="Entry.refName"
+                   label="Текст ссылки на источник"
+                   type="text"
+          ></q-input>
+          <q-input v-model="Entry.refLink"
+                   label="Адрес ссылки на источник"
+                   type="text"
+                   placeholder="https://example.com"
+          >
+            <template v-slot:append>
+              <q-toggle v-model="Entry.isExternal" color="green">
+                <q-tooltip>При клике в ленте открывать источник</q-tooltip>
+              </q-toggle>
+            </template>
+          </q-input>
+        </template>
+
       </div>
       <div id="categs"
            class="input">
@@ -317,23 +397,25 @@ onMounted(() => {
         </q-list>
       </div>
     </div>
-    <PhotoUploader></PhotoUploader>
+    <template v-if="!Entry.announceId">
+      <PhotoUploader></PhotoUploader>
 
+      <q-separator spaced="2em"></q-separator>
 
-    <q-separator spaced="2em"></q-separator>
+      <q-input label="Текст новости"
+               type="textarea"
+               autogrow
+               outlined
+               input-style="{padding: 5em}"
+               padding="1em"
+               v-model="Entry.markdown"
+               :debounce="300"
+               @update:model-value="updateMarkdown()"
+               dense
+      >
+      </q-input>
+    </template>
 
-    <q-input label="Текст новости"
-             type="textarea"
-             autogrow
-             outlined
-             input-style="{padding: 5em}"
-             padding="1em"
-             v-model="Entry.markdown"
-             :debounce="300"
-             @update:model-value="updateMarkdown()"
-             dense
-    >
-    </q-input>
 
 
     <div style="display: flex; justify-content: flex-end; grid-gap:1em; padding: 1em;">
@@ -382,5 +464,9 @@ onMounted(() => {
 
 .nimg_block:hover {
   box-shadow: 1px 2px 5px #000000;
+}
+
+.optionItem {
+  width: 30em;
 }
 </style>

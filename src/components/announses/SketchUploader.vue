@@ -2,10 +2,11 @@
 import {Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css';
 import 'vue-advanced-cropper/dist/theme.compact.css';
-import {computed, inject, ref} from "vue";
+import {computed, inject, provide, ref, watch} from "vue";
 import {notifyError} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import {myUser} from "src/js/myAuth";
+import RecommendsDialog from "components/sketch/RecommendsDialog.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -17,10 +18,14 @@ const props = defineProps({
 
 const refCropper = ref()
 const refUploader = ref()
+const refPickBtn = ref()
 const model = {}
 
 const emit = defineEmits(['onUploaded'])
 
+const showRecommends = ref(false)
+provide('showRecommends', showRecommends)
+const isRecommendsConfirmed = ref(false)
 
 const img = ref('')
 const blob = ref('')
@@ -131,6 +136,15 @@ function defaultSize({ imageSize, visibleArea }) {
   };
 }
 
+function onConfirm() {
+  isRecommendsConfirmed.value = true
+}
+
+function openConfirm() {
+  showRecommends.value = true;
+}
+
+
 const defaultPosition = {
   left: 0,
   top: 0
@@ -149,44 +163,60 @@ const stencil = computed(() => {
 </script>
 
 <template>
-    <q-uploader
-      v-model="model"
-      accept="image/*"
-      style="width: 100%"
-      :factory="uploadSketch"
-      :multiple="false"
-      hide-upload-btn
-      ref="refUploader"
-      @added="onAdd"
-      @removed="onRemove"
-      @uploaded="onUploaded"
-      @failed="failed"
-      no-thumbnails
-    >
-      <template v-slot:header="scope">
-        <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-          <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
-            <q-tooltip>Remove Uploaded Files</q-tooltip>
-          </q-btn>
-          <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
-          <div class="col">
-            <div class="q-uploader__title">Загрузить эскиз</div>
-            <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
-          </div>
-          <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
-            <q-uploader-add-trigger />
+  <q-uploader
+    v-model="model"
+    accept="image/*"
+    style="width: 100%"
+    :factory="uploadSketch"
+    :multiple="false"
+    hide-upload-btn
+    ref="refUploader"
+    @added="onAdd"
+    @removed="onRemove"
+    @uploaded="onUploaded"
+    @failed="failed"
+    @start="(evt) => {console.log(evt)}"
+    no-thumbnails
+  >
+    <template v-slot:header="scope">
+      <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+        <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
+          <q-tooltip>Remove Uploaded Files</q-tooltip>
+        </q-btn>
+        <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+        <div class="col">
+          <div class="q-uploader__title">Загрузить эскиз</div>
+          <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+        </div>
+        <template v-if="isRecommendsConfirmed">
+          <q-btn v-if="scope.canAddFiles" type="a" icon="add_box"
+                 @click="scope.pickFiles"
+                 round dense flat>
+            <q-uploader-add-trigger/>
             <q-tooltip>Выбрать файл</q-tooltip>
           </q-btn>
-          <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="crop" round dense flat >
-            <q-tooltip>Загрузить</q-tooltip>
+        </template>
+        <template v-else>
+          <q-btn icon="add_box"
+                 @click="showRecommends= true"
+                 round dense flat>
+            <q-tooltip>Выбрать файл</q-tooltip>
           </q-btn>
+        </template>
 
-          <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
-            <q-tooltip>Abort Upload</q-tooltip>
-          </q-btn>
-        </div>
-      </template>
-    </q-uploader>
+        <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="crop" round dense flat >
+          <q-tooltip>Загрузить</q-tooltip>
+        </q-btn>
+
+        <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
+          <q-tooltip>Abort Upload</q-tooltip>
+        </q-btn>
+        <q-btn icon="help" flat round @click="showRecommends = true">
+          <q-tooltip>Рекомендации к эскизу</q-tooltip>
+        </q-btn>
+      </div>
+    </template>
+  </q-uploader>
   <template v-if="refUploader?.queuedFiles.length">
     <q-card dark style="width: 100%">
       <q-card-section>
@@ -217,12 +247,9 @@ const stencil = computed(() => {
         </q-toggle>
         <q-btn label="Готово" color="green" @click="crop"></q-btn>
       </q-card-actions>
-
-
     </q-card>
-
   </template>
-
+  <RecommendsDialog @confirmed="onConfirm()"></RecommendsDialog>
 </template>
 
 <style scoped>

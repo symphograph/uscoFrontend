@@ -194,4 +194,10 @@ body, body.body--dark {
 .pageToolbar .selectors > * {
   margin-left: 1em;
 }
+
+.cardTitle {
+  font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+  font-size: 20px;
+  color: var(--docTitle);
+}
 </style>

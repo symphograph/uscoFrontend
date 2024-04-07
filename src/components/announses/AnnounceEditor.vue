@@ -1,4 +1,5 @@
 <script setup>
+import 'src/css/dialog.css'
 import DateTime from 'components/announses/DateTime.vue'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'

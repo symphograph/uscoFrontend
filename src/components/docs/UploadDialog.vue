@@ -178,7 +178,7 @@ onMounted(() => {
 
 <template>
   <q-dialog v-model="dialog">
-    <q-card dark bordered class="dialogArea">
+    <q-card bordered class="dialogArea">
       <q-btn flat
              round
              size="0.7em"
@@ -190,7 +190,7 @@ onMounted(() => {
       </q-btn>
       <q-form ref="formRef">
         <q-card-section>
-          <q-item dark dense>
+          <q-item dense>
             <q-item-section>
               <q-item-label caption>Загрузка документа в категорию:</q-item-label>
               <q-item-label>
@@ -208,7 +208,6 @@ onMounted(() => {
             stack-label
             outlined
             :clearable="!isUploading"
-            dark
             accept=".doc, .docx, .xls, .xlsx, .csv, .pdf"
           >
             <template v-slot:prepend>
@@ -260,7 +259,6 @@ onMounted(() => {
                    ref="titleRef"
                    clearable
                    outlined
-                   dark
                    label="Имя документа [ru]"
                    stack-label
                    lazy-rules
@@ -284,16 +282,15 @@ onMounted(() => {
                    prefix="от "
                    hide-hint
                    :rules="[val => (val && val.length > 0 && isDate(val, ['DD.MM.YYYY'])) || '']"
-                   dark outlined clearable>
+                   outlined clearable>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer" color="amber">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="atDate"
-                          dark
                           color="yellow-9"
                           mask="DD.MM.YYYY">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Закрыть" class="dialog-goldBtn" flat dark/>
+                      <q-btn v-close-popup label="Закрыть" class="dialog-goldBtn" flat/>
                     </div>
                   </q-date>
                 </q-popup-proxy>
