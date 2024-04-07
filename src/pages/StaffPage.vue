@@ -120,8 +120,8 @@ function staffEdit() {
 }
 
 function openAvaDialog(id) {
-  if(!staffEditMode.value || persId.value !== id) {
-    console.log('no Access')
+  if(!staffEditMode.value && persId !== id) {
+    return
   }
   selectedPersId.value = id
   showUploader.value = true

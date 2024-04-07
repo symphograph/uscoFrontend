@@ -153,13 +153,18 @@ function downloadSource(fileId) {
     })
 }
 
+function onHide() {
+  selectedPersId.value = 0
+  avaList.value = []
+}
+
 onMounted(() => {
 
 })
 </script>
 
 <template>
-  <q-dialog v-model="showUploader" @show="loadAvatars">
+  <q-dialog v-model="showUploader" @show="loadAvatars" @hide="onHide()">
     <q-card dark bordered class="dialogArea">
       <q-list v-if="avaList.length">
         <q-item v-for="ava in avaList"
