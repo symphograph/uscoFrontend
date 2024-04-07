@@ -2,9 +2,11 @@
 import {onBeforeMount, onMounted, provide, ref, watch} from "vue";
 import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import {api} from "boot/axios";
 
 
+const router = useRouter()
 const metaData = {
   meta: {
     viewport: {
@@ -82,7 +84,25 @@ function showCookieConfirm () {
   })
 }
 
+function maintenance() {
+  api.post(apiUrl + 'debug/debug.php', {
+    params: {
+      method: 'isDebugIp',
+      client: 'usso',
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.data?.is) {
+        throw new Error();
+      }
+    })
+    .catch(() => {
+      router.push({path: '/maintenance'})
+    })
+}
+
 onBeforeMount(() => {
+  maintenance()
   console.log('mainLayout beforeMount')
 })
 

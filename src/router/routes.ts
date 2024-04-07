@@ -68,7 +68,8 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it AlexandrZrazaev
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/service/Error404Page.vue')
+    component: () => import('layouts/RootLayout.vue'),
+    children: [{path: '', component: () => import('pages/service/Error404Page.vue')}]
   }
 ];
 
