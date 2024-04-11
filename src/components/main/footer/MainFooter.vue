@@ -2,7 +2,7 @@
 
   <q-footer class="bg-grey-8 text-white">
     <PartnersBlock></PartnersBlock>
-    <GosUslugi2023></GosUslugi2023>
+    <GosUslugi2023 v-if="!isDebug"></GosUslugi2023>
 
     <div class="footer">
       <div class="footcol">

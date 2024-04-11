@@ -1,12 +1,12 @@
 .goldBtn {
-  color: goldenrod;
-  border: 1px solid goldenrod;
+  color: var(--btnColor);
+  border: 1px solid var(--btnColor);
 }
 
 .dialogArea {
   color: var(--mainText);
-  border: 1px solid var(--cardBorder);
-  padding: 1em 2em;
+  border: none;
+  box-shadow: 3px 3px 5px -3px #000;
   width: 100%;
   background: var(--cardGradient);
 }

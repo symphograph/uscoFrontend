@@ -9,6 +9,7 @@ const admin = inject('admin')
 
 const darkTrigger = inject('darkTrigger')
 const darkSwitch = inject('darkSwitch')
+const showLoginDialog = inject('showLoginDialog')
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const darkSwitch = inject('darkSwitch')
       <q-item clickable v-close-popup tabindex="0" to="/">
         <q-item-section avatar>
           <q-avatar square>
-            <img src="/usso.logo.svg">
+            <img src="/usso.logo.svg" alt="img">
           </q-avatar>
         </q-item-section>
         <q-item-section>
@@ -25,6 +26,7 @@ const darkSwitch = inject('darkSwitch')
           <q-item-label lines="2" caption>Главная страница</q-item-label>
         </q-item-section>
       </q-item>
+
       <template v-for="tab in tabList" :key="tab.id">
         <q-expansion-item
           v-if="tab.expand"
@@ -53,6 +55,7 @@ const darkSwitch = inject('darkSwitch')
           <q-item-section>{{ tab.label }}</q-item-section>
         </q-item>
       </template>
+
       <q-item tag="label" v-ripple v-if="admin">
         <q-item-section avatar>
           <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'">
@@ -65,6 +68,7 @@ const darkSwitch = inject('darkSwitch')
           <q-toggle v-model="editMode" left-label color="red"></q-toggle>
         </q-item-section>
       </q-item>
+
       <q-item clickable>
         <q-item-section>
           <q-toggle checked-icon="nightlight"
@@ -76,11 +80,26 @@ const darkSwitch = inject('darkSwitch')
                     @update:modelValue="darkSwitch()"></q-toggle>
         </q-item-section>
       </q-item>
-        <TelegramForm
-          v-if="myUser.self.authType !== 'telegram'"
-          :AccessToken="myUser.self.AccessToken"
-          :SessionToken="myUser.self.SessionToken"
-        ></TelegramForm>
+
+      <template v-if="!myUser.self.isPermit([11])">
+        <q-item clickable @click="showLoginDialog = true">
+          <q-item-section avatar>
+            <q-icon name="login"></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Служебный вход</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+      <template v-else>
+        <q-item clickable to="/profile">
+          <q-item-section>
+            <q-item-label>
+              Ваш профиль
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
     </q-list>
   </div>
 

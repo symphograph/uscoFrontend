@@ -13,7 +13,6 @@ const props = defineProps({
 
 <template>
       <q-item clickable
-              dark
               @click="dynamicForm(url, {
                 AccessToken: myUser.self.AccessToken,
                 SessionToken: myUser.self.SessionToken

@@ -13,7 +13,7 @@ const docList = computed(() =>
 
 const filterInput = inject('filterInput')
 const filteredList = computed(() =>
-  docList.value.slice().filter(v => v.title.toLowerCase().includes(filterInput.value))
+  docList.value.slice().filter(v => v.title.toLowerCase().includes(filterInput.value.toLowerCase()))
 )
 
 function getFolderTitle(id) {

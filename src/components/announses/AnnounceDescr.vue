@@ -179,7 +179,7 @@ function delPoster() {
 
       <q-card-actions align="right">
 
-        <q-btn :href="vkHref()" target="_blank" icon="ion-logo-vk" outline style="color: var(--docTitle)"
+        <q-btn :href="vkHref()" target="_blank" outline icon="img:/img/logo/vk/VK Logo Black & White.svg"
                label="Поделиться"></q-btn>
       </q-card-actions>
     </q-card>

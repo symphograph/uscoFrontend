@@ -53,10 +53,9 @@ onMounted(() => {
 
 <template>
 <q-dialog v-model="folderNameDialog" @beforeShow="initFolder()">
-  <q-card dark class="dialogArea">
+  <q-card class="dialogArea">
     <q-card-section>
       <q-input v-model="folderName"
-               dark
                clearable
                outlined
                label="Имя папки"
@@ -66,7 +65,6 @@ onMounted(() => {
                  class="goldBtn"
                  v-if="folderName && folderName.length"
                  @click="rename()">
-
           </q-btn>
         </template>
       </q-input>

@@ -52,12 +52,13 @@ function closeDialog() {
 
 <template>
   <q-dialog v-model="createFolderDialog">
-    <q-card dark bordered class="dialogArea">
+    <q-card bordered class="dialogArea">
       <q-card-section>
-        Новая папка
+        <q-item-label class="cardTitle">Новая папка</q-item-label>
+
       </q-card-section>
       <q-input v-model="title"
-               dark label="Имя папки"
+               label="Имя папки"
                color="amber"
                outlined
                clearable

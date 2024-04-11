@@ -12,33 +12,7 @@ import {myUser} from "src/js/myAuth";
 const $q = useQuasar()
 const isMounted = ref(false)
 
-const authTypes = ref([
-  {
-    id: 2,
-    label: 'Телеграм',
-    url: 'auth/telegram/login.php',
-    img: '/img/auth/telegram.svg'
-  },
-  {
-    id: 3,
-    label: 'MailRu',
-    url: 'auth/mailru/login.php',
-    img: '/img/auth/mailru.svg'
-  },
-  {
-    id: 4,
-    label: 'Discord',
-    url: 'auth/discord/login.php',
-    img: '/img/auth/discord.svg'
-  },
-  {
-    id: 4,
-    label: 'VКонтакте',
-    url: 'auth/vkontakte/login.php',
-    img: '/img/auth/vkontakte.svg'
-  }
-])
-provide('authTypes', authTypes)
+
 
 const darkTrigger = ref(false)
 provide('darkTrigger', darkTrigger)
@@ -106,8 +80,8 @@ body.body--light {
   --announceCardText: #694d2a;
   --PageTitle: #a98700;
   --BodyBackground: rgba(255, 255, 255, 0.80);
-  --iconColor: red;
   --cardBorder: rgba(0, 0, 0, 0.55);
+  --btnColor: #694d2a;
 }
 
 body.body--dark {
@@ -127,6 +101,7 @@ body.body--dark {
   --PageTitle: goldenrod;
   --BodyBackground: linear-gradient(rgba(16, 20, 23, 0.9), rgba(35, 38, 46, 0.96), rgba(35, 38, 46, 0.96));
   --cardBorder: goldenrod;
+  --btnColor: goldenrod;
 }
 
 body, body.body--dark {
@@ -193,6 +168,7 @@ body, body.body--dark {
 
 .pageToolbar .selectors > * {
   margin-left: 1em;
+  display: block;
 }
 
 .cardTitle {

@@ -13,8 +13,8 @@ import RenameFolderDialog from "components/docs/RenameFolderDialog.vue";
 import PaidServices from "components/docs/PaidServices.vue";
 import MatTechBase from "components/docs/MatTechBase.vue";
 
-
-const metaData = getMeta('Документы')
+const title = 'Документы';
+const metaData = getMeta(title, 0.6)
 useMeta(metaData)
 
 const q = useQuasar()
@@ -42,7 +42,6 @@ const sortedFolders = computed(() =>
   folderList.value.slice().sort(sortFolderFn)
 )
 provide('sortedFolders', sortedFolders)
-
 
 
 const dialog = ref(false)
@@ -89,7 +88,6 @@ function loadList() {
       }
 
 
-
     })
     .catch((error) => {
       console.log(error)
@@ -130,31 +128,41 @@ onBeforeMount(() => {
 <template>
   <div class="content">
     <div class="filesArea">
-      <q-item class="p_title">
-        <q-item-section>Документы</q-item-section>
-        <template v-if="editMode">
-          <q-item-section side>
-            <q-btn label="Новая папка" icon="folder" class="goldBtn" @click="createFolderDialog = true"></q-btn>
-          </q-item-section>
-        </template>
-        <q-item-section side>
+      <div class="pageToolbar" :class="$q.platform.is.desktop ? 'no-wrap' : 'wrap'">
+        <q-toolbar>
+          <q-toolbar-title>
+            {{ title }}
+          </q-toolbar-title>
+        </q-toolbar>
+        <q-toolbar>
+          <q-space></q-space>
+
+          <q-btn label="Новая папка"
+                 v-if="editMode"
+                 flat stretch
+                 class="toolBtn"
+                 style="width: max-content"
+                 icon="folder"
+                 @click="createFolderDialog = true">
+          </q-btn>
+
           <SelectSort></SelectSort>
-        </q-item-section>
-        <q-item-section side>
+
           <q-input v-model="filterInput" type="search" borderless filled dense clearable style="width: 10em">
             <template v-slot:append>
               <q-icon name="search"></q-icon>
             </template>
           </q-input>
-        </q-item-section>
-        <q-item-section side>
-          <q-btn icon="unfold_less"
+
+          <q-btn icon="unfold_less" stretch flat
+                 class="toolBtn"
                  @click="() => { collapseFolders() }">
             <q-tooltip>Свернуть все папки</q-tooltip>
           </q-btn>
-        </q-item-section>
-      </q-item>
-      <br>
+
+
+        </q-toolbar>
+      </div>
 
       <template v-if="folderList.length">
         <q-list v-if="!filterInput">
@@ -208,10 +216,8 @@ onBeforeMount(() => {
   border-radius: 4px;
 }
 
-.goldBtn {
-  color: goldenrod;
-  border: 1px solid goldenrod;
-  width: max-content;
+.toolBtn {
+  color: var(--btnColor);
 }
 
 .ext {
@@ -230,8 +236,6 @@ summary {
   cursor: pointer;
   color: #ba892f;
 }
-
-
 
 
 .flink {

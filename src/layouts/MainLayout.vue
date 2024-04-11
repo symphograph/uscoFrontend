@@ -4,6 +4,7 @@ import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
 import {api} from "boot/axios";
+import LoginDialog from "components/account/LoginDialog.vue";
 
 
 const router = useRouter()
@@ -23,8 +24,33 @@ const apiUrl = String(process.env.API)
 const route = useRoute()
 const refAuth = ref()
 
-//const User = ref(new myUser())
-//provide('User', User)
+const authTypes = ref([
+  {
+    id: 2,
+    label: 'Телеграм',
+    url: 'auth/telegram/login.php',
+    img: '/img/auth/telegram.svg'
+  },
+  {
+    id: 3,
+    label: 'MailRu',
+    url: 'auth/mailru/login.php',
+    img: '/img/auth/mailru.svg'
+  },
+  {
+    id: 4,
+    label: 'Discord',
+    url: 'auth/discord/login.php',
+    img: '/img/auth/discord.svg'
+  },
+  {
+    id: 4,
+    label: 'VКонтакте',
+    url: 'auth/vkontakte/login.php',
+    img: '/img/auth/vkontakte.svg'
+  }
+])
+provide('authTypes', authTypes)
 
 const progress = ref(false)
 provide('progress', progress)
@@ -50,7 +76,8 @@ provide('isOptionsLoaded', isOptionsLoaded)
 const Halls = ref([])
 provide('Halls', Halls)
 
-
+const showLoginDialog = ref(false)
+provide('showLoginDialog', showLoginDialog)
 
 watch(route,(newPath) => {
   LocalStorage.set('lastPath',newPath.path)
@@ -104,6 +131,7 @@ function maintenance() {
 onBeforeMount(() => {
   //maintenance()
   console.log('mainLayout beforeMount')
+  document.body.style.backgroun = "none";
 })
 
 onMounted(() => {
@@ -118,6 +146,7 @@ onMounted(() => {
 <template>
   <AuthComponent ref="refAuth"></AuthComponent>
   <router-view v-if="isOptionsLoaded"/>
+  <LoginDialog></LoginDialog>
 </template>
 
 <style>
