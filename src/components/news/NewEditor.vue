@@ -254,17 +254,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="Entry" class="newsarea">
-    <q-input label="Заголовок"
-             type="text"
-             v-model="Entry.title"
-    ></q-input>
-    <br>
+
+      <q-input label="Заголовок"
+               type="text"
+               class="inputArea"
+               v-model="Entry.title"
+      ></q-input>
+
     <div id="descr" style="
       padding: 1em;
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap">
+
+      <br><br><br>
       <div class="nimg_block" style="position: relative">
         <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
           <template v-slot:error>
@@ -428,7 +431,7 @@ onMounted(() => {
     <br><br>
 
     <br><br>
-  </div>
+
   <br><br>
 
 </template>

@@ -78,12 +78,12 @@ onMounted(() => {
 
 <template>
 
-  <PageShell>
-    <template v-slot:CustomTitle>
+  <PageShell :page-title="Entry?.title ?? 'Новость'">
+    <template v-slot:CustomTitle v-if="false">
       <div style="width: 100%; max-width: 900px; margin: auto">
         <q-toolbar>
           <q-toolbar-title>
-            <q-item-label lines="1">{{ Entry?.title ?? 'Новость' }}</q-item-label>
+            {{ Entry?.title ?? 'Новость' }}
           </q-toolbar-title>
         </q-toolbar>
         <q-separator></q-separator>
@@ -171,6 +171,7 @@ onMounted(() => {
 }
 
 .contentArea {
+  width: 100%;
   max-width: 900px;
   margin: auto;
   color: var(--mainText);
