@@ -50,11 +50,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/MidLayout.vue'),
         children: [{path: '', component: () => import('pages/tickets/EventPage.vue')}]
       },
-      {
-        path: '/login',
-        component: () => import('layouts/MidLayout.vue'),
-        children: [{path: '', component: () => import('pages/LoginPage.vue')}]
-      },
     ]
   },
   {
