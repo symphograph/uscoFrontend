@@ -11,6 +11,14 @@ const props = defineProps({
   pageTitleSize: {
     type: String,
     default: '25px'
+  },
+  noStickTitle: {
+    type: Boolean,
+    default: undefined
+  },
+  useHeader: {
+    type: Boolean,
+    default: undefined
   }
 })
 function titleStyle () {
@@ -50,10 +58,10 @@ function onScroll(evt: { verticalPosition: number; }) {
 </script>
 
 <template>
-    <AnderHeader v-if="scrollPos < 2"></AnderHeader>
+    <AnderHeader v-if="useHeader && scrollPos < 2"></AnderHeader>
 
   <div class="pageToolbar no-wrap" v-if="$q.platform.is.desktop || !hasToolPanel">
-    <q-toolbar v-if="pageTitle">
+    <q-toolbar v-if="pageTitle && !noStickTitle">
       <q-item class="pageTitle">
         <q-item-label lines="0">{{ pageTitle }}</q-item-label>
       </q-item>
@@ -82,7 +90,14 @@ function onScroll(evt: { verticalPosition: number; }) {
   <q-scroll-area class="col myScrollArea"
                  ref="refScrollArea"
                  @scroll="onScroll">
-    <slot name="CustomTitle"></slot>
+    <div class="pageToolbar" v-if="noStickTitle">
+      <q-toolbar>
+        <q-item class="pageTitle">
+          <q-item-label lines="0">{{ pageTitle }}</q-item-label>
+        </q-item>
+      </q-toolbar>
+      <q-separator></q-separator>
+    </div>
     <slot name="PageContent"></slot>
     <MainFooter></MainFooter>
   </q-scroll-area>

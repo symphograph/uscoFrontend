@@ -1,11 +1,3 @@
-<template>
-  <div class="content">
-    <div class="eventsarea">
-      <PhotoArea></PhotoArea>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import PhotoArea from 'components/PhotoArea.vue'
 import { useMeta } from 'quasar'
@@ -19,6 +11,14 @@ onBeforeMount(() => {
 
 })
 </script>
+
+<template>
+  <div class="content">
+    <div class="eventsarea">
+      <PhotoArea></PhotoArea>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 

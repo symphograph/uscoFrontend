@@ -271,7 +271,7 @@ onMounted(() => {
       <div class="nimg_block" style="position: relative">
         <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
           <template v-slot:error>
-            <img src="/img/news/default_sketch.svg"/>
+            <img src="/img/news/default_sketch.svg" alt="img"/>
           </template>
         </q-img>
         <q-btn

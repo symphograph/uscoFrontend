@@ -20,7 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <PageShell :pageTitle="metaData.title">
+  <PageShell :pageTitle="metaData.title" use-header>
     <template v-slot:PageContent>
       <div class="contentArea">
         <div :class="blockClass" >

@@ -78,18 +78,7 @@ onMounted(() => {
 
 <template>
 
-  <PageShell :page-title="Entry?.title ?? 'Новость'">
-    <template v-slot:CustomTitle v-if="false">
-      <div style="width: 100%; max-width: 900px; margin: auto">
-        <q-toolbar>
-          <q-toolbar-title>
-            {{ Entry?.title ?? 'Новость' }}
-          </q-toolbar-title>
-        </q-toolbar>
-        <q-separator></q-separator>
-      </div>
-
-    </template>
+  <PageShell :page-title="Entry?.title ?? 'Новость'" no-stick-title>
     <template v-slot:PageContent>
       <div class="contentArea" v-if="editMode && Entry">
         <NewEditor
@@ -154,10 +143,19 @@ onMounted(() => {
 </template>
 
 <style>
+.pageToolbar {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  /*border-bottom: 1px solid var(--PageTitle);*/
+}
+
 .pageTitle {
   font-size: 25px;
   color: var(--PageTitle);
 }
+
 .imagesArea {
   padding: 1em;
   display: grid;

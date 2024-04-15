@@ -14,7 +14,7 @@ const blockClass = computed(() => q.platform.is.desktop ? 'contentBlock' : 'cont
 </script>
 
 <template>
-  <PageShell :page-title="metaData.title">
+  <PageShell :page-title="metaData.title" use-header>
     <template v-slot:PageContent>
       <div class="contentArea">
         <div :class="blockClass">
