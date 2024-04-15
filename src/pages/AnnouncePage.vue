@@ -7,6 +7,7 @@ import {ref, inject, onMounted, provide} from 'vue'
 import {useRoute} from 'vue-router'
 import {getMeta, notifyError} from 'src/js/myFuncts';
 import PageTitle from "components/main/PageTitle.vue";
+import MainFooter from "components/main/footer/MainFooter.vue";
 
 
 const metaData = getMeta('Анонс')
@@ -44,20 +45,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <AnnounceEditor v-if="editMode && Announce"
-                  @posterUploaded="loadData"
-                  @reload="loadData"
-                  ref="editorRef"
-  ></AnnounceEditor>
-  <div class="eventboxl">
-    <AnnounceDescr v-if="Announce" @delPoster="() => { editorRef.delPoster() }"></AnnounceDescr>
-  </div>
+  <q-scroll-area class="col myScrollArea">
+    <div class="centralCol">
+      <AnnounceEditor v-if="editMode && Announce"
+                      @posterUploaded="loadData"
+                      @reload="loadData"
+                      ref="editorRef"
+      ></AnnounceEditor>
+      <div class="eventboxl">
+        <AnnounceDescr v-if="Announce" @delPoster="() => { editorRef.delPoster() }"></AnnounceDescr>
+      </div>
+    </div>
+    <MainFooter></MainFooter>
+  </q-scroll-area>
 </template>
 
 <style scoped>
-* {
-  margin: 0;
-}
+
 
 .eventboxl {
   display: flex;

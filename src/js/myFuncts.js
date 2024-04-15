@@ -290,3 +290,7 @@ export function imgUrl(apiUrl, md5, ext, size = 0) {
   }
   return `${apiUrl}/img/sized/${size}/${getMD5Path(md5)}/${md5}.${ext}`
 }
+
+export function ddd(...values) {
+  console.log(values)
+}

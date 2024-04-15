@@ -79,6 +79,12 @@ provide('Halls', Halls)
 const showLoginDialog = ref(false)
 provide('showLoginDialog', showLoginDialog)
 
+const scrollWatch = ref(true);
+provide('scrollWatch', scrollWatch);
+
+const scrollPos = ref(0)
+provide('scrollPos', scrollPos)
+
 watch(route,(newPath) => {
   LocalStorage.set('lastPath',newPath.path)
 })
@@ -110,6 +116,14 @@ function showCookieConfirm () {
     ]
   })
 }
+
+function stopScrollWatch(timeout = 500) {
+  scrollWatch.value = false;
+  setTimeout(() => {
+    scrollWatch.value = true;
+  }, timeout);
+}
+provide('stopScrollWatch', stopScrollWatch)
 
 function maintenance() {
   api.post(apiUrl + 'debug/debug.php', {
@@ -146,7 +160,7 @@ onMounted(() => {
 <template>
   <AuthComponent ref="refAuth"></AuthComponent>
   <router-view v-if="isOptionsLoaded"/>
-  <LoginDialog></LoginDialog>
+  <LoginDialog v-if="isOptionsLoaded"></LoginDialog>
 </template>
 
 <style>
@@ -164,6 +178,7 @@ onMounted(() => {
   font-family: 'GoudyTrajan';
   src: url(/fonts/GoudyTrajan-Medium.otf) format("opentype");
 }
+
 
 
 

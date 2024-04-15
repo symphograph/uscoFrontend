@@ -7,6 +7,7 @@ import AnnounceList from 'components/announses/AnnounceList.vue'
 import {inject, onMounted, provide, ref} from 'vue'
 import {useMeta, useQuasar} from 'quasar'
 import {getMeta} from "src/js/myFuncts";
+import MainFooter from "components/main/footer/MainFooter.vue";
 
 const q = useQuasar()
 const compactCard = ref(false)
@@ -51,22 +52,25 @@ onMounted(() => {
 
 <template>
   <q-page class="items-center justify-evenly">
-    <div class="contentBlock">
-      <div class="announceArea">
-        <AnnounceList :method="'futureList'"></AnnounceList>
+    <div class="centralCol">
+      <div class="contentBlock">
+        <div class="announceArea">
+          <AnnounceList :method="'futureList'"></AnnounceList>
+        </div>
+      </div>
+      <div class="contentBlock">
+        <div class="p_title">Новости оркестра</div>
+        <br><br>
+        <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
+      </div>
+      <div class="contentBlock">
+        <VideoList :videoLimit="videoLimit"></VideoList>
+      </div>
+      <div class="contentBlock">
+        <TeaserList :teasers="teasers"></TeaserList>
       </div>
     </div>
-    <div class="contentBlock">
-      <div class="p_title">Новости оркестра</div>
-      <br><br>
-      <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
-    </div>
-    <div class="contentBlock">
-      <VideoList :videoLimit="videoLimit"></VideoList>
-    </div>
-    <div class="contentBlock">
-      <TeaserList :teasers="teasers"></TeaserList>
-    </div>
+    <MainFooter></MainFooter>
   </q-page>
 </template>
 

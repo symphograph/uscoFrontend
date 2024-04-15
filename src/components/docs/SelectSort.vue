@@ -16,8 +16,9 @@ const sortTypes = [
             label="Упорядочить"
             borderless
             map-options
+            input-style="color: goldenrod"
             emit-value
-            style="width: 16em"
+            style="width: 16em;"
             :options="sortTypes">
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
@@ -35,5 +36,7 @@ const sortTypes = [
 </template>
 
 <style scoped>
-
+.toolBtn {
+  color: var(--btnColor);
+}
 </style>

@@ -1,36 +1,83 @@
-<template>
-  <div class="content">
-    <div class="text">
-      <div class="p_title">Основные сведения</div><br>
-      <p>Полное название:</p>
-      МУНИЦИПАЛЬНОЕ БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ<br>"ЮЖНО-САХАЛИНСКИЙ СИМФОНИЧЕСКИЙ ОРКЕСТР"<br><br>
-      <p>Сокращенное название:</p>
-      МБУ "ЮСКО"<br><br>
-      Дата постановки на учет:<br>
-      05.01.2001<br><br>
-      Директор учреждения:
-      <p><span style="text-transform: uppercase">Кириллова Майя Владимировна</span></p>
-      <br>
-      Учредитель: <br>
-      <a href="https://culture.yuzhno-sakh.ru/" style="text-transform: uppercase">Департамент культуры и туризма администрации города Южно-Сахалинска</a>
-      <br><br>
-      <router-link to="/docs">Документы</router-link>
-      <br>
-
-      <br>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { useMeta } from 'quasar'
+import 'src/css/article.css'
+import {useMeta, useQuasar} from 'quasar'
+import {computed} from "vue";
+import {fDate, getMeta} from "src/js/myFuncts";
+import PageShell from "components/main/PageShell.vue";
 
-const metaData = {
-  title: 'Основные сведения'
+const q = useQuasar()
+const blockClass = computed(() => q.platform.is.desktop ? 'contentBlock' : 'contentBlock-m')
+
+const orgProps = {
+  fullName: "МуНиЦиПаЛьНоЕ БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ «ЮЖНО-САХАЛИНСКИЙ СИМФОНИЧЕСКИЙ ОРКЕСТР»",
+  shortName: "МБУ «ЮССО»",
+  registrationDate: "2001-01-05",
+  director: {
+    fullFIO: "Кириллова Майя Владимировна",
+    href: ""
+  },
+  founder: {
+    fullName: "Департамент культуры и туризма администрации города Южно-Сахалинска",
+    href: "https://culture.yuzhno-sakh.ru/"
+  },
 }
+
+const title = 'Основные сведения'
+const metaData = getMeta(title)
 useMeta(metaData)
 </script>
 
-<style scoped>
+<template>
+  <PageShell :page-title="title">
+    <template v-slot:PageContent>
+      <div class="contentArea">
+        <div :class="blockClass">
+          <q-list separator>
+            <q-item>
+              <q-item-section>
+                <q-item-label caption>Полное название:</q-item-label>
+                <q-item-label class="text-uppercase">{{orgProps.fullName}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label caption>Сокращенное название:</q-item-label>
+                <q-item-label class="text-uppercase">{{orgProps.shortName}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label caption>Дата постановки на учет:</q-item-label>
+                <q-item-label>{{fDate(orgProps.registrationDate)}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label caption>Директор учреждения:</q-item-label>
+                <q-item-label class="text-uppercase">{{orgProps.director.fullFIO}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable :href="orgProps.founder.href" target="_blank">
+              <q-item-section>
+                <q-item-label caption>Учредитель:</q-item-label>
+                <q-item-label class="text-uppercase">{{orgProps.founder.fullName}}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="open_in_new"></q-icon>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </div>
+    </template>
+  </PageShell>
 
+</template>
+
+
+
+<style scoped>
+.contentArea {
+  min-height: 80vh;
+}
 </style>

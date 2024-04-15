@@ -1,0 +1,23 @@
+.contentArea {
+  max-width: 900px;
+  margin: auto;
+  color: var(--mainText);
+  font-size: 18px;
+  padding: 1em 0;
+}
+
+.contentBlock {
+  text-align: justify;
+  font-size: 18px;
+}
+
+.contentBlock-m {
+  padding: 0 1em;
+  text-align: start;
+  font-size: 16px;
+}
+
+.link {
+  color: var(--btnColor);
+  font-size: 18px;
+}

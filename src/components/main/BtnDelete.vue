@@ -8,6 +8,7 @@ const q = useQuasar()
 
 const props = defineProps({
   flat: Boolean,
+  outline: Boolean,
   message: String,
   title: String,
   tooltip: String,
@@ -62,6 +63,7 @@ function confirm (message, title) {
 
 <template>
   <q-btn
+    :outline="outline"
     :round="!isLabel"
     color="red"
     :size="size"

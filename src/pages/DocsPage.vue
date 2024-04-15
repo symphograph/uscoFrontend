@@ -12,6 +12,7 @@ import FilteredList from "components/docs/FilteredList.vue";
 import RenameFolderDialog from "components/docs/RenameFolderDialog.vue";
 import PaidServices from "components/docs/PaidServices.vue";
 import MatTechBase from "components/docs/MatTechBase.vue";
+import PageShell from "components/main/PageShell.vue";
 
 const title = 'Документы';
 const metaData = getMeta(title, 0.6)
@@ -126,81 +127,71 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="content">
-    <div class="filesArea">
-      <div class="pageToolbar" :class="$q.platform.is.desktop ? 'no-wrap' : 'wrap'">
-        <q-toolbar>
-          <q-toolbar-title>
-            {{ title }}
-          </q-toolbar-title>
-        </q-toolbar>
-        <q-toolbar>
-          <q-space></q-space>
+  <PageShell :page-title="title">
+    <template v-slot:ToolPanel>
+      <q-btn label="Новая папка"
+             v-if="editMode"
+             flat stretch
+             class="toolBtn"
+             style="width: max-content"
+             icon="folder"
+             @click="createFolderDialog = true">
+      </q-btn>
 
-          <q-btn label="Новая папка"
-                 v-if="editMode"
-                 flat stretch
-                 class="toolBtn"
-                 style="width: max-content"
-                 icon="folder"
-                 @click="createFolderDialog = true">
-          </q-btn>
+      <SelectSort></SelectSort>
 
-          <SelectSort></SelectSort>
+      <q-input v-model="filterInput" type="search" borderless filled dense clearable style="width: 10em">
+        <template v-slot:append>
+          <q-icon name="search"></q-icon>
+        </template>
+      </q-input>
 
-          <q-input v-model="filterInput" type="search" borderless filled dense clearable style="width: 10em">
-            <template v-slot:append>
-              <q-icon name="search"></q-icon>
+      <q-btn icon="unfold_less" stretch flat
+             class="toolBtn"
+             @click="() => { collapseFolders() }">
+        <q-tooltip>Свернуть все папки</q-tooltip>
+      </q-btn>
+    </template>
+    <template v-slot:PageContent>
+      <div class="filesArea">
+        <template v-if="folderList.length">
+          <q-list v-if="!filterInput">
+            <template v-for="(folder, idx) in sortedFolders" :key="folder.id">
+              <DocFolder :folder="folder"
+                         :idx="idx"
+                         :folderId="folder.id"
+                         @onDelFolder="(id) => onDelFolder(id)"
+                         @onDelete="(evt) => onDelDoc(evt)">
+
+              </DocFolder>
             </template>
-          </q-input>
 
-          <q-btn icon="unfold_less" stretch flat
-                 class="toolBtn"
-                 @click="() => { collapseFolders() }">
-            <q-tooltip>Свернуть все папки</q-tooltip>
-          </q-btn>
-
-
-        </q-toolbar>
-      </div>
-
-      <template v-if="folderList.length">
-        <q-list v-if="!filterInput">
-          <template v-for="(folder, idx) in sortedFolders" :key="folder.id">
-            <DocFolder :folder="folder"
-                       :idx="idx"
-                       :folderId="folder.id"
-                       @onDelFolder="(id) => onDelFolder(id)"
-                       @onDelete="(evt) => onDelDoc(evt)">
-
-            </DocFolder>
+            <template v-if="editMode">
+              <TrashFolder
+                ref="trashRef"
+                @cleared="loadList()"
+              ></TrashFolder>
+            </template>
+          </q-list>
+          <template v-else>
+            <FilteredList></FilteredList>
           </template>
 
-          <template v-if="editMode">
-            <TrashFolder
-              ref="trashRef"
-              @cleared="loadList()"
-            ></TrashFolder>
-          </template>
-        </q-list>
-        <template v-else>
-          <FilteredList></FilteredList>
         </template>
 
-      </template>
+        <br>
+        <hr>
+        <br>
+        <PaidServices></PaidServices>
+        <br>
+        <hr>
+        <br>
 
+        <MatTechBase></MatTechBase>
+      </div>
+    </template>
+  </PageShell>
 
-      <br>
-      <hr>
-      <br>
-      <PaidServices></PaidServices>
-      <br>
-      <hr>
-      <br>
-
-      <MatTechBase></MatTechBase>
-    </div>
-  </div>
   <UploadDialog @fileUploaded="onUploaded()"></UploadDialog>
   <AddFolderDialog @created="onCreateDialog()"></AddFolderDialog>
   <RenameFolderDialog></RenameFolderDialog>
@@ -212,16 +203,12 @@ onBeforeMount(() => {
 }
 
 .q-expansion-item--popup > .q-expansion-item__container {
-  //border: 1px solid rgba(0, 0, 0, 0.12);
+  /*border: 1px solid rgba(0, 0, 0, 0.12);*/
   border-radius: 4px;
 }
 
 .toolBtn {
   color: var(--btnColor);
-}
-
-.ext {
-  /*filter: sepia(0.7);*/
 }
 
 .filesArea {

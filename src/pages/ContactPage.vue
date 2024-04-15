@@ -5,6 +5,8 @@ import {getMeta} from "src/js/myFuncts";
 import PhoneNumber from "components/contacts/PhoneNumber.vue";
 import EMail from "components/contacts/EMail.vue";
 import PageTitle from "components/main/PageTitle.vue";
+import MainFooter from "components/main/footer/MainFooter.vue";
+import PageShell from "components/main/PageShell.vue";
 
 
 const metaData = getMeta('Контакты')
@@ -101,114 +103,115 @@ function onReset() {
 </script>
 
 <template>
-  <PageTitle :title="metaData.title"></PageTitle>
-  <div class="contentArea">
-    <div :class="blockClass">
-      <q-list separator>
-        <q-item clickable href="#map">
-          <q-item-section avatar>
-            <q-icon name="location_on"></q-icon>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>
-              г. Южно-Сахалинск, ул.Ленина, д. 156
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <template v-for="employ in contactList" :key="employ.id">
-          <q-item>
-            <q-item-section>
-              <q-item-label caption>{{ employ.jobName }}</q-item-label>
-              <q-item-label v-if="employ?.fullFIO && employ?.fullFIO.length">
-                <b><span style="color: var(--docTitle)">{{ employ.fullFIO }}</span></b>
-              </q-item-label>
-              <template v-for="contact in employ.contacts" :key="employ.id + '_' + contact.value">
-                <PhoneNumber :phoneNumber="contact.value"></PhoneNumber>
-              </template>
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-list>
-    </div>
-    <q-separator spaced="2em"></q-separator>
-    <div :class="blockClass">
-      <b>График работы</b>
-      <ul>
-        <li>
-          <div>Понедельник - Пятница</div>
-          <b>9:00 - 17:15</b></li>
-        <br>
-        <li>
-          <div>Суббота - Воскресенье</div>
-          Выходные дни
-        </li>
-      </ul>
-    </div>
+  <PageShell :page-title="metaData.title">
+    <template v-slot:PageContent>
+      <div class="contentArea">
+        <div :class="blockClass">
+          <q-list separator>
+            <q-item clickable href="#map">
+              <q-item-section avatar>
+                <q-icon name="location_on"></q-icon>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  г. Южно-Сахалинск, ул.Ленина, д. 156
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <template v-for="employ in contactList" :key="employ.id">
+              <q-item>
+                <q-item-section>
+                  <q-item-label caption>{{ employ.jobName }}</q-item-label>
+                  <q-item-label v-if="employ?.fullFIO && employ?.fullFIO.length">
+                    <b><span style="color: var(--docTitle)">{{ employ.fullFIO }}</span></b>
+                  </q-item-label>
+                  <template v-for="contact in employ.contacts" :key="employ.id + '_' + contact.value">
+                    <PhoneNumber :phoneNumber="contact.value"></PhoneNumber>
+                  </template>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-list>
+        </div>
+        <q-separator spaced="2em"></q-separator>
+        <div :class="blockClass">
+          <b>График работы</b>
+          <ul>
+            <li>
+              <div>Понедельник - Пятница</div>
+              <b>9:00 - 17:15</b></li>
+            <br>
+            <li>
+              <div>Суббота - Воскресенье</div>
+              Выходные дни
+            </li>
+          </ul>
+        </div>
 
 
-    <q-separator spaced="2em"></q-separator>
-    <EMail email="mbu-gko@yandex.ru"></EMail>
-    <EMail email="yusgo.mbuyusko@sakhalin.gov.ru"></EMail>
+        <q-separator spaced="2em"></q-separator>
+        <EMail email="mbu-gko@yandex.ru"></EMail>
+        <EMail email="yusgo.mbuyusko@sakhalin.gov.ru"></EMail>
 
-    <q-separator spaced="2em"></q-separator>
-    <div id="map">
-      <iframe src="https://yandex.ru/map-widget/v1/-/ZU0EaABiTkMFXEJuZWJ4d3phYQA=/?ll=142.727859%2C46.966131&z=19"
-              width="100%" height="400" allowfullscreen="allowfullscreen"></iframe>
-    </div>
-    <q-separator spaced="2em"></q-separator>
+        <q-separator spaced="2em"></q-separator>
+        <div id="map">
+          <iframe src="https://yandex.ru/map-widget/v1/-/ZU0EaABiTkMFXEJuZWJ4d3phYQA=/?ll=142.727859%2C46.966131&z=19"
+                  width="100%" height="400" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+        <q-separator spaced="2em"></q-separator>
 
-    <div :class="blockClass">
-      <div class="q-pa-md">
+        <div :class="blockClass">
+          <div class="q-pa-md">
 
-        <q-form
-          @submit="onSubmit"
-          @reset="onReset"
-          class="q-gutter-md"
-        >
-          <q-input
-            filled
-            v-model="name"
-            label="Ваше имя"
-            hint="(ФИО)"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Обязательное поле']"
-          ></q-input>
-          <q-input
-            filled
-            v-model="email"
-            label="mail@example.com"
-            hint="Ваш email"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Обязательное поле']"
-          ></q-input>
-          <q-input
-            filled
-            v-model="msg"
-            type="textarea"
-            label="Текст сообщения"
-            hint=""
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Напишите что-нибудь']"
-          ></q-input>
+            <q-form
+              @submit="onSubmit"
+              @reset="onReset"
+              class="q-gutter-md"
+            >
+              <q-input
+                filled
+                v-model="name"
+                label="Ваше имя"
+                hint="(ФИО)"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Обязательное поле']"
+              ></q-input>
+              <q-input
+                filled
+                v-model="email"
+                label="mail@example.com"
+                hint="Ваш email"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Обязательное поле']"
+              ></q-input>
+              <q-input
+                filled
+                v-model="msg"
+                type="textarea"
+                label="Текст сообщения"
+                hint=""
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Напишите что-нибудь']"
+              ></q-input>
 
-          <q-toggle v-model="accept" label="Соглашаюсь на обработку персональных данных"></q-toggle>
+              <q-toggle v-model="accept" label="Соглашаюсь на обработку персональных данных"></q-toggle>
 
-          <div>
-            <q-btn label="Отправить" :disable="!accept" type="submit" color="primary"></q-btn>
-            <q-btn label="очистить" type="reset" color="primary" flat class="q-ml-sm"></q-btn>
+              <div>
+                <q-btn label="Отправить" :disable="!accept" type="submit" color="primary"></q-btn>
+                <q-btn label="очистить" type="reset" color="primary" flat class="q-ml-sm"></q-btn>
+              </div>
+            </q-form>
           </div>
-        </q-form>
+          <q-item clickable to="/pdn">
+            <q-item-label caption>
+              *Нажимая "отправить", Вы соглашаетесь с правилами обработки персональных данных.
+            </q-item-label>
+          </q-item>
+
+        </div>
       </div>
-      <q-item clickable to="/pdn">
-        <q-item-label caption>
-          *Нажимая "отправить", Вы соглашаетесь с правилами обработки персональных данных.
-        </q-item-label>
-      </q-item>
-
-    </div>
-  </div>
-
-
+    </template>
+  </PageShell>
 </template>
 
 <style scoped>

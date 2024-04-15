@@ -53,7 +53,9 @@ function nextDate() {
 
 <template>
   <q-input v-model="condDate"
-           v-if="actionDates.length"
+           :disable="!actionDates.length"
+           style="max-width: 14em"
+           dense
            ref="dateRef"
            mask="####-##-##"
            label="Дата изменения"

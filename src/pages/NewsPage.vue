@@ -5,6 +5,7 @@ import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
 import {getMeta, notifyError} from "src/js/myFuncts";
+import PageShell from "components/main/PageShell.vue";
 
 const apiUrl = String(process.env.API)
 const route = useRoute()
@@ -67,44 +68,29 @@ const category = ref(route.params.category)
 </script>
 
 <template>
-  <div class="pageToolbar" :class="$q.platform.is.desktop ? 'no-wrap' : 'wrap'">
-    <q-toolbar>
-      <q-toolbar-title>
-        {{ title }}
-      </q-toolbar-title>
-    </q-toolbar>
-    <q-toolbar>
-      <q-space></q-space>
-      <div class="selectors">
-        <q-btn
-          v-if="editMode"
-          label="Добавить"
-          @click="addEntry"
-        ></q-btn>
-        <q-select v-model="evYear"
-                  :options="Years()"
-                  emit-value
-                  borderless
-                  @update:model-value="onSetYear()">
-        </q-select>
+  <PageShell :page-title="title">
+    <template v-slot:SideTools>
+      <q-btn
+        v-if="editMode"
+        label="Добавить"
+        stretch flat
+        @click="addEntry"
+      ></q-btn>
+      <q-select v-model="evYear"
+                :options="Years()"
+                emit-value
+                borderless
+                @update:model-value="onSetYear()">
+      </q-select>
+    </template>
+    <template v-slot:PageContent>
+      <div class="centralCol">
+        <NewsList :year="evYear" :limit="100" :category="category" ref="listRef"></NewsList>
       </div>
-    </q-toolbar>
-  </div>
-  <q-linear-progress v-if="progress" indeterminate color="secondary"/>
-
-  <NewsList :year="evYear" :limit="100" :category="category" ref="listRef"></NewsList>
+    </template>
+  </PageShell>
 </template>
 
 <style scoped>
-.eventsarea {
-  min-height: 100vh;
-}
 
-.selectors {
-  /*margin: 0 -1em;*/
-}
-
-.selectors > * {
-  margin: 0 1em;
-}
 </style>

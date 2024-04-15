@@ -1,9 +1,22 @@
-<template>
+<script setup>
+import GosUslugi2023 from "components/main/footer/GosUslugi2023.vue";
+import PartnersBlock from "components/main/footer/PartnersBlock.vue";
+import {onMounted} from "vue";
+import {useQuasar} from "quasar";
+import DeveloperInfo from "components/main/footer/DeveloperInfo.vue";
 
-  <q-footer class="bg-grey-8 text-white">
+const q = useQuasar()
+const isDebug = !!process.env.isDebug
+
+onMounted(() => {
+
+})
+</script>
+
+<template>
+  <div class="bg-grey-8 text-white">
     <PartnersBlock></PartnersBlock>
     <GosUslugi2023 v-if="!isDebug"></GosUslugi2023>
-
     <div class="footer">
       <div class="footcol">
         <p><a href="tel:+74242300518">+7-4242-300-518</a></p>
@@ -40,25 +53,10 @@
         </template>
       </div>
     </div>
-  </q-footer>
+  </div>
+
   <component v-if="!isDebug" :is="'script'" src='/js/sputnik.js'></component>
 </template>
-
-
-<script setup>
-import GosUslugi2023 from "components/main/footer/GosUslugi2023.vue";
-import PartnersBlock from "components/main/footer/PartnersBlock.vue";
-import {onMounted} from "vue";
-import {useQuasar} from "quasar";
-import DeveloperInfo from "components/main/footer/DeveloperInfo.vue";
-
-const q = useQuasar()
-const isDebug = !!process.env.isDebug
-
-onMounted(() => {
-
-})
-</script>
 
 <style scoped>
 .footer {
@@ -74,7 +72,7 @@ onMounted(() => {
   font-size: 12px;
 }
 
-footer p {
+.footer p {
   margin: 0;
 }
 

@@ -14,6 +14,10 @@ const q = useQuasar()
 const apiUrl = String(process.env.API)
 const route = useRoute()
 
+/**
+ *
+ * @type {Ref<boolean>}
+ */
 const isOptionsLoaded = inject('isOptionsLoaded')
 
 const admin = inject('admin')
@@ -31,8 +35,9 @@ function loadOptions () {
         throw new Error();
       }
       Halls.value = response?.data?.data?.Halls ?? []
-      console.log('options Loaded')
       isOptionsLoaded.value = true
+      console.log('options Loaded')
+
     })
     .catch((error) => {
       q.notify(notifyError(error))

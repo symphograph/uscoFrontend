@@ -4,6 +4,7 @@ import {fDate, notifyError, notifyOK} from 'src/js/myFuncts'
 import {useQuasar} from "quasar";
 import {api} from "boot/axios";
 import SketchImg from "components/SketchImg.vue";
+import BtnDelete from "components/main/BtnDelete.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
@@ -129,11 +130,14 @@ function delEntry() {
     </div>
     <template v-if="editMode">
       <div style="display: flex; justify-content: right; grid-gap: 1em;">
-        <q-btn color="red" icon="delete" outline @click="delEntry()"><q-tooltip anchor="top middle">Удалить</q-tooltip></q-btn>
-        <q-btn label="Скрыть" color="orange" v-if="isShow" outline @click="hideOrShow()">
+        <q-btn icon="visibility" flat color="green" v-if="isShow" outline @click="hideOrShow()">
+          <q-tooltip>Скрыть</q-tooltip>
         </q-btn>
-        <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>
-        <q-btn icon="edit" outline :to="'/new/' + item.id">
+        <q-btn color="orange" flat icon="visibility_off" v-else @click="hideOrShow()">
+          <q-tooltip>Опубликовать</q-tooltip>
+        </q-btn>
+        <BtnDelete danger flat title="Удалить новость" tooltip="Удалить" throw-confirm @onOk="delEntry()"></BtnDelete>
+        <q-btn icon="edit" flat :to="'/new/' + item.id">
           <q-tooltip anchor="top middle">Редактировать</q-tooltip>
         </q-btn>
       </div>

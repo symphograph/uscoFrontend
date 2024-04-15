@@ -1,14 +1,3 @@
-<template>
-  <AnnounceCard
-    v-for="announce in sortedList"
-    :key="announce.id"
-    :Announce="announce"
-    @IamDeleted="loadAnnounces()"
-    @changeShow="(announceId) => changeShow(announceId)"
-    :compact="compactCard"
-  ></AnnounceCard>
-</template>
-
 <script setup>
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
@@ -23,11 +12,10 @@ const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 const editMode = inject('editMode')
-const progress = inject('progress')
 const compactCard = inject('compactCard')
 
 const announceList = inject('announceList')
-const Halls = inject('Halls')
+const progress = inject('progress')
 
 const props = defineProps({
   method: String,
@@ -87,6 +75,17 @@ const sortedList = computed(() => {
 
 
 </script>
+
+<template>
+  <AnnounceCard
+    v-for="announce in sortedList"
+    :key="announce.id"
+    :Announce="announce"
+    @IamDeleted="loadAnnounces()"
+    @changeShow="(announceId) => changeShow(announceId)"
+    :compact="compactCard"
+  ></AnnounceCard>
+</template>
 
 <style scoped>
 

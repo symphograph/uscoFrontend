@@ -33,7 +33,7 @@ provide('toggleLeftDrawer', toggleLeftDrawer)
 
 
 onBeforeMount(() => {
-
+  console.log('midLayout beforeMount')
 })
 
 onMounted(() => {
@@ -43,25 +43,19 @@ onMounted(() => {
     $q.dark.set(LocalStorage.getItem('dark'))
   }
   document.body.style.backgroundImage = "url('/img/header-bg.jpg')";
+  console.log('midLayout Mounted')
 })
 </script>
 
 <template>
-  <q-layout view="hHh LpR lff">
+  <q-layout view="hHh LpR lFf">
 
     <MainHeader></MainHeader>
 
     <q-page-container v-if="myUser.self.AccessToken">
-        <AnderHeader></AnderHeader>
-        <div class="bgArea">
-          <div class="pageArea">
-            <router-view/>
-          </div>
-        </div>
+      <router-view/>
     </q-page-container>
-
-    <MainFooter></MainFooter>
-
+    <q-footer class="bg-grey-8 text-white"></q-footer>
   </q-layout>
 </template>
 
@@ -82,6 +76,7 @@ body.body--light {
   --BodyBackground: rgba(255, 255, 255, 0.80);
   --cardBorder: rgba(0, 0, 0, 0.55);
   --btnColor: #694d2a;
+  --logoGold: #ecd872;
 }
 
 body.body--dark {
@@ -102,6 +97,7 @@ body.body--dark {
   --BodyBackground: linear-gradient(rgba(16, 20, 23, 0.9), rgba(35, 38, 46, 0.96), rgba(35, 38, 46, 0.96));
   --cardBorder: goldenrod;
   --btnColor: goldenrod;
+  --logoGold: #ecd872;
 }
 
 body, body.body--dark {
@@ -119,10 +115,10 @@ body, body.body--dark {
   backdrop-filter: blur(30px) saturate(200%) contrast(70%);
 }
 
-.pageArea {
+.centralCol {
+  width: 100%;
   max-width: 1200px;
   margin: auto;
-  min-height: 100vh;
 }
 
 .q-item--dark .q-item__label--caption {
@@ -155,25 +151,13 @@ body, body.body--dark {
   color: goldenrod;
 }
 
-.pageToolbar {
-  display: flex;
-  border-bottom: 1px solid var(--PageTitle);
-}
 
-.pageToolbar .selectors {
-  min-width: 50%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.pageToolbar .selectors > * {
-  margin-left: 1em;
-  display: block;
-}
 
 .cardTitle {
   font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
   font-size: 20px;
   color: var(--docTitle);
 }
+
+
 </style>

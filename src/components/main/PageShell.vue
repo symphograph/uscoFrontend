@@ -1,0 +1,114 @@
+<script setup lang="ts">
+import {computed, inject, ref, useSlots, Ref} from "vue";
+import ProgressLine from "components/main/ProgressLine.vue";
+import MainFooter from "components/main/footer/MainFooter.vue";
+import AnderHeader from "components/main/header/AnderHeader.vue";
+
+const props = defineProps({
+  pageTitle: {
+    type: String
+  },
+  pageTitleSize: {
+    type: String,
+    default: '25px'
+  }
+})
+function titleStyle () {
+  return {
+    fontSize: props.pageTitleSize
+  }
+}
+const activeTools = ref(true)
+
+
+const progress = inject('progress') as Ref<boolean>
+
+const slots = useSlots();
+const hasToolPanel = computed(() => !!slots.ToolPanel);
+
+
+const scrollPos = inject('scrollPos') as Ref<number>
+const scrollWatch = inject('scrollWatch') as Ref<boolean>
+const stopScrollWatch = inject('stopScrollWatch') as Function
+
+function onScroll(evt: { verticalPosition: number; }) {
+
+  if (!scrollWatch.value) {
+    scrollPos.value = evt.verticalPosition
+    //console.log('timeout')
+    return;
+  }
+  const direction = evt.verticalPosition >= scrollPos.value
+  //console.log('lastPos',scrollPos.value)
+  //console.log('pos',evt.verticalPosition)
+  //console.log('direction', direction)
+  activeTools.value = !direction || evt.verticalPosition === 0
+  scrollPos.value = evt.verticalPosition
+  //console.log('active',activeTools.value)
+}
+
+</script>
+
+<template>
+    <AnderHeader v-if="scrollPos < 2"></AnderHeader>
+
+  <div class="pageToolbar no-wrap" v-if="$q.platform.is.desktop || !hasToolPanel">
+    <q-toolbar v-if="pageTitle">
+      <q-item class="pageTitle">
+        <q-item-label lines="0">{{ pageTitle }}</q-item-label>
+      </q-item>
+      <q-space></q-space>
+      <slot name="ToolPanel"></slot>
+      <slot name="SideTools"></slot>
+    </q-toolbar>
+  </div>
+  <template v-else>
+    <q-expansion-item expand-icon="tune"
+                      :label="pageTitle"
+                      v-model="activeTools"
+                      expanded-icon=""
+                      @before-show="stopScrollWatch()"
+                      @before-hide="stopScrollWatch()"
+                      :header-style="{fontSize: '20px'}"
+    >
+      <q-toolbar>
+        <q-space></q-space>
+        <slot name="ToolPanel"></slot>
+      </q-toolbar>
+    </q-expansion-item>
+  </template>
+  <q-separator></q-separator>
+  <ProgressLine :progress="progress"></ProgressLine>
+  <q-scroll-area class="col myScrollArea"
+                 ref="refScrollArea"
+                 @scroll="onScroll">
+    <slot name="CustomTitle"></slot>
+    <slot name="PageContent"></slot>
+    <MainFooter></MainFooter>
+  </q-scroll-area>
+</template>
+
+<style scoped>
+.pageTitle {
+  font-size: 25px;
+  color: var(--PageTitle);
+}
+.pageToolbar {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  /*border-bottom: 1px solid var(--PageTitle);*/
+}
+
+.pageToolbar .selectors {
+  min-width: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pageToolbar .selectors > * {
+  margin-left: 1em;
+  display: block;
+}
+</style>

@@ -9,7 +9,7 @@ import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
 <template>
   <q-img src="img/header-bg.jpg" class="mobile-hide" v-if="$route.fullPath === '/'"></q-img>
   <q-toolbar elevated
-             v-if="!['/conductor', '/contacts', '/docs'].includes($route.fullPath)"
+             v-if="!['/conductor', '/contacts', '/docs', '/staff'].includes($route.fullPath)"
              class="bg-primary text-white shadow-5 scrollTarget" >
     <SiteNameDesktop class="desktop-only"></SiteNameDesktop>
     <SiteNameMobile class="mobile-only"></SiteNameMobile>

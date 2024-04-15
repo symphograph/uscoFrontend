@@ -3,7 +3,7 @@
 import {inject} from "vue";
 
 const sortType = inject('sortType')
-
+const emit = defineEmits(['onSelect'])
 const sortTypes = [
   {label: 'Сначала новые', value: 'dateDesc', caption: 'По убыванию даты'},
   {label: 'Сначала давние', value: 'dateAsc', caption: 'По возрастанию даты'},
@@ -15,6 +15,7 @@ const sortTypes = [
             borderless
             map-options
             emit-value
+            @update:model-value="emit('onSelect')"
             :options="sortTypes">
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">

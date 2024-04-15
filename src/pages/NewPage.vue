@@ -7,6 +7,7 @@ import {ref, inject, onMounted, provide, computed} from 'vue'
 import {useRoute} from 'vue-router'
 import {getMeta, imgUrl, notifyError} from "src/js/myFuncts";
 import EntryPhoto from "components/news/EntryPhoto.vue";
+import PageShell from "components/main/PageShell.vue";
 
 
 const id = ref(0)
@@ -18,7 +19,8 @@ const apiUrl = String(process.env.API)
 const route = useRoute()
 const editMode = inject('editMode')
 const isError = ref(false)
-const loading = ref(true)
+const progress = ref(true)
+provide('progress', progress)
 const editorRef = ref()
 
 useMeta(() => {
@@ -28,7 +30,7 @@ useMeta(() => {
 
 function loadData() {
 
-  loading.value = true
+  progress.value = true
   api.post(apiUrl + 'api/news/entry.php', {
     params: {
       method: 'get',
@@ -47,7 +49,7 @@ function loadData() {
       q.notify(notifyError(error))
     })
     .finally(() => {
-      loading.value = false
+      progress.value = false
     })
 }
 
@@ -76,67 +78,86 @@ onMounted(() => {
 
 <template>
 
-  <div class="contentArea" v-if="editMode && Entry">
-    <NewEditor
-      v-if="editMode && Entry"
-      @uploaded="loadData()"
-      ref="editorRef"
-    ></NewEditor>
-  </div>
-
-  <PageTitle :title="Entry?.title || 'Заголовок'" :loading="loading"></PageTitle>
-  <div class="contentArea" v-if="Entry">
-    <template v-for="(row, idx) in Entry.parsedMD" :key="idx">
-
-      <div v-if="row.type === 'text'" class="textBlock">
-        <section v-if="row.content !== '\n'" v-html="row.content"></section>
-        <br v-else>
+  <PageShell>
+    <template v-slot:CustomTitle>
+      <div style="width: 100%; max-width: 900px; margin: auto">
+        <q-toolbar>
+          <q-toolbar-title>
+            <q-item-label lines="1">{{ Entry?.title ?? 'Новость' }}</q-item-label>
+          </q-toolbar-title>
+        </q-toolbar>
+        <q-separator></q-separator>
       </div>
-      <template v-if="row.type === 'img'">
-        <EntryPhoto :id="row.fileId" :md5="row.md5" :ext="row.ext" @onDel="onDelPhoto"></EntryPhoto>
-      </template>
 
-      <div v-if="row.type === 'video'" class="videoItem">
-        <q-video
-          :ratio="16/9"
-          :src="'https://www.youtube.com/embed/' + row.content"
-        ></q-video>
+    </template>
+    <template v-slot:PageContent>
+      <div class="contentArea" v-if="editMode && Entry">
+        <NewEditor
+          v-if="editMode && Entry"
+          @uploaded="loadData()"
+          ref="editorRef"
+        ></NewEditor>
       </div>
-    </template>
+      <div class="contentArea" v-if="Entry">
+        <template v-for="(row, idx) in Entry.parsedMD" :key="idx">
 
-    <template v-if="Entry.refLink">
-      <q-separator spaced="1em"></q-separator>
-      <q-item clickable :href="Entry.refLink">
-        <q-item-section avatar>
-          <q-icon name="link"></q-icon>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Источник: {{ Entry.refName }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </template>
+          <div v-if="row.type === 'text'" class="textBlock">
+            <section v-if="row.content !== '\n'" v-html="row.content"></section>
+            <br v-else>
+          </div>
+          <template v-if="row.type === 'img'">
+            <EntryPhoto :id="row.fileId" :md5="row.md5" :ext="row.ext" @onDel="onDelPhoto"></EntryPhoto>
+          </template>
 
-    <template v-if="unusedPhotos.length">
-      <q-separator spaced="2em"></q-separator>
-      <template v-for="(img, idx) in unusedPhotos" :key="idx">
-        <EntryPhoto :id="img.id" :ext="img.ext" :md5="img.md5" @onDel="onDelPhoto"></EntryPhoto>
-      </template>
-    </template>
+          <div v-if="row.type === 'video'" class="videoItem">
+            <q-video
+              :ratio="16/9"
+              :src="'https://www.youtube.com/embed/' + row.content"
+            ></q-video>
+          </div>
+        </template>
+
+        <template v-if="Entry.refLink">
+          <q-separator spaced="1em"></q-separator>
+          <q-item clickable :href="Entry.refLink">
+            <q-item-section avatar>
+              <q-icon name="link"></q-icon>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Источник: {{ Entry.refName }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+
+        <template v-if="unusedPhotos.length">
+          <q-separator spaced="2em"></q-separator>
+          <template v-for="(img, idx) in unusedPhotos" :key="idx">
+            <EntryPhoto :id="img.id" :ext="img.ext" :md5="img.md5" @onDel="onDelPhoto"></EntryPhoto>
+          </template>
+        </template>
 
 
-  </div>
-  <div class="content" v-else-if="!loading">
-    <div class="newsarea">
-      <div class="narea">
-        <div class="text">
-          Новость не найдена
+      </div>
+      <div class="content" v-else-if="!progress">
+        <div class="newsarea">
+          <div class="narea">
+            <div class="text">
+              Новость не найдена
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+
+  </PageShell>
+
 </template>
 
 <style>
+.pageTitle {
+  font-size: 25px;
+  color: var(--PageTitle);
+}
 .imagesArea {
   padding: 1em;
   display: grid;

@@ -6,9 +6,10 @@ import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
 import {getMeta, notifyError, notifyOK} from "src/js/myFuncts";
 import SelectSort from "components/announses/SelectSort.vue";
+import PageShell from "components/main/PageShell.vue";
 
-
-const metaData = getMeta('Анонсы')
+const pageTitle = 'Анонсы'
+const metaData = getMeta(pageTitle)
 useMeta(metaData)
 
 const apiUrl = String(process.env.API)
@@ -30,6 +31,20 @@ provide('evYear', evYear)
 
 const announceList = ref([])
 provide('announceList', announceList)
+
+
+const scrollWatch = inject('scrollWatch');
+const refScrollArea = ref()
+
+function toggleCompactCard() {
+  scrollWatch.value = false;
+  compactCard.value = !compactCard.value;
+  setTimeout(() => {
+    scrollWatch.value = true;
+  }, 500);
+}
+
+
 
 function Years() {
   let arr = []
@@ -60,36 +75,30 @@ function addAnnounce() {
 </script>
 
 <template>
-  <div class="pageToolbar" :class="$q.platform.is.desktop ? 'no-wrap' : 'wrap'">
-    <q-toolbar>
-      <q-toolbar-title>
-        {{ metaData.title }}
-      </q-toolbar-title>
-    </q-toolbar>
-    <q-toolbar>
-      <q-space></q-space>
-      <div class="selectors">
-        <q-btn
-          v-if="editMode"
-          label="Добавить"
-          @click="addAnnounce"
-        ></q-btn>
-        <q-select v-model="evYear" :options="Years()" emit-value borderless></q-select>
-        <SelectSort></SelectSort>
-        <q-btn :icon="compactCard ? 'unfold_less' : 'unfold_more'"
-               flat
-               @click="compactCard = !compactCard">
-          <q-tooltip>{{ compactCard ? 'Подробно' : 'Кратко' }}</q-tooltip>
-        </q-btn>
+  <PageShell :pageTitle="pageTitle">
+    <template v-slot:ToolPanel>
+      <q-btn
+        v-if="editMode"
+        label="Добавить"
+        stretch flat
+        @click="addAnnounce"
+      ></q-btn>
+      <q-select v-model="evYear" :options="Years()" emit-value borderless></q-select>
+      <SelectSort @onSelect="() => {refScrollArea.setScrollPosition('vertical', 0, 300)}"></SelectSort>
+      <q-btn :icon="compactCard ? 'unfold_less' : 'unfold_more'"
+             flat stretch
+             @click="toggleCompactCard">
+        <q-tooltip>{{ compactCard ? 'Подробно' : 'Кратко' }}</q-tooltip>
+      </q-btn>
+    </template>
+    <template v-slot:PageContent>
+      <div class="centralCol">
+        <div class="gridArea">
+          <AnnounceList :evYear="evYear" :method="'listByYear'" :sort="sortType"></AnnounceList>
+        </div>
       </div>
-    </q-toolbar>
-  </div>
-
-  <q-linear-progress v-if="progress" indeterminate color="secondary"/>
-  <div class="gridArea">
-    <AnnounceList :evYear="evYear" :method="'listByYear'" :sort="sortType"></AnnounceList>
-  </div>
-
+    </template>
+  </PageShell>
 </template>
 
 <style scoped>
