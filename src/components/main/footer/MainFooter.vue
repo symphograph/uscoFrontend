@@ -16,7 +16,7 @@ onMounted(() => {
 <template>
   <div class="bg-grey-8 text-white">
     <PartnersBlock></PartnersBlock>
-    <GosUslugi2023 v-if="!isDebug"></GosUslugi2023>
+    <GosUslugi2023 v-if="!isDebug && $route.fullPath !== '/staff'"></GosUslugi2023>
     <div class="footer">
       <div class="footcol">
         <p><a href="tel:+74242300518">+7-4242-300-518</a></p>
