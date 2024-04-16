@@ -75,7 +75,7 @@ useMeta(metaData)
 function loadActionDates(force = false) {
   progress.value = true
   actionDates.value = []
-  console.log('start loadActionDates')
+
   return api.post(apiStaff + 'api/staff.php', {
     params: {
       method: 'actionDates',
@@ -84,7 +84,6 @@ function loadActionDates(force = false) {
   })
     .then((response) => {
       actionDates.value = response?.data?.data ?? []
-      console.log('end loadActionDates')
     })
     .catch((error) => {
       actionDates.value = []
@@ -137,7 +136,7 @@ function staffEdit() {
 }
 
 function openAvaDialog(id) {
-  if(!staffEditMode.value && persId !== id) {
+  if(!editMode.value && persId !== id) {
     return
   }
   selectedPersId.value = id
@@ -146,10 +145,10 @@ function openAvaDialog(id) {
 }
 
 function openStatusDialog(pers) {
-  if(!staffEditMode.value) {
+  if(!editMode.value) {
     return
   }
-  console.log(pers)
+
   selectedPers.value = pers
   showStatusDialog.value = true
 }
@@ -170,8 +169,6 @@ onMounted(() => {
   loadActionDates().then(() => {
     loadData()
   })
-  console.log(moment(new Date()).format('YYYY-MM-DD'))
-
 })
 
 </script>
@@ -240,8 +237,8 @@ onMounted(() => {
                           {{ statusNames.find(el => el.id === statusId).name }}
                         </q-item-label>
                       </q-item-section>
-                      <q-item-section side v-if="staffEditMode">
-                        <q-btn icon="edit" stretch size="0.5em" flat @click.stop.prevent="openStatusDialog(element)"></q-btn>
+                      <q-item-section side v-if="editMode" @click.prevent.stop="openStatusDialog(element)">
+                        <q-btn icon="edit" stretch size="1em" flat></q-btn>
                       </q-item-section>
                     </q-item>
                   </template>
