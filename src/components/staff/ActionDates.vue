@@ -1,6 +1,6 @@
 <script setup>
 
-import {inject, ref} from "vue";
+import {inject} from "vue";
 import {fDate, isDate} from "src/js/myFuncts";
 import moment from "moment/moment";
 
@@ -29,7 +29,6 @@ function maxYearMonth() {
 function prevDate() {
   const filtered = actionDates.value.filter(date => date < condDate.value)
   const date = filtered.reduce((a, b) => (a > b ? a : b), '');
-  console.log('prev',date)
   if(!date) {
     return
   }
@@ -39,12 +38,10 @@ function prevDate() {
 
 function nextDate() {
   const filtered = actionDates.value.filter(date => date > condDate.value)
-  console.log(filtered)
   const date = filtered[0] || today;
   if(date === condDate.value) {
     return
   }
-  console.log('next',date)
   condDate.value = date
   loadData()
 }

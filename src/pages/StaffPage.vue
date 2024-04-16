@@ -4,21 +4,19 @@ import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import draggable from 'vuedraggable'
 import {inject, onMounted, provide, ref} from 'vue'
-import {getMeta, imgUrl, isDate, notifyError} from "src/js/myFuncts";
+import {getMeta, imgUrl, notifyError} from "src/js/myFuncts";
 import AvatarDialog from "components/account/AvatarDialog.vue";
 import ActionDates from "components/staff/ActionDates.vue";
 import {myUser} from "src/js/myAuth";
 import StatusDialog from "components/staff/StatusDialog.vue";
 import AddPlayerDialog from "components/staff/AddPlayerDialog.vue";
-import MainFooter from "components/main/footer/MainFooter.vue";
-import ProgressLine from "components/main/ProgressLine.vue";
 import PageShell from "components/main/PageShell.vue";
 
 
 const q = useQuasar()
-const apiUrl = String(process.env.API)
 const apiStaff = String(process.env.apiStaff)
 const editMode = inject('editMode')
+
 const staffEditMode = ref(false)
 provide('staffEditMode',staffEditMode)
 
