@@ -55,7 +55,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <component v-if="!isDebug" :is="'script'" src='/js/sputnik.js'></component>
+  <component v-if="!isDebug  && $route.fullPath !== '/staff'" :is="'script'" src='/js/sputnik.js'></component>
 </template>
 
 <style scoped>
