@@ -216,7 +216,7 @@ onMounted(() => {
                 >
                   <template #item="{ element }">
                     <q-item :clickable="staffEditMode">
-                      <q-item-section avatar>
+                      <q-item-section avatar v-if="false">
                         <q-avatar size="50px">
                           <q-img :src="avaUrl(element?.avatar)" alt="img"
                                  @click.stop.prevent="openAvaDialog(element.persId)"
