@@ -1,11 +1,9 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {computed, onMounted} from "vue";
 import {getMeta} from "src/js/myFuncts";
 import WhatsApp from "components/contacts/WhatsApp.vue";
 import EMail from "components/contacts/EMail.vue";
-import PageTitle from "components/main/PageTitle.vue";
-import MainFooter from "components/main/footer/MainFooter.vue";
 import PageShell from "components/main/PageShell.vue";
 
 const metaData = getMeta('Вакансии')
@@ -29,6 +27,14 @@ onMounted(() => {
           <ul>
             <li>Контрабас: концертмейстер группы</li>
             <li>Скрипка: солист-концертмейстер оркестра</li>
+            <li>
+              Tutti:
+              <ul>
+                <li>Скрипка</li>
+                <li>Альт</li>
+                <li>Виолончель</li>
+              </ul>
+            </li>
           </ul>
           <br><br>
 
@@ -36,7 +42,6 @@ onMounted(() => {
           <ul>
             <li>Гобой: первый солист-концертмейстер группы</li>
             <li>Гобой: второй-регулятор первого</li>
-            <li>Кларнет: первый солист-концертмейстер группы</li>
             <li>Фагот: первый солист-концертмейстер группы</li>
           </ul>
           <br><br>
@@ -51,16 +56,16 @@ onMounted(() => {
           <em>Группа ударных инструментов:</em>
           <ul>
             <li>Ударные: концертмейстер группы</li>
+            <li>Ударные: tutti</li>
           </ul>
           <br><br>
-
           <ul>
-            <li>Заработная плата от 80.000р. (по результатам собеседования и прослушивания).</li>
+            <li>Заработная плата от 80.000р. после вычета налогов ("нетто", "на руки").</li>
             <li>Полный соц. пакет, включая оплату проезда к месту отдыха раз в два года.</li>
             <li>Различные социальные выплаты и премии.</li>
-            <li>Возможность сольных выступлений с оркестром, дополнительной преподавательской деятельности.</li>
+            <li>Возможность сольных выступлений с оркестром.</li>
             <li>Международная гастрольная деятельность.</li>
-            <li>Интересная творческая работа в молодом, развивающемся коллективе.</li>
+            <li>Интересная творческая работа в молодом развивающемся коллективе.</li>
           </ul>
           <br><br>
         </div>
