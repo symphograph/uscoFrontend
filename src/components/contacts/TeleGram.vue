@@ -18,24 +18,25 @@ function fPhoneNumber() {
 }
 
 const href = computed(() =>
-  `https://wa.me/${fPhoneNumber()}`
+  `https://t.me/${fPhoneNumber()}`
 )
 </script>
 
 <template>
   <q-item clickable :href="href" target="_blank">
     <q-item-section avatar>
-      <q-img src="/img/auth/whatsapp.svg"></q-img>
+      <q-img src="/img/auth/telegram.svg"></q-img>
     </q-item-section>
     <q-item-section>
       <q-item-label>{{ phoneNumber }}</q-item-label>
-      <q-item-label caption>Написать в WhatsApp</q-item-label>
+      <q-item-label caption>Написать в Telegram</q-item-label>
     </q-item-section>
     <q-item-section side>
       <q-btn icon="content_copy" flat @click.stop.prevent="copy(fPhoneNumber(), q)"></q-btn>
     </q-item-section>
   </q-item>
 </template>
+
 
 <style scoped>
 

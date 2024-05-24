@@ -5,6 +5,7 @@ import {getMeta} from "src/js/myFuncts";
 import WhatsApp from "components/contacts/WhatsApp.vue";
 import EMail from "components/contacts/EMail.vue";
 import PageShell from "components/main/PageShell.vue";
+import TeleGram from 'components/contacts/TeleGram.vue';
 
 const metaData = getMeta('Вакансии')
 useMeta(metaData)
@@ -21,7 +22,7 @@ onMounted(() => {
   <PageShell :pageTitle="metaData.title" use-header>
     <template v-slot:PageContent>
       <div class="contentArea">
-        <div :class="blockClass" >
+        <div :class="blockClass">
           <br><br>
           <em>Струнные инструменты:</em>
           <ul>
@@ -75,6 +76,7 @@ onMounted(() => {
           <q-item-label header>Контакты для отправки резюме:</q-item-label>
           <EMail email="erazhisht@gmail.com"></EMail>
           <WhatsApp phone-number="+7-(984)-134-12-38"></WhatsApp>
+          <TeleGram phone-number="+7-(984)-134-12-38"></TeleGram>
         </q-list>
       </div>
     </template>

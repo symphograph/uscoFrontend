@@ -24,7 +24,7 @@ const href = computed(() =>
   </q-item-section>
   <q-item-section>
     <q-item-label>{{ email }}</q-item-label>
-    <q-item-label caption>Отправить сообщение</q-item-label>
+    <q-item-label caption>Отправить email</q-item-label>
   </q-item-section>
   <q-item-section side>
     <q-btn icon="content_copy" flat @click.stop.prevent="copy(email, q)"></q-btn>
