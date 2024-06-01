@@ -291,6 +291,24 @@ export function imgUrl(apiUrl, md5, ext, size = 0) {
   return `${apiUrl}/img/sized/${size}/${getMD5Path(md5)}/${md5}.${ext}`
 }
 
-export function ddd(...values) {
-  console.log(values)
+/**
+ * Определение правильной формы слова на основе числа.
+ *
+ * @param {number} number Число, для которого нужно определить форму слова.
+ * @param {Array} wordForms Массив возможных форм слова, например ['яблоко', 'яблока', 'яблок'].
+ * @returns {string} Правильная форма слова в зависимости от числа.
+ */
+export function numDeclension(number, wordForms = ['год', 'года', 'лет']) {
+  const lastDigit = number % 10;
+  const lastTwoDigits = number % 100;
+
+  // Правила склонения в русском языке для различных чисел.
+  const cases = [2, 0, 1, 1, 1, 2];
+
+  // Определение формы слова на основе числа и контекста.
+  const formIndex = (lastTwoDigits > 4 && lastTwoDigits < 20)
+    ? 2
+    : cases[Math.min(lastDigit, 5)];
+
+  return wordForms[formIndex];
 }

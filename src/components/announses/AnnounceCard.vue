@@ -1,25 +1,31 @@
 <script setup>
-import DialogConfirm from '../DialogConfirm.vue'
-import {useQuasar} from 'quasar'
-import {api} from 'boot/axios'
-import {inject, onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {fDateTime, imgUrl, notifyError, notifyOK} from 'src/js/myFuncts'
-import BtnDelete from "components/main/BtnDelete.vue";
+import DialogConfirm from '../DialogConfirm.vue';
+import { useQuasar } from 'quasar';
+import { api } from 'boot/axios';
+import { inject, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { fDateTime, imgUrl, notifyError, notifyOK, numDeclension } from 'src/js/myFuncts';
+import BtnDelete from 'components/main/BtnDelete.vue';
+import axios from 'axios';
 
 
-const apiUrl = String(process.env.API)
-const q = useQuasar()
-const route = useRoute()
-const router = useRouter()
-const editMode = inject('editMode')
+const apiUrl = String(process.env.API);
+const q = useQuasar();
+const route = useRoute();
+const router = useRouter();
+const editMode = inject('editMode');
 
-const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch'])
+const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
+const radEvId = ref(2198241);
+const ticketCount = ref(null)
 
+function radarioUrl() {
+  return `https://radario.ru/buy-tickets/${radEvId.value}`
+}
 
 defineExpose({
   saveData
-})
+});
 
 const payTypes = ref([
   '',
@@ -28,7 +34,7 @@ const payTypes = ref([
   'Билеты в продаже',
   'Вход по пригласительным',
   'Продажа завершена'
-])
+]);
 
 const props = defineProps({
   Announce: ref(false),
@@ -38,24 +44,21 @@ const props = defineProps({
     required: false,
     default: false
   }
-})
-const AnnounceEditable = ref(props.Announce)
+});
+
+const AnnounceEditable = ref(props.Announce);
 
 function sketchUrl() {
   if (props.pwUrl) {
-    return props.pwUrl
+    return props.pwUrl;
   }
-  let size = q.platform.is.mobile ? 1080 : 480
-  if(!props.Announce.sketch) {
-    return 'error.err'
+  let size = q.platform.is.mobile ? 1080 : 480;
+  if (!props.Announce.sketch) {
+    return 'error.err';
   }
-  return imgUrl(apiUrl, props.Announce.sketch.md5, props.Announce.sketch.ext, size)
+  return imgUrl(apiUrl, props.Announce.sketch.md5, props.Announce.sketch.ext, size);
 
 }
-
-onMounted(() => {
-  //console.log(AnnounceEditable)
-})
 
 function saveData() {
   api.post(apiUrl + 'api/event/announce.php', {
@@ -65,11 +68,11 @@ function saveData() {
     }
   })
     .then((response) => {
-      q.notify(notifyOK(response?.data?.result ?? ''))
+      q.notify(notifyOK(response?.data?.result ?? ''));
     })
     .catch((error) => {
-      q.notify(notifyError(error))
-    })
+      q.notify(notifyError(error));
+    });
 }
 
 function delAnnounce() {
@@ -81,46 +84,46 @@ function delAnnounce() {
   })
     .then((response) => {
       if (!response?.data?.result) {
-        throw new Error()
+        throw new Error();
       }
-      q.notify(notifyOK(response?.data?.result ?? null))
-      emit('IamDeleted')
+      q.notify(notifyOK(response?.data?.result ?? null));
+      emit('IamDeleted');
     })
     .catch((error) => {
-      q.notify(notifyError(error))
-    })
+      q.notify(notifyError(error));
+    });
 }
 
 function hideOrShow() {
   api.post(apiUrl + 'api/event/announce.php', {
     params: {
       method: AnnounceEditable.value.isShow ? 'show' : 'hide',
-      announceId: AnnounceEditable.value.id,
+      announceId: AnnounceEditable.value.id
     }
   })
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
       }
-      emit('changeShow', AnnounceEditable.value.id)
+      emit('changeShow', AnnounceEditable.value.id);
     })
     .catch((error) => {
-      q.notify(notifyError(error))
-      AnnounceEditable.value.isShow = !AnnounceEditable.value.isShow
+      q.notify(notifyError(error));
+      AnnounceEditable.value.isShow = !AnnounceEditable.value.isShow;
     })
     .finally(() => {
-    })
+    });
 }
 
 function payType() {
   if (!props.Announce.pay) {
-    return ''
+    return '';
   }
 
   if (props.Announce.pay === 3 && props.Announce.completed) {
-    return 'Продажа завершена'
+    return 'Продажа завершена';
   }
-  return payTypes.value[props.Announce.pay]
+  return payTypes.value[props.Announce.pay];
 
 }
 
@@ -135,13 +138,41 @@ function delSketch() {
       if (!!!response?.data?.result) {
         throw new Error();
       }
-      emit('delSketch', props.Announce.id)
-      q.notify(notifyOK(response?.data?.result ?? ''))
+      emit('delSketch', props.Announce.id);
+      q.notify(notifyOK(response?.data?.result ?? ''));
     })
     .catch((error) => {
-      q.notify(notifyError(error))
-    })
+      q.notify(notifyError(error));
+    });
 }
+
+function loadRadario() {
+  const instance = axios.create();
+  instance.get(radarioUrl(), {
+    params: {
+      distributionType: 'api',
+      skipEventsInGroup: true
+    }
+  })
+    .then((response) => {
+      if (!!!response?.data?.result) {
+        //throw new Error();
+      }
+
+      ticketCount.value = response.data.event.ticketCount
+    })
+    .catch((error) => {
+      q.notify(notifyError(error));
+    });
+}
+
+
+onMounted(() => {
+  if (props.Announce.completed === false) {
+    loadRadario()
+  }
+});
+
 </script>
 
 <template>
@@ -158,7 +189,7 @@ function delSketch() {
       </div>
       <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
         <template v-slot:error>
-          <img src="/img/news/default_sketch.svg"/>
+          <img src="/img/news/default_sketch.svg" />
         </template>
       </q-img>
     </router-link>
@@ -224,6 +255,14 @@ function delSketch() {
         <q-separator inset></q-separator>
         <q-card-section class="text-body2 text-center">
           <template v-if="[3,4].includes(Announce.pay) && !Announce.completed && Announce.ticketLink">
+            <q-item>
+              <q-item-section>
+                 {{
+                   `${numDeclension(ticketCount ?? 0, ['Остался', 'Осталось', 'Осталось'])} ${ticketCount} ${numDeclension(ticketCount ?? 0, ['билет', 'билета', 'билетов'])}`
+                }}
+              </q-item-section>
+            </q-item>
+            <q-separator inset spaced></q-separator>
             <q-item clickable :href="Announce.ticketLink" target="_blank" dense style="text-align: left">
               <template v-if="Announce.pay === 4">
                 <q-item-section avatar>
