@@ -115,8 +115,6 @@ function downloadSource(fileId) {
     })
     .then((response) => {
 
-
-      //console.log(response.data); // Вывод информации о response.data
       console.log(typeof response.data); // Проверка типа response.data
 
       const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];

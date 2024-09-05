@@ -87,6 +87,7 @@ function onScroll(evt: { verticalPosition: number; }) {
   </template>
   <q-separator></q-separator>
   <ProgressLine :progress="progress"></ProgressLine>
+  <slot name="menuBar"></slot>
   <q-scroll-area class="col myScrollArea"
                  ref="refScrollArea"
                  @scroll="onScroll">
@@ -126,4 +127,5 @@ function onScroll(evt: { verticalPosition: number; }) {
   margin-left: 1em;
   display: block;
 }
+
 </style>

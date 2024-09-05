@@ -28,32 +28,35 @@ const showLoginDialog = inject('showLoginDialog')
       </q-item>
 
       <template v-for="tab in tabList" :key="tab.id">
-        <q-expansion-item
-          v-if="tab.expand"
-          :content-inset-level="0.2"
-          expand-separator
-          :icon="tab.icon"
-          :label="tab.label"
-          :header-style="{color: 'var(--dTitle)'}"
-          :caption="tab.caption"
-          default-closed
-        >
-          <q-item v-for="li in tab.tabs" :key="li.id" clickable v-close-popup tabindex="0" :to="li.url">
-            <q-item-section avatar>
-              <q-avatar v-if="li.ava">
-                <img :src="li.ava">
-              </q-avatar>
-              <q-avatar v-if="li.icon" :icon="li.icon" color="#ecd872" text-color="secondary"></q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ li.name }}</q-item-label>
-              <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
-            </q-item-section>
+        <template v-if="myUser.self.isPermit(tab.permits || [])">
+          <q-expansion-item
+            v-if="tab.expand"
+            :content-inset-level="0.1"
+            expand-separator
+            :icon="tab.icon"
+            :label="tab.label"
+            :header-style="{color: 'var(--dTitle)'}"
+            :caption="tab.caption"
+            default-closed
+          >
+            <q-item v-for="li in tab.tabs" :key="li.id" clickable v-close-popup tabindex="0" :to="li.url">
+              <q-item-section avatar v-if="li.ava || li.icon">
+                <q-avatar v-if="li.ava">
+                  <img :src="li.ava" alt="img">
+                </q-avatar>
+                <q-avatar v-if="li.icon" :icon="li.icon" color="#ecd872" text-color="secondary"></q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ li.name }}</q-item-label>
+                <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-expansion-item>
+          <q-item v-else :to="tab.url" clickable v-ripple expand-separator>
+            <q-item-section>{{ tab.label }}</q-item-section>
           </q-item>
-        </q-expansion-item>
-        <q-item v-else :to="tab.url" clickable v-ripple expand-separator>
-          <q-item-section>{{ tab.label }}</q-item-section>
-        </q-item>
+        </template>
+
       </template>
 
       <q-item tag="label" v-ripple v-if="admin">

@@ -3,6 +3,7 @@
 import {inject, onMounted, provide, ref} from "vue";
 import DrawerContent from "components/main/header/DrawerContent.vue";
 import {useQuasar} from "quasar";
+import {myUser} from "src/js/myAuth";
 
 const $q = useQuasar()
 const toggleLeftDrawer = inject('toggleLeftDrawer')
@@ -172,6 +173,17 @@ const tabList = ref(
             icon: ''
           }
         ]
+    },
+    {
+      id: 8,
+      expand: true,
+      label: 'Библиотека',
+      caption: 'Ноты, записи',
+      permits: [1,2],
+      tabs: [
+        {id: 1, name: 'Ноты', caption: 'Партитуры и репертуар', url: '/lib/works', icon: 'music_notes'},
+        {id: 2, name: 'Видео', caption: '', url: '/lib/video', icon: 'smart_display'}
+      ]
     }
   ])
 provide('tabList', tabList)
@@ -207,33 +219,35 @@ onMounted(() => {
       <q-space></q-space>
       <q-tabs inline-label class="mobile-hide" dense style="margin-left: 2em">
         <template v-for="tab in tabList" :key="tab.id">
-          <q-btn-dropdown v-if="tab.expand" stretch flat :label="tab.label" dense>
-            <q-list class="listBg">
-              <q-item-label header>{{ tab.caption }}</q-item-label>
-              <template v-for="li in tab.tabs" :key="li.id">
-                <q-item clickable v-close-popup tabindex="0" :to="li.url">
-                  <q-item-section avatar>
-                    <q-avatar v-if="li.ava">
-                      <img :src="li.ava">
-                    </q-avatar>
-                    <q-avatar v-if="li.icon" :icon="li.icon"></q-avatar>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ li.name }}</q-item-label>
-                    <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-list>
-          </q-btn-dropdown>
-          <q-route-tab v-else :to="tab.url" :label="tab.label" d/>
+          <template v-if="myUser.self.isPermit(tab.permits || [])">
+            <q-btn-dropdown v-if="tab.expand" stretch flat :label="tab.label" dense>
+              <q-list class="listBg">
+                <q-item-label header>{{ tab.caption }}</q-item-label>
+                <template v-for="li in tab.tabs" :key="li.id">
+                  <q-item clickable v-close-popup tabindex="0" :to="li.url">
+                    <q-item-section avatar>
+                      <q-avatar v-if="li.ava">
+                        <img :src="li.ava" alt="img"/>
+                      </q-avatar>
+                      <q-avatar v-if="li.icon" :icon="li.icon"></q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ li.name }}</q-item-label>
+                      <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+            </q-btn-dropdown>
+            <q-route-tab v-else :to="tab.url" :label="tab.label" d/>
+          </template>
         </template>
         <q-item clickable @click="fineVision()" dense>
           <q-tooltip class="bg-gray" :offset="[10, 10]">
             Версия для слабовидящих
           </q-tooltip>
           <q-avatar text-color="white">
-            <img src="/icons/glasses2.svg">
+            <img src="/icons/glasses2.svg" alt="img">
           </q-avatar>
         </q-item>
         <q-item v-if="admin" clickable @click="editMode = !editMode" dense>

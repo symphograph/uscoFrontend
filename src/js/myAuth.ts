@@ -42,6 +42,9 @@ export class myUser {
 
   isPermit(allowed: number[]): boolean
   {
+    if(!allowed.length) {
+      return true
+    }
     return allowed.some(l=>this.powers().includes(l))
   }
 }

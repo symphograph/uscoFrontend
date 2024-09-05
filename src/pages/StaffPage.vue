@@ -134,6 +134,10 @@ function staffEdit() {
 }
 
 function openAvaDialog(id) {
+  if(!myUser.self.isPermit([1,2]))
+  {
+    return;
+  }
   if(!editMode.value && persId !== id) {
     return
   }
@@ -157,10 +161,13 @@ function openAddPlayerDialog(group) {
 }
 
 function avaUrl(ava) {
+  return '/img/avatars/init_ava.png'
+  /*
   if (!ava) {
     return '/img/avatars/init_ava.png'
   }
   return imgUrl(apiStaff, ava.md5, ava.ext, 50);
+  */
 }
 
 onMounted(() => {
@@ -216,7 +223,7 @@ onMounted(() => {
                 >
                   <template #item="{ element }">
                     <q-item :clickable="staffEditMode">
-                      <q-item-section avatar v-if="false">
+                      <q-item-section avatar v-if="true">
                         <q-avatar size="50px">
                           <q-img :src="avaUrl(element?.avatar)" alt="img"
                                  @click.stop.prevent="openAvaDialog(element.persId)"
@@ -228,7 +235,7 @@ onMounted(() => {
                         </q-avatar>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label>{{ element.name }} {{ element.lastName }}</q-item-label>
+                        <q-item-label>{{ element.name }} <span class="lastName">{{ element.lastName }}</span></q-item-label>
                         <q-item-label v-for="(statusId, idx) in element.statuses"
                                       :key="`${idx}_${statusId}`"
                                       caption>
@@ -290,6 +297,10 @@ onMounted(() => {
 @media screen and (min-device-width: 800px) {
   .group {
     min-height: 25em;
+  }
+
+  .lastName {
+    text-transform: uppercase;
   }
 }
 

@@ -35,9 +35,20 @@ const routes: RouteRecordRaw[] = [
               {path: 'docs', component: () => import('pages/DocsPage.vue')},
               {path: 'gallery/:album', component: () => import('pages/GalleryPage.vue')},
               {path: 'gallery', component: () => import('pages/GalleryPage.vue')},
-              {path: '/main', component: () => import('pages/MainInfo.vue')}
+              {path: '/main', component: () => import('pages/MainInfo.vue')},
+              {
+                path: '/lib',
+                component: () => import('layouts/LibLayout.vue'),
+                children: [
+                  {path: 'works', component: () => import('pages/lib/WorkListPage.vue')},
+                  { path: 'works/:authorId', component: () => import('pages/lib/WorkListPage.vue') },
+                  {path: '/work/:id', component: () => import('pages/lib/WorkPage.vue')},
+                  {path: 'author/:id', component: () => import('pages/lib/AuthorPage.vue')},
+                  {path: 'videos', component: () => import('pages/lib/VKVideoPage.vue')},
+                ]
+              },
             ]
-          },
+          }
         ]
       },
       {
