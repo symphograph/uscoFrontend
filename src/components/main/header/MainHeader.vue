@@ -33,8 +33,8 @@ const tabList = ref(
           },
           {
             id: 2,
-            name: 'Состав оркестра',
-            caption: 'Список артистов',
+            name: 'Состав',
+            caption: 'Артисты оркестра',
             url: '/staff',
             ava: '',
             icon: 'groups'
