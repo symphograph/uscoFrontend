@@ -64,17 +64,8 @@ provide('admin', admin)
 const leftDrawerOpen = ref(false)
 provide('leftDrawerOpen', leftDrawerOpen)
 
-const AccessToken = ref('gfdsg')
-//provide('AccessToken', AccessToken)
-
-const SessionToken = ref('gfdsg')
-//provide('SessionToken', SessionToken)
-
 const isOptionsLoaded = ref(false)
 provide('isOptionsLoaded', isOptionsLoaded)
-
-const Halls = ref([])
-provide('Halls', Halls)
 
 const showLoginDialog = ref(false)
 provide('showLoginDialog', showLoginDialog)

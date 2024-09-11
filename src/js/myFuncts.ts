@@ -1,14 +1,14 @@
 import moment from 'moment'
-import {copyToClipboard} from "quasar";
+import { copyToClipboard, QNotifyCreateOptions } from 'quasar';
 
 
 
-export function rateInfo (val) {
+export function rateInfo (val :number) {
   let rates = [1, 0.5, 'гпх', 'гпх', 0.25]
   return rates[val - 1]
 }
 
-export function fDateAnyFormat(inputDate, outputFormat = 'DD.MM.yyyy HH:mm') {
+export function fDateAnyFormat(inputDate :string, outputFormat = 'DD.MM.yyyy HH:mm') {
   const formats = [
     'DD.MM.YYYY',
     'YYYY-MM-DD',
@@ -43,28 +43,28 @@ export function fDateAnyFormat(inputDate, outputFormat = 'DD.MM.yyyy HH:mm') {
   return normalizedDate;
 }
 
-export function fDate(date, format = 'DD.MM.YYYY') {
+export function fDate(date :any, format = 'DD.MM.YYYY') {
   if (date) {
     return moment(String(date)).format(format)
   }
   return ''
 }
 
-export function toDate(date) {
+export function toDate(date: string) {
   let now = moment(new Date()).format('YYYY-MM-DD')
   if(now < date)
     return 'н.в.'
   return fDate(date)
 }
 
-export function fDateTime (date) {
+export function fDateTime (date: string) {
   if (date) {
     return moment(String(date)).format('DD.MM.YYYY HH:mm')
   }
   return ''
 }
 
-export function notifyOK (message = 'Готово') {
+export function notifyOK (message = 'Готово') :QNotifyCreateOptions {
   return {
     color: 'positive',
     position: 'center',
@@ -77,20 +77,20 @@ export function notifyOK (message = 'Готово') {
 /**
 *@returns QNotifyCreateOptions
  */
-export function notifyError (error, defaultMsg = 'Ой! Не работает :(') {
+export function notifyError (error :any, defaultMsg = 'Ой! Не работает :(') :QNotifyCreateOptions {
   return {
     color: 'negative',
     position: 'center',
     message:
       !!error?.response?.data?.error
         ? error.response.data.error
-        : defaultMsg ?? 'Ой! Не работает :(',
+        : !!error?.message ? error?.message : defaultMsg,
     closeBtn: 'x',
     icon: 'report_problem'
   }
 }
 
-export function notifyWarning (error, defaultMsg = 'Ой! Не работает :(') {
+export function notifyWarning (error :any, defaultMsg = 'Ой! Не работает :(') :QNotifyCreateOptions {
   return {
     color: 'orange',
     position: 'center',
@@ -104,7 +104,7 @@ export function notifyWarning (error, defaultMsg = 'Ой! Не работает 
   }
 }
 
-export function isExpired(error) {
+export function isExpired(error :{ response :{ data :{ error :any; }; }; }) {
   return [
     'Session does not exist',
     'Invalid tokenTime',
@@ -113,16 +113,16 @@ export function isExpired(error) {
   ].includes(error?.response?.data?.error)
 }
 
-export function dynamicForm(path, params, method = 'post') {
+export function dynamicForm(path: string,
+                            params: { [key: string]: string }, // убрали hasOwnProperty
+                            method = 'post') {
 
-  // The rest of this code assumes you are not using a library.
-  // It can be made less verbose if you use one.
   const form = document.createElement('form');
   form.method = method;
   form.action = path;
 
   for (const key in params) {
-    if (params.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) { // проверяем через Object.prototype
       const hiddenField = document.createElement('input');
       hiddenField.type = 'hidden';
       hiddenField.name = key;
@@ -136,12 +136,13 @@ export function dynamicForm(path, params, method = 'post') {
   form.submit();
 }
 
-export function fileExtension(url) {
-  const fileName = url.split("/").pop();
+
+export function fileExtension(url :string) {
+  const fileName :string = url.split("/").pop() || '';
   return fileName.split(".").pop();
 }
 
-export function baseFileName(fileName) {
+export function baseFileName(fileName :string) {
   const lastDotIndex = fileName.lastIndexOf(".");
   if (lastDotIndex !== -1 && lastDotIndex !== 0) {
     return fileName.substring(0, lastDotIndex);
@@ -149,11 +150,11 @@ export function baseFileName(fileName) {
   return fileName;
 }
 
-export function isMostlyRussian(fileName) {
+export function isMostlyRussian(fileName :string) {
   const russianRegex = /[а-яА-Я]/g;
   const englishRegex = /[a-zA-Z]/g;
 
-  function countMatches(regex, str) {
+  function countMatches(regex :RegExp, str :string) {
     let matches = 0;
     let match;
     while ((match = regex.exec(str)) !== null) {
@@ -168,23 +169,23 @@ export function isMostlyRussian(fileName) {
   return russianCount > englishCount;
 }
 
-export function formData(params) {
+export function formData(params :any) {
   const formData = new FormData();
   Object.entries(params).forEach(([key, value]) => {
-    formData.append(key, value);
+    formData.append(key, String(value));
   });
   return formData
 }
 
-export function delElement(array, propName, propValue) {
-  const index = array.findIndex(item => item[propName] === propValue);
+export function delElement(array :any, propName :string, propValue :any) {
+  const index = array.findIndex((item: any) => item[propName] === propValue);
 
   if (index !== -1) {
     array.splice(index, 1);
   }
 }
 
-export function isDate(date, format = ['YYYY-MM-DD', 'DD-MM-YYYY']) {
+export function isDate(date :string, format = ['YYYY-MM-DD', 'DD-MM-YYYY']) {
   if (!Array.isArray(format)) {
     format = [format];
   }
@@ -199,8 +200,8 @@ export function isDate(date, format = ['YYYY-MM-DD', 'DD-MM-YYYY']) {
   return false;
 }
 
-export function copy (val, q) {
-  copyToClipboard(val)
+export function copy (val :string|number, q: any) {
+  copyToClipboard(String(val))
     .then(() => {
       q.notify({
         color: 'positive',
@@ -215,7 +216,7 @@ export function copy (val, q) {
     })
 }
 
-export function extractDate(inputString, format = 'YYYY-MM-DD') {
+export function extractDate(inputString :string, format = 'YYYY-MM-DD') {
   const dateRegex = /(\d{1,4}[._-]\d{1,2}[._-]\d{2,4})/g;
   const matches = inputString.matchAll(dateRegex);
 
@@ -233,10 +234,10 @@ export function extractDate(inputString, format = 'YYYY-MM-DD') {
   return null;
 }
 
-export function keyTranslit(str) {
+export function keyTranslit(str :string) {
   if(!str) return ''
 
-  let replacer = {
+  let replacer :any = {
     "q":"й", "w":"ц"  , "e":"у" , "r":"к" , "t":"е", "y":"н", "u":"г",
     "i":"ш", "o":"щ", "p":"з" , "[":"х" , "]":"ъ", "a":"ф", "s":"ы",
     "d":"в" , "f":"а"  , "g":"п" , "h":"р" , "j":"о", "k":"л", "l":"д",
@@ -262,7 +263,7 @@ export function keyTranslit(str) {
   return str;
 }
 
-export function getMeta(title, scale = 1) {
+export function getMeta(title :string, scale = 1) {
   return {
     title: title,
     meta: {
@@ -275,20 +276,21 @@ export function getMeta(title, scale = 1) {
   }
 }
 
-export function getMD5Path(md5) {
+export function getMD5Path(md5 :string) {
   const subDir1 = md5.substring(0, 2);
   const subDir2 = md5.substring(2, 4);
   return subDir1 + '/' + subDir2;
 }
 
-export function imgUrl(apiUrl, md5, ext, size = 0) {
+export function imgUrl(apiUrl :string, md5 :string, ext :string, size :number = 0) {
   if(!md5 || !ext) {
     return '/img/news/default_sketch.svg'
   }
+  let sizeFolder :number|string = size;
   if(ext === 'svg' || size === 0){
-    size = 'original'
+    sizeFolder = 'original'
   }
-  return `${apiUrl}/img/sized/${size}/${getMD5Path(md5)}/${md5}.${ext}`
+  return `${apiUrl}/img/sized/${sizeFolder}/${getMD5Path(md5)}/${md5}.${ext}`
 }
 
 /**
@@ -298,7 +300,7 @@ export function imgUrl(apiUrl, md5, ext, size = 0) {
  * @param {Array} wordForms Массив возможных форм слова, например ['яблоко', 'яблока', 'яблок'].
  * @returns {string} Правильная форма слова в зависимости от числа.
  */
-export function numDeclension(number, wordForms = ['год', 'года', 'лет']) {
+export function numDeclension(number :number, wordForms :string[] = ['год', 'года', 'лет']) {
   const lastDigit = number % 10;
   const lastTwoDigits = number % 100;
 

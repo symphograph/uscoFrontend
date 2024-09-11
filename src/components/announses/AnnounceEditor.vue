@@ -10,6 +10,7 @@ import {notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
 import {myUser} from "src/js/myAuth";
 import AddWorkDialog from 'components/announses/AddWorkDialog.vue';
+import HallSelect from 'components/hall/HallSelect.vue';
 
 const apiStaff = String(process.env.apiStaff)
 const apiUrl = String(process.env.API)
@@ -18,7 +19,15 @@ const route = useRoute()
 const router = useRouter()
 
 const Announce = inject('Announce')
-const Halls = inject('Halls')
+const selectedHall = ref(Announce.value.Hall)
+provide('selectedHall', selectedHall)
+
+function onHallSelect(hall) {
+  console.log(hall)
+  Announce.value.hallId = hall.id
+  Announce.value.Hall = hall
+}
+
 const pwUrl = ref('')
 provide('pwUrl', pwUrl)
 
@@ -90,7 +99,7 @@ function loadAuthors() {
     })
 }
 
-  function openAddWorkDialog() {
+function openAddWorkDialog() {
   isOpenAddWorkDialog.value = true
 }
 
@@ -161,10 +170,6 @@ function onDelSketch() {
   delete Announce.value.sketchId
 }
 
-function onHallSelected() {
-  Announce.value.hallId = Announce.value.Hall.id
-}
-
 function updateMarkdown() {
   api.post(apiUrl + 'api/event/announce.php', {
     params: {
@@ -184,6 +189,8 @@ function updateMarkdown() {
       // q.notify(notifyError(error, 'hhhh'))
     })
 }
+
+
 
 
 
@@ -233,9 +240,9 @@ onUnmounted(() => {
 <template>
   <div v-if="Announce" class="eventsarea">
     <div class="editArea">
-      <div class="card">
+      <div class="card" v-if="q.platform.is.desktop">
         <AnnounceCard
-          v-if="Announce.Hall.map"
+          v-if="Announce.Hall"
           @IamDeleted="IamDeleted"
           @newAnnounce="reload"
           @delSketch="onDelSketch"
@@ -250,7 +257,7 @@ onUnmounted(() => {
           <DateTime v-model:date="Announce.eventTime" @update:date="test()"></DateTime>
         </div>
         <br><hr>
-        <div class="uploads">
+        <div class="uploads" v-if="q.platform.is.desktop">
           <div style="width: 100%">
             <SketchUploader :id="Announce.id"
                             :type="'event'"
@@ -258,29 +265,28 @@ onUnmounted(() => {
           </div>
 
         </div>
-
+        <q-item v-else>
+          <q-item-section>
+            <q-item-label caption>
+              Загрузка эскиза не поддерживает мобильные устройства
+            </q-item-label>
+          </q-item-section>
+        </q-item>
 
         <q-separator spaced="1em"></q-separator>
         <q-input name="progName"
                  v-model="Announce.progName"
                  label="Название"
         ></q-input>
-        <q-select
-          v-model="Announce.Hall"
-          label="Место проведения"
-          map-options
-          option-label="name"
-          option-value="id"
-          :options="Halls"
-          @update:model-value="onHallSelected()"
-        ></q-select>
+        <HallSelect @selected="onHallSelect"></HallSelect>
         <q-select
           v-model="Announce.pay"
           emit-value
           map-options
           label="Условия входа"
           :options="paySelect"
-        ></q-select>
+        >
+        </q-select>
         <br>
         <q-input v-if="[3,4].includes(Announce.pay)" type="text" v-model="Announce.ticketLink"
                  label="Ссылка на приобретение билетов"></q-input>
@@ -313,17 +319,19 @@ onUnmounted(() => {
             no-thumbnails
           />
         </div>
+        <q-card-actions align="right">
+          <q-btn label="Сохранить" @click="save" color="green"></q-btn>
+        </q-card-actions>
       </div>
       <q-separator spaced="1em"></q-separator>
     </div>
-    <q-card-actions align="right">
-      <q-btn label="Сохранить" @click="save" color="green"></q-btn>
-    </q-card-actions>
+
+
   </div>
   <br>
   <hr>
   <br>
-  <q-card>
+  <q-card v-if="false">
     <q-card-section>Список произведений:</q-card-section>
     <q-card-section>
       <q-btn icon="add" label="добавить" @click="openAddWorkDialog"></q-btn>
@@ -342,7 +350,7 @@ onUnmounted(() => {
 .editArea {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3em;
+  padding: 3em 0;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -361,10 +369,12 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .eventsarea {
   margin: 0 auto;
   padding: 2em;
+  max-width: 100vw;
 }
 </style>

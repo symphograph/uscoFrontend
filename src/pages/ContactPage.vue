@@ -66,8 +66,12 @@ const contactList = ref([
         value: '+7-4242-300-518'
       }
     ]
-  },
+  }
 ])
+
+const mapUrl = 'https://yandex.ru/map-widget/v1/-/ZU0EaABiTkMFXEJuZWJ4d3phYQA=/?ll=142.727859%2C46.966131&z=19'
+const mapUrl2 = 'https://yandex.ru/maps/org/48106932310'
+const mapUrl3 = 'https://yandex.ru/map-widget/v1/org/48106932310?ll=142.727859%2C46.966131&z=19'
 
 function test() {
   q.notify({
@@ -155,7 +159,7 @@ function onReset() {
 
         <q-separator spaced="2em"></q-separator>
         <div id="map">
-          <iframe src="https://yandex.ru/map-widget/v1/-/ZU0EaABiTkMFXEJuZWJ4d3phYQA=/?ll=142.727859%2C46.966131&z=19"
+          <iframe :src="mapUrl3"
                   width="100%" height="400" allowfullscreen="allowfullscreen"></iframe>
         </div>
         <q-separator spaced="2em"></q-separator>

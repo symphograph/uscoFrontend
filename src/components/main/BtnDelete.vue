@@ -14,6 +14,7 @@ const props = defineProps({
   tooltip: String,
   label: String,
   danger: Boolean,
+  loading: Boolean,
   throwConfirm: Boolean,
   size: {
     type: String,
@@ -63,6 +64,7 @@ function confirm (message, title) {
 
 <template>
   <q-btn
+    :loading="loading"
     :outline="outline"
     :round="!isLabel"
     color="red"

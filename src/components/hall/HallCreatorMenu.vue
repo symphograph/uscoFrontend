@@ -9,7 +9,7 @@ import AnnounceSelect from "components/hall/AnnounceSelect.vue";
 const q = useQuasar()
 
 const HallPlan = inject('HallPlan')
-const Halls = inject('Halls')
+
 const emit = defineEmits(['onSelectHall', 'onSelectPrice', 'onSelectAnnounce'])
 
 

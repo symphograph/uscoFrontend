@@ -8,6 +8,7 @@ import {api} from "boot/axios";
 import {isExpired, notifyError, notifyWarning} from "src/js/myFuncts";
 import {useRoute} from "vue-router";
 import {myUser} from "src/js/myAuth";
+import { Hall } from 'src/js/hall';
 
 
 const q = useQuasar()
@@ -21,27 +22,19 @@ const route = useRoute()
 const isOptionsLoaded = inject('isOptionsLoaded')
 
 const admin = inject('admin')
-const Halls = inject('Halls')
 
-function loadOptions () {
+
+async function loadOptions() {
   console.log('loadOptions started')
-  api.post(apiUrl + 'api/get/options.php', {
-    params: {
+  const halls = await Hall.getList(q)
+  Hall.List = ref(halls);
+  if(Hall.List.value.length) {
+    isOptionsLoaded.value = true
+    console.log('options Loaded')
+  } else {
+    console.error('Halls is empty')
+  }
 
-    }
-  })
-    .then((response) => {
-      if(!!!response?.data?.result){
-        throw new Error();
-      }
-      Halls.value = response?.data?.data?.Halls ?? []
-      isOptionsLoaded.value = true
-      console.log('options Loaded')
-
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
 }
 
 

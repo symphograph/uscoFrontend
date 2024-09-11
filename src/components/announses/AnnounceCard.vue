@@ -166,6 +166,10 @@ function loadRadario() {
     });
 }
 
+function mapHref() {
+  const suggest = props.Announce.Hall.suggest
+  return `https://yandex.ru/maps/org/${suggest?.oid}`
+}
 
 onMounted(() => {
   if (props.Announce.completed === false) {
@@ -213,7 +217,7 @@ onMounted(() => {
           <q-item-label caption>{{ fDateTime(AnnounceEditable.eventTime) }}</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple :href="Announce.Hall.map" target="_blank" dense>
+      <q-item clickable v-ripple :href="mapHref()" target="_blank" dense>
         <q-item-section avatar>
           <q-icon name="place"></q-icon>
         </q-item-section>

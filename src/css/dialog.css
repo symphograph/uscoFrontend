@@ -9,6 +9,7 @@
   box-shadow: 3px 3px 5px -3px #000;
   width: 100%;
   background: var(--cardGradient);
+  padding: 1em;
 }
 
 .closeDialogBtn {
