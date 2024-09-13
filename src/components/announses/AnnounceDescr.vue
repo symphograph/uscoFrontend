@@ -136,7 +136,7 @@ function delPoster() {
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ Announce.Hall.name }}</q-item-label>
-            <q-item-label caption>{{ Announce.Hall.address }}</q-item-label>
+            <q-item-label caption>{{ Announce.Hall.suggest.address.formatted }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-card-section>

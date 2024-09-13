@@ -89,9 +89,9 @@ function delPw() {
 function unlinkPhoto(id) {
   api.post(apiUrl + 'api/news/photo.php', {
     params: {
+      method: 'unlink',
       entryId: route.params.id,
       imgId: id,
-      method: 'unlink'
     }
   })
     .then((response) => {

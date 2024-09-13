@@ -72,6 +72,7 @@ function setToken(name, value, expires = '90d') {
 function register(){
   api.post(String(process.env.Auth) + '/api/register.php', {
     params: {
+      method: 'register',
       authType: 'default'
     }
   })

@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { fDateTime, imgUrl, notifyError, notifyOK, numDeclension } from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
+import {Suggest} from "src/js/ya";
 
 
 const apiUrl = String(process.env.API);
@@ -168,7 +169,8 @@ function loadRadario() {
 
 function mapHref() {
   const suggest = props.Announce.Hall.suggest
-  return `https://yandex.ru/maps/org/${suggest?.oid}`
+  const oid = suggest?.oid ?? 0
+  return Suggest.getMapUrl(oid)
 }
 
 onMounted(() => {

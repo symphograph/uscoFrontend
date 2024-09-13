@@ -25,8 +25,8 @@ const unlinkPhoto = inject('unlinkPhoto')
 function unlinkAll() {
   api.post(apiUrl + 'api/news/photo.php', {
     params: {
+      method: 'unlinkAll',
       entryId: route.params.id,
-      method: 'unlinkAll'
     }
   })
     .then((response) => {
