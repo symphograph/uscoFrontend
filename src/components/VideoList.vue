@@ -1,61 +1,54 @@
-<template>
-<div class="eventsarea">
-<div class="vidarea">
-  <div class="vitem" v-for="vid in videos" :key="vid.youtubeId">
-    <q-video
-      :ratio="16/9"
-      :src="'https://www.youtube.com/embed/' + vid.youtubeId + '?rel=0'"
-    ></q-video>
-  </div>
-</div>
-</div>
-</template>
+<script setup lang="ts">
 
-<script setup>
+import { useQuasar } from 'quasar';
+import { api } from 'boot/axios';
+import {inject, onMounted, Ref, ref} from 'vue';
+import { notifyError } from 'src/js/myFuncts';
 
-import { useQuasar } from 'quasar'
-import { api } from 'boot/axios'
-import { inject, onMounted, ref } from 'vue'
-import {notifyError} from "src/js/myFuncts";
+const q = useQuasar();
+const apiUrl = String(process.env.API);
 
-const q = useQuasar()
-const apiUrl = String(process.env.API)
+const props = defineProps<{
+  method: string,
+  limit: number
+}>();
 
-const props = defineProps({
-  videoLimit: Object
-})
-
-const videos = ref([
-      { id: 'cYYEe_o-M3w' },
-      { id: 'ZAC_GGmo-bk' },
-      { id: 'yjTAG2iCjpk' },
-      { id: 'Y4syxGpzDn4' },
-      { id: 'lmpnSdUmSEE' },
-      { id: '2Pagmmq3Yho' },
-      { id: '_YTqUE3M_Gw' },
-      { id: 'kYPkO3iB9OQ' }
-])
+const videos = ref([]) as Ref<any[]>;
 
 
+function loadData() {
 
-    function loadData () {
-
-      api.post(apiUrl + 'api/video/list.php', {
-        params: {
-          limit: props.videoLimit.limit
-        }
-      })
-        .then((response) => {
-          videos.value = response?.data?.data ?? []
-        })
-        .catch((error) => {
-          q.notify(notifyError(error))
-        })
+  api.post(apiUrl + 'api/video/youtube.php', {
+    params: {
+      method: props.method,
+      limit: props.limit
     }
-    onMounted(() => {
-      loadData()
+  })
+    .then((response) => {
+      videos.value = response?.data?.data ?? [];
     })
+    .catch((error) => {
+      q.notify(notifyError(error));
+    });
+}
+
+onMounted(() => {
+  loadData();
+});
 </script>
+
+<template>
+  <div class="eventsarea">
+    <div class="vidarea">
+      <div class="vitem" v-for="video in videos" :key="video.youtubeId">
+        <q-video
+          :ratio="16/9"
+          :src="'https://www.youtube.com/embed/' + video.youtubeId + '?rel=0'"
+        ></q-video>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .vidarea {

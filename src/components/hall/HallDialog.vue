@@ -82,6 +82,7 @@ async function delHall(hall: Hall) {
                    danger
                    @onOk="delHall(clickedHall)"></BtnDelete>
         <q-btn label="Сохранить"
+               :disable="!clickedHall.suggestId"
                :loading="isLoading"
                color="green"
                @click="save()"></q-btn>

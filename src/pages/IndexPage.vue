@@ -13,7 +13,7 @@ const q = useQuasar()
 const compactCard = ref(false)
 provide('compactCard', compactCard)
 
-const metaData = getMeta('Южно-Сахалинский симфонический оркестр')
+const metaData = getMeta('ЮССО')
 useMeta(metaData)
 const teasers = [
   {
@@ -27,10 +27,6 @@ const teasers = [
     img: '/img/teasers/euterpe_2021.svg'
   }
 ]
-
-const videoLimit = {
-  limit: 6
-}
 
 const year = ref(new Date().getFullYear())
 
@@ -64,7 +60,7 @@ onMounted(() => {
         <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
       </div>
       <div class="contentBlock">
-        <VideoList :videoLimit="videoLimit"></VideoList>
+        <VideoList method="someLast" :limit="6"></VideoList>
       </div>
       <div class="contentBlock">
         <TeaserList :teasers="teasers"></TeaserList>

@@ -93,6 +93,7 @@ provide('register', register)
 function refreshAccessToken () {
   api.post(String(process.env.Auth) + '/api/refresh.php', {
     params: {
+      method: 'refresh',
       SessionToken: myUser.self.SessionToken,
       AccessToken: myUser.self.AccessToken
     }

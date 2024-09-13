@@ -5,7 +5,9 @@
     <br><br>
     <div class="teasers">
       <div class="nimg_block" v-for="teaser in teasers" :key="teaser.id">
-          <q-img style="border-radius: 1em" :src="teaser.img" @click="window.open(teaser.href,'_blank')"></q-img>
+          <q-img style="border-radius: 1em"
+                 :src="teaser.img"
+                 @click="window.open(teaser.href,'_blank')"></q-img>
       </div>
     </div>
   </div>

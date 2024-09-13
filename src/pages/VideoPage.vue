@@ -8,17 +8,13 @@ import PageShell from "components/main/PageShell.vue";
 const metaData = getMeta('Видео')
 useMeta(metaData)
 
-const videoLimit = {
-  limit: 1000
-}
-
 </script>
 
 <template>
   <PageShell :page-title="metaData.title">
     <template v-slot:PageContent>
       <div class="centralCol">
-        <VideoList :videoLimit="videoLimit"></VideoList>
+        <VideoList method="allPublic" :limit="1000"></VideoList>
       </div>
     </template>
   </PageShell>
