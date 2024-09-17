@@ -218,9 +218,8 @@ const stencil = computed(() => {
     </template>
   </q-uploader>
   <template v-if="refUploader?.queuedFiles.length">
-    <q-card dark style="width: 100%; max-width: 100vw">
+    <q-card dark style="width: 100%">
       <q-card-section>
-        <iframe>
           <cropper
             class="cropper"
             ref="refCropper"
@@ -231,9 +230,8 @@ const stencil = computed(() => {
             :default-position="defaultPosition"
             @change="change"
           ></cropper>
-        </iframe>
-
       </q-card-section>
+
       <q-card-actions align="between">
         <q-toggle v-model="unStrictRatio" label="Игнорировать соотношение сторон" color="red">
           <q-tooltip self="top middle" class="bg-red text-black text-body2" :delay="300">
