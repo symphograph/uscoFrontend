@@ -17,7 +17,8 @@ const router = useRouter();
 const editMode = inject('editMode');
 
 const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
-const radEvId = ref(2198241);
+//const radEvId = ref(2198241);2316559
+const radEvId = ref(2316559);
 const ticketCount = ref(null)
 
 function radarioUrl() {
@@ -261,14 +262,17 @@ onMounted(() => {
         <q-separator inset></q-separator>
         <q-card-section class="text-body2 text-center">
           <template v-if="[3,4].includes(Announce.pay) && !Announce.completed && Announce.ticketLink">
-            <q-item>
-              <q-item-section>
-                 {{
-                   `${numDeclension(ticketCount ?? 0, ['Остался', 'Осталось', 'Осталось'])} ${ticketCount} ${numDeclension(ticketCount ?? 0, ['билет', 'билета', 'билетов'])}`
-                }}
-              </q-item-section>
-            </q-item>
-            <q-separator inset spaced></q-separator>
+            <template v-if="false">
+              <q-item>
+                <q-item-section>
+                  {{
+                    `${numDeclension(ticketCount ?? 0, ['Остался', 'Осталось', 'Осталось'])} ${ticketCount} ${numDeclension(ticketCount ?? 0, ['билет', 'билета', 'билетов'])}`
+                  }}
+                </q-item-section>
+              </q-item>
+              <q-separator inset spaced></q-separator>
+            </template>
+
             <q-item clickable :href="Announce.ticketLink" target="_blank" dense style="text-align: left">
               <template v-if="Announce.pay === 4">
                 <q-item-section avatar>
@@ -284,7 +288,7 @@ onMounted(() => {
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>Купить билет</q-item-label>
-                  <q-item-label caption>+ Доступно по пушкинской карте</q-item-label>
+                  <q-item-label caption v-if="false">+ Доступно по пушкинской карте</q-item-label>
                 </q-item-section>
               </template>
             </q-item>
