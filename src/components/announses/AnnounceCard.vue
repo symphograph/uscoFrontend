@@ -22,7 +22,7 @@ const radEvId = ref(2316559);
 const ticketCount = ref(null)
 
 function radarioUrl() {
-  return `https://radario.ru/buy-tickets/${radEvId.value}`
+  return `https://radario.ru/buy-tickets/${props.Announce.radarioEventId}`
 }
 
 defineExpose({
@@ -149,6 +149,10 @@ function delSketch() {
 }
 
 function loadRadario() {
+
+  if(!props.Announce?.radarioEventId) {
+    return
+  }
   const instance = axios.create();
   instance.get(radarioUrl(), {
     params: {
@@ -160,7 +164,7 @@ function loadRadario() {
       if (!!!response?.data?.result) {
         //throw new Error();
       }
-
+      console.log('radario',response.data)
       ticketCount.value = response.data.event.ticketCount
     })
     .catch((error) => {
@@ -262,7 +266,7 @@ onMounted(() => {
         <q-separator inset></q-separator>
         <q-card-section class="text-body2 text-center">
           <template v-if="[3,4].includes(Announce.pay) && !Announce.completed && Announce.ticketLink">
-            <template v-if="false">
+            <template v-if="Announce.isShowTicketCount && Announce.radarioEventId">
               <q-item>
                 <q-item-section>
                   {{
@@ -288,7 +292,7 @@ onMounted(() => {
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>Купить билет</q-item-label>
-                  <q-item-label caption v-if="false">+ Доступно по пушкинской карте</q-item-label>
+                  <q-item-label caption v-if="Announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
                 </q-item-section>
               </template>
             </q-item>

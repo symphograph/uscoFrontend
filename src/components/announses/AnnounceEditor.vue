@@ -288,11 +288,31 @@ onUnmounted(() => {
         >
         </q-select>
         <br>
-        <q-input v-if="[3,4].includes(Announce.pay)" type="text" v-model="Announce.ticketLink"
-                 label="Ссылка на приобретение билетов"></q-input>
-        <br>
+        <template v-if="[3,4].includes(Announce.pay)">
+          <q-input  type="text" v-model="Announce.ticketLink"
+                    label="Ссылка на приобретение билетов"></q-input>
+          <br>
+          <q-input v-model="Announce.radarioEventId"
+                   type="number"
+                   stack-label
+                   placeholder="1234567"
+                   label="ID мероприятия на Radario">
+            <q-tooltip>Цифры в конце ссылки на покупку билетов</q-tooltip>
+          </q-input>
+          <br>
+          <q-card-actions>
+            <q-toggle v-model="Announce.isPushkin" label="Пушкинская карта" color="green"></q-toggle>
+            <q-space></q-space>
+            <q-toggle v-model="Announce.isShowTicketCount" color="green" label="Остаток билетов"></q-toggle>
+          </q-card-actions>
+
+          <br>
+        </template>
+
         <q-input type="number" v-model="Announce.age" label="Возрастные ограничения"></q-input>
+
         <br>
+        <q-separator spaced></q-separator>
         <q-input name="evDescr" v-model="Announce.sdescr"
                  type="textarea"
                  autogrow
@@ -369,12 +389,12 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
+  /*width: 100%;*/
 }
 
 .eventsarea {
   margin: 0 auto;
   padding: 2em;
-  max-width: 100vw;
+  /*max-width: 100vw;*/
 }
 </style>
