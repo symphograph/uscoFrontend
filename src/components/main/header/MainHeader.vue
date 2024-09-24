@@ -307,9 +307,6 @@ onMounted(() => {
         <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
           <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'"></q-avatar>
         </q-item>
-        <q-item clickable @click="() => {console.log(allowedPowers)}" dense>
-          <q-avatar icon="help" :text-color="activeEditMode?.value ? 'red' : 'grey'"></q-avatar>
-        </q-item>
       </q-tabs>
       <q-space></q-space>
       <q-img height="35px"
