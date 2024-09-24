@@ -151,7 +151,7 @@ function delPoster() {
             </q-item-section>
             <q-item-section>
               <q-item-label>Купить билет</q-item-label>
-              <q-item-label caption v-if="Announce.pushkin">+ Доступно по пушкинской карте</q-item-label>
+              <q-item-label caption v-if="Announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
             </q-item-section>
           </template>
           <template v-if="Announce.pay === 4">
