@@ -1,5 +1,5 @@
 <script setup>
-import {computed, inject, nextTick, ref} from 'vue'
+import {computed, inject, nextTick, provide, ref} from 'vue'
 import NewsList from 'components/news/NewsList.vue'
 import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
@@ -12,7 +12,8 @@ const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
 const progress = inject('progress')
-const editMode = inject('editMode')
+const editMode = inject('entryEditMode')
+provide('editMode', editMode)
 
 const evYear = ref(new Date().getFullYear())
 const listRef = ref()

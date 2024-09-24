@@ -1,16 +1,18 @@
 <script setup>
 
-import {inject, onMounted, provide, ref} from "vue";
+import {computed, inject, onMounted, provide, ref} from "vue";
 import DrawerContent from "components/main/header/DrawerContent.vue";
 import {useQuasar} from "quasar";
 import {myUser} from "src/js/myAuth";
+import {useRoute} from "vue-router";
 
 const $q = useQuasar()
 const toggleLeftDrawer = inject('toggleLeftDrawer')
 const leftDrawerOpen = inject('leftDrawerOpen')
 
 const admin = inject('admin')
-const editMode = inject('editMode')
+
+const route = useRoute()
 
 const tabList = ref(
   [
@@ -178,8 +180,8 @@ const tabList = ref(
       id: 8,
       expand: true,
       label: 'Библиотека',
-      caption: 'Ноты, записи',
-      permits: [1,2],
+      caption: '(В разнаботке. Не трогать)',
+      permits: [16],
       tabs: [
         {id: 1, name: 'Ноты', caption: 'Партитуры и репертуар', url: '/lib/works', icon: 'music_notes'},
         {id: 2, name: 'Видео', caption: '', url: '/lib/video', icon: 'smart_display'}
@@ -191,6 +193,58 @@ provide('tabList', tabList)
 const darkTrigger = inject('darkTrigger')
 const darkSwitch = inject('darkSwitch')
 const scrollPos = inject('scrollPos')
+
+const allowedPowers = computed(() => {
+  return route.meta?.allowedPowers ?? []
+})
+
+const editAvailable = computed(() => {
+  if(!allowedPowers.value.length) return false
+  return myUser.self.isPermit(allowedPowers.value)
+})
+provide('editAvailable', editAvailable)
+
+const entryEditMode = inject('entryEditMode');
+const announceEditMode = inject('announceEditMode');
+const docEditMode = inject('docEditMode')
+const staffEditMode = inject('staffEditMode')
+
+const editModesMap = {
+  new: entryEditMode,
+  news: entryEditMode,
+  announce: announceEditMode,
+  announces: announceEditMode,
+  docs: docEditMode,
+  staff: staffEditMode
+  // Добавьте другие страницы и соответствующие разрешения
+}
+
+// Определяем активный режим в зависимости от текущей страницы
+const activeEditMode = computed(() => {
+  return editModesMap[route.name] ?? null
+});
+provide('activeEditMode', activeEditMode)
+
+const deactivateAllEditModes = () => {
+  Object.values(editModesMap).forEach(mode => {
+    if (mode && mode.value) {
+      mode.value = false;  // Отключаем каждый режим
+    }
+  });
+};
+
+// Функция для переключения активного режима редактирования
+const toggleEditMode = () => {
+  if (activeEditMode.value === null) return;
+
+  if (activeEditMode.value.value) {
+    deactivateAllEditModes();
+  } else {
+    // deactivateAllEditModes(); // Отключаем все режимы перед активацией нового
+    activeEditMode.value.value = true;  // Включаем текущий активный режим
+  }
+};
+provide('toggleEditMode', toggleEditMode)
 
 function fineVision() {
   console.log('test fineVision')
@@ -250,8 +304,11 @@ onMounted(() => {
             <img src="/icons/glasses2.svg" alt="img">
           </q-avatar>
         </q-item>
-        <q-item v-if="admin" clickable @click="editMode = !editMode" dense>
-          <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'"></q-avatar>
+        <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
+          <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'"></q-avatar>
+        </q-item>
+        <q-item clickable @click="() => {console.log(allowedPowers)}" dense>
+          <q-avatar icon="help" :text-color="activeEditMode?.value ? 'red' : 'grey'"></q-avatar>
         </q-item>
       </q-tabs>
       <q-space></q-space>
@@ -327,8 +384,8 @@ onMounted(() => {
               <img src="/icons/glasses2.svg">
             </q-avatar>
           </q-item>
-          <q-item v-if="admin" clickable @click="editMode = !editMode" dense>
-            <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'"></q-avatar>
+          <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
+            <q-avatar icon="edit" :text-color="activeEditMode ? 'red' : 'grey'"></q-avatar>
           </q-item>
         </q-tabs>
       </q-item-section>

@@ -9,7 +9,7 @@ const libEditMode = inject('libEditMode')
 
 <template>
   <q-btn icon="edit" flat
-         v-if="myUser.self.isPermit([1,2,5])"
+         v-if="myUser.self.isPermit([5])"
          :color="libEditMode ? 'red' : undefined"
          @click="libEditMode = !libEditMode"></q-btn>
 </template>

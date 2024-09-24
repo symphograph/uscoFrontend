@@ -1,15 +1,15 @@
 <script setup>
 import { inject, ref } from 'vue'
-import TelegramForm from "components/main/TelegramForm.vue";
 import { myUser } from 'src/js/myAuth';
 
 const tabList = inject('tabList')
-const editMode = inject('editMode')
-const admin = inject('admin')
 
 const darkTrigger = inject('darkTrigger')
 const darkSwitch = inject('darkSwitch')
 const showLoginDialog = inject('showLoginDialog')
+const editAvailable = inject('editAvailable')
+const activeEditMode = inject('activeEditMode')
+const toggleEditMode = inject('toggleEditMode')
 </script>
 
 <template>
@@ -59,16 +59,16 @@ const showLoginDialog = inject('showLoginDialog')
 
       </template>
 
-      <q-item tag="label" v-ripple v-if="admin">
+      <q-item tag="label" v-ripple v-if="editAvailable">
         <q-item-section avatar>
-          <q-avatar icon="edit" :text-color="editMode ? 'red' : 'grey'">
+          <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'">
           </q-avatar>
         </q-item-section>
         <q-item-section>
 
         </q-item-section>
         <q-item-section>
-          <q-toggle v-model="editMode" left-label color="red"></q-toggle>
+          <q-toggle :model-value="activeEditMode.value" left-label color="red" @click="toggleEditMode"></q-toggle>
         </q-item-section>
       </q-item>
 

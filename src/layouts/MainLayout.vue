@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeMount, onMounted, provide, ref, watch} from "vue";
+import {inject, onBeforeMount, onMounted, provide, ref, watch} from "vue";
 import AuthComponent from "components/main/AuthComponent.vue";
 import {LocalStorage, useMeta, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
@@ -55,8 +55,17 @@ provide('authTypes', authTypes)
 const progress = ref(false)
 provide('progress', progress)
 
-const editMode = ref(false)
-provide('editMode', editMode)
+const entryEditMode = ref(false)
+provide('entryEditMode', entryEditMode)
+
+const announceEditMode = ref(false);
+provide('announceEditMode', announceEditMode)
+
+const docEditMode = ref(false);
+provide('docEditMode', docEditMode)
+
+const staffEditMode = ref(false)
+provide('staffEditMode', staffEditMode)
 
 const admin = ref(false)
 provide('admin', admin)

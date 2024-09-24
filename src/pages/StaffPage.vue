@@ -15,10 +15,8 @@ import PageShell from "components/main/PageShell.vue";
 
 const q = useQuasar()
 const apiStaff = String(process.env.apiStaff)
-const editMode = inject('editMode')
-
-const staffEditMode = ref(false)
-provide('staffEditMode',staffEditMode)
+const editMode = inject('staffEditMode')
+provide('editMode', editMode)
 
 const progress = ref(false)
 provide('progress', progress)
@@ -118,6 +116,7 @@ function loadData() {
 provide('loadData', loadData)
 
 function staffEdit() {
+  progress.value = true
   api.post(apiStaff + '/api/staff.php', {
     params: {
       method: 'update',
@@ -130,6 +129,9 @@ function staffEdit() {
     })
     .catch((error) => {
       q.notify(notifyError(error))
+    })
+    .finally(() => {
+      progress.value = false
     })
 }
 
@@ -187,27 +189,20 @@ onMounted(() => {
              @click="loadActionDates(true)">
         <q-tooltip>Жестко обновить даты</q-tooltip>
       </q-btn>
-      <q-btn icon="edit"
-             v-if="myUser.self.isPermit([1,2,3])"
-             flat stretch
-             :color="staffEditMode ? 'red' : 'grey'"
-             @click="staffEditMode = !staffEditMode">
-        <q-tooltip>Редактировать состав</q-tooltip>
-      </q-btn>
       <ActionDates></ActionDates>
     </template>
     <template v-slot:PageContent>
       <div class="centralCol">
         <div class="gridArea">
           <template v-for="group in groups" :key="group.groupId">
-            <div class="group" v-if="staffEditMode || group.groupId !== 200">
+            <div class="group" v-if="editMode || (group.Players.length && group.groupId !== 200)">
               <q-list>
                 <q-item dense>
                   <q-item-section avatar>
                     <q-item-label><span class="cardTitle">{{ group.groupName }}</span></q-item-label>
                   </q-item-section>
                   <q-space></q-space>
-                  <q-item-section side v-if="staffEditMode">
+                  <q-item-section side v-if="editMode">
                     <q-btn round icon="add" @click="openAddPlayerDialog(group)"></q-btn>
                   </q-item-section>
                 </q-item>
@@ -218,11 +213,11 @@ onMounted(() => {
                 <draggable
                   :list="group.Players"
                   itemKey="persId"
-                  :disabled="!staffEditMode"
+                  :disabled="!editMode"
                   group="people"
                 >
                   <template #item="{ element }">
-                    <q-item :clickable="staffEditMode">
+                    <q-item :clickable="editMode">
                       <q-item-section avatar v-if="true">
                         <q-avatar size="50px">
                           <q-img :src="avaUrl(element?.avatar)" alt="img"
@@ -253,7 +248,7 @@ onMounted(() => {
           </template>
         </div>
         <q-card-actions align="right">
-          <q-btn v-if="staffEditMode" class="goldBtn" @click="staffEdit">Сохранить</q-btn>
+          <q-btn v-if="editMode" class="goldBtn" @click="staffEdit" :loading="progress">Сохранить</q-btn>
         </q-card-actions>
       </div>
     </template>

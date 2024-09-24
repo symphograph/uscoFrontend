@@ -8,7 +8,7 @@ import BtnDelete from "components/main/BtnDelete.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const editMode = inject('editMode')
+const editMode = inject('entryEditMode')
 const emit = defineEmits(['hideOrShow', 'delEntry'])
 
 

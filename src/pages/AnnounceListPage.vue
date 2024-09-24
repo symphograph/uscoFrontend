@@ -16,7 +16,7 @@ const apiUrl = String(process.env.API)
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
-const editMode = inject('editMode')
+const editMode = inject('announceEditMode')
 
 const compactCard = ref(false)
 provide('compactCard', compactCard)

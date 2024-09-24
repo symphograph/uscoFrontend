@@ -14,7 +14,7 @@ const metaData = getMeta('Анонс')
 useMeta(metaData)
 
 const q = useQuasar()
-const editMode = inject('editMode')
+const editMode = inject('announceEditMode')
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const editorRef = ref()

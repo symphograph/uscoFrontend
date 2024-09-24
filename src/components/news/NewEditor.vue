@@ -7,6 +7,7 @@ import {useRoute, useRouter} from 'vue-router'
 import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announses/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
+import BtnDelete from "components/main/BtnDelete.vue";
 
 
 const Entry = inject('Entry')
@@ -17,10 +18,7 @@ const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['uploaded'])
 const announces = ref([])
-const selectedAnnounce = computed(() => {
-  if(!announces.value.length) return null
-  return announces.value.find(el => el.id === Event.value?.announceId) || null
-})
+
 
 const categs = ref([
   {
@@ -61,7 +59,7 @@ function sketchUrl() {
   }
   let size = q.platform.is.mobile ? 1080 : 260
   if(!Entry.value.sketch) {
-    return 'error.err'
+    return '/img/news/default_sketch.svg';
   }
   return imgUrl(apiUrl, Entry.value.sketch.md5, Entry.value.sketch.ext, size)
 
@@ -419,10 +417,8 @@ onMounted(() => {
       </q-input>
     </template>
 
-
-
     <div style="display: flex; justify-content: flex-end; grid-gap:1em; padding: 1em;">
-      <q-btn label="Удалить" color="red" @click="delEntry()"></q-btn>
+      <BtnDelete label="Удалить" title="Удалить новость" danger @onOk="delEntry()" throw-confirm></BtnDelete>
       <q-btn label="Скрыть" color="orange" v-if="Entry.isShow" outline @click="hideOrShow()">
       </q-btn>
       <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>

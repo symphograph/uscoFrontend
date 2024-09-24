@@ -1,22 +1,3 @@
-<template>
-  <div class="newscol">
-    <template v-if="Items?.length">
-      <template v-for="item in Items" :key="item.id">
-        <NewItem v-if="item.isShow || editMode"
-                 :item="item"
-                 @hideOrShow="(entryId) => { hideOrShow(entryId)}"
-                 @delEntry="(entryId) => {delEntry(entryId)}"
-        ></NewItem>
-        <q-separator></q-separator>
-      </template>
-    </template>
-    <h5 v-if="!Items && !progress" class="noEntyes">
-      Ошибка при загрузке. Попробуйте обновить страницу.
-    </h5>
-  </div>
-
-</template>
-
 <script setup>
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
@@ -29,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
 const progress = inject('progress')
-const editMode = inject('editMode')
+const entryEditMode = inject('entryEditMode')
 
 const Items = ref([])
 
@@ -93,6 +74,24 @@ onMounted(() => {
   loadData()
 })
 </script>
+
+<template>
+  <div class="newscol">
+    <template v-if="Items?.length">
+      <template v-for="item in Items" :key="item.id">
+        <NewItem v-if="item.isShow || entryEditMode"
+                 :item="item"
+                 @hideOrShow="(entryId) => { hideOrShow(entryId)}"
+                 @delEntry="(entryId) => {delEntry(entryId)}"
+        ></NewItem>
+        <q-separator></q-separator>
+      </template>
+    </template>
+    <h5 v-if="!Items && !progress" class="noEntyes">
+      Ошибка при загрузке. Попробуйте обновить страницу.
+    </h5>
+  </div>
+</template>
 
 <style scoped>
 .noEntyes {

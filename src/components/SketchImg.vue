@@ -5,8 +5,7 @@ import {useQuasar} from "quasar";
 import {inject} from "vue";
 
 const apiUrl = String(process.env.API)
-const q = useQuasar()
-const editMode = inject('editMode')
+
 
 const props = defineProps({
   md5: {

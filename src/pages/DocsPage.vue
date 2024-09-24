@@ -20,7 +20,10 @@ useMeta(metaData)
 
 const q = useQuasar()
 const apiUrl = String(process.env.API)
-const editMode = inject('editMode')
+
+const editMode = inject('docEditMode')
+provide('editMode', editMode)
+
 const trashRef = ref()
 const filterInput = ref(null)
 

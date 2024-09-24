@@ -9,23 +9,17 @@ export class Hall {
 
   id = -1;
   name = 'Новый зал';
-  //map = '';
-  //address = '';
   suggestId = 0;
   suggest: any;
 
   constructor({
                 id = -1,
                 name = 'Новый зал',
-                //map = '',
-                //address = '',
                 suggestId = 0,
                 suggest
               }: Partial<Hall> = {}) {
     this.id = id;
     this.name = name;
-    //this.map = map;
-    //this.address = address;
     this.suggestId = suggestId;
     this.suggest = suggest
   }
@@ -36,8 +30,6 @@ export class Hall {
       method: this.id > 0 ? 'update' : 'add',
       id: this.id,
       name: this.name,
-      //map: this.map,
-      //address: this.address,
       suggestId: this.suggestId
     };
     try {
@@ -52,7 +44,6 @@ export class Hall {
       q.notify(notifyError(error));
       return false;
     }
-
   }
 
   async del(q: QVueGlobals): Promise<boolean> {
@@ -97,8 +88,6 @@ export class Hall {
         return new Hall({
           id: hallData.id,
           name: hallData.name,
-          //map: hallData.map,
-          //address: hallData.address,
           suggestId: hallData.suggestId,
           suggest: hallData.suggest
         });

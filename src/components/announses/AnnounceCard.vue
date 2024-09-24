@@ -3,8 +3,7 @@ import DialogConfirm from '../DialogConfirm.vue';
 import { useQuasar } from 'quasar';
 import { api } from 'boot/axios';
 import { inject, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { fDateTime, imgUrl, notifyError, notifyOK, numDeclension } from 'src/js/myFuncts';
+import {fDateTime, imgUrl, notifyError, notifyOK, notifyWarning, numDeclension} from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
 import {Suggest} from "src/js/ya";
@@ -12,13 +11,10 @@ import {Suggest} from "src/js/ya";
 
 const apiUrl = String(process.env.API);
 const q = useQuasar();
-const route = useRoute();
-const router = useRouter();
-const editMode = inject('editMode');
+const editMode = inject('announceEditMode');
 
 const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
-//const radEvId = ref(2198241);2316559
-const radEvId = ref(2316559);
+
 const ticketCount = ref(null)
 
 function radarioUrl() {
@@ -56,7 +52,7 @@ function sketchUrl() {
   }
   let size = q.platform.is.mobile ? 1080 : 480;
   if (!props.Announce.sketch) {
-    return 'error.err';
+    return '/img/news/default_sketch.svg';
   }
   return imgUrl(apiUrl, props.Announce.sketch.md5, props.Announce.sketch.ext, size);
 
@@ -150,7 +146,7 @@ function delSketch() {
 
 function loadRadario() {
 
-  if(!props.Announce?.radarioEventId) {
+  if(!props.Announce?.radarioEventId || props.Announce.completed) {
     return
   }
   const instance = axios.create();
@@ -164,11 +160,11 @@ function loadRadario() {
       if (!!!response?.data?.result) {
         //throw new Error();
       }
-      console.log('radario',response.data)
+      console.log('radario loaded')
       ticketCount.value = response.data.event.ticketCount
     })
     .catch((error) => {
-      q.notify(notifyError(error));
+      q.notify(notifyWarning(error,'Количество оставшихся билетов не загрузилось.'));
     });
 }
 

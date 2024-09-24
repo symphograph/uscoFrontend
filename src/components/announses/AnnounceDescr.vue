@@ -9,14 +9,14 @@ import {api} from "boot/axios";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const editMode = inject('editMode')
+const editMode = inject('announceEditMode')
 const Announce = inject('Announce')
 const emit = defineEmits(['delPoster'])
 
 const posterUrl = computed(() => {
   let size = q.platform.is.mobile ? 1080 : 480
   if(!Announce.value.poster) {
-    return '/error.err'
+    return '/img/news/default_sketch.svg';
   }
   return imgUrl(apiUrl, Announce.value.poster.md5, Announce.value.poster.ext, size)
 })
