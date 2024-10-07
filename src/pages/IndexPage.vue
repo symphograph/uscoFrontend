@@ -9,6 +9,7 @@ import {useMeta, useQuasar} from 'quasar'
 import {getMeta} from "src/js/myFuncts";
 import PageShell from "components/main/PageShell.vue";
 import SocialSelect from "components/main/SocialSelect.vue";
+import {myUser} from "src/js/myAuth";
 
 const q = useQuasar()
 const compactCard = ref(false)
@@ -61,7 +62,7 @@ console.log('IndexPage mounted')
 
 <template>
   <PageShell :pageTitle="metaData.title" use-header>
-    <template v-slot:ToolPanel>
+    <template v-slot:ToolPanel v-if="myUser.self.isPermit([1])">
 
       <SocialSelect></SocialSelect>
     </template>
