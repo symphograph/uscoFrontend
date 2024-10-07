@@ -11,13 +11,9 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: '',
-            component: () => import('layouts/IndexLayout.vue'),
-            children: [{path: '', component: () => import('pages/IndexPage.vue')}]
-          },
-          {
-            path: '',
             component: () => import('layouts/WindowLayout.vue'),
             children: [
+              {path: '', component: () => import('pages/IndexPage.vue')},
               {path: 'vacancies', component: () => import('pages/VacanciesPage.vue')},
               {path: 'contacts', component: () => import('pages/ContactPage.vue')},
               {path: 'announces', name: 'announces', meta: { allowedPowers: [14] }, component: () => import('pages/AnnounceListPage.vue')},

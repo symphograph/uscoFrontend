@@ -43,16 +43,11 @@ function onScroll(evt: { verticalPosition: number; }) {
 
   if (!scrollWatch.value) {
     scrollPos.value = evt.verticalPosition
-    //console.log('timeout')
     return;
   }
   const direction = evt.verticalPosition >= scrollPos.value
-  //console.log('lastPos',scrollPos.value)
-  //console.log('pos',evt.verticalPosition)
-  //console.log('direction', direction)
   activeTools.value = !direction || evt.verticalPosition === 0
   scrollPos.value = evt.verticalPosition
-  //console.log('active',activeTools.value)
 }
 
 </script>

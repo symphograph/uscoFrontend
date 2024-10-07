@@ -4,14 +4,17 @@ import VideoList from 'components/VideoList.vue'
 import TeaserList from 'components/TeaserList.vue'
 import NewsList from 'components/news/NewsList.vue'
 import AnnounceList from 'components/announses/AnnounceList.vue'
-import {inject, onMounted, provide, ref} from 'vue'
+import {inject, nextTick, onBeforeMount, onMounted, provide, ref} from 'vue'
 import {useMeta, useQuasar} from 'quasar'
 import {getMeta} from "src/js/myFuncts";
-import MainFooter from "components/main/footer/MainFooter.vue";
+import PageShell from "components/main/PageShell.vue";
+import SocialSelect from "components/main/SocialSelect.vue";
 
 const q = useQuasar()
 const compactCard = ref(false)
 provide('compactCard', compactCard)
+
+const isMounting = ref(false)
 
 const metaData = getMeta('ЮССО')
 useMeta(metaData)
@@ -41,33 +44,48 @@ const progress = inject('progress')
    limit: 5
  }
 
+onBeforeMount(() => {
+  console.log('IndexPage before mounted')
+  isMounting.value = true
+})
+
 onMounted(() => {
+console.log('IndexPage mounted')
+  nextTick().then(() => {
+    //isMounting.value = false
+  })
+
 
 })
 </script>
 
 <template>
-  <q-page class="items-center justify-evenly">
-    <div class="centralCol">
-      <div class="contentBlock">
-        <div class="announceArea">
-          <AnnounceList :method="'futureList'"></AnnounceList>
+  <PageShell :pageTitle="metaData.title" use-header>
+    <template v-slot:ToolPanel>
+
+      <SocialSelect></SocialSelect>
+    </template>
+    <template v-slot:PageContent>
+      <div class="centralCol">
+        <div class="contentBlock">
+          <div class="announceArea">
+            <AnnounceList :method="'futureList'"></AnnounceList>
+          </div>
+        </div>
+        <div class="contentBlock">
+          <div class="p_title">Новости оркестра</div>
+          <br><br>
+          <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
+        </div>
+        <div class="contentBlock">
+          <VideoList method="someLast" :limit="6"></VideoList>
+        </div>
+        <div class="contentBlock">
+          <TeaserList :teasers="teasers"></TeaserList>
         </div>
       </div>
-      <div class="contentBlock">
-        <div class="p_title">Новости оркестра</div>
-        <br><br>
-        <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
-      </div>
-      <div class="contentBlock">
-        <VideoList method="someLast" :limit="6"></VideoList>
-      </div>
-      <div class="contentBlock">
-        <TeaserList :teasers="teasers"></TeaserList>
-      </div>
-    </div>
-    <MainFooter></MainFooter>
-  </q-page>
+    </template>
+  </PageShell>
 </template>
 
 <style scoped>
