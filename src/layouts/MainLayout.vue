@@ -28,25 +28,25 @@ const authTypes = ref([
   {
     id: 2,
     label: 'Телеграм',
-    url: 'auth/telegram/login.php',
+    url: 'login/telegram/login.php',
     img: '/img/auth/telegram.svg'
   },
   {
     id: 3,
     label: 'MailRu',
-    url: 'auth/mailru/login.php',
+    url: 'login/mailru/login.php',
     img: '/img/auth/mailru.svg'
   },
   {
     id: 4,
     label: 'Discord',
-    url: 'auth/discord/login.php',
+    url: 'login/discord/login.php',
     img: '/img/auth/discord.svg'
   },
   {
     id: 4,
     label: 'VКонтакте',
-    url: 'auth/vkontakte/login.php',
+    url: 'login/vkontakte/login.php',
     img: '/img/auth/vkontakte.svg'
   }
 ])
@@ -55,17 +55,14 @@ provide('authTypes', authTypes)
 const progress = ref(false)
 provide('progress', progress)
 
-const entryEditMode = ref(false)
-provide('entryEditMode', entryEditMode)
-
-const announceEditMode = ref(false);
-provide('announceEditMode', announceEditMode)
-
-const docEditMode = ref(false);
-provide('docEditMode', docEditMode)
-
-const staffEditMode = ref(false)
-provide('staffEditMode', staffEditMode)
+const editModes = {
+  entry: ref(false),
+  announce: ref(false),
+  doc: ref(false),
+  staff: ref(false),
+  libVideo: ref(false)
+};
+provide('editModes', editModes);
 
 const admin = ref(false)
 provide('admin', admin)
@@ -143,6 +140,7 @@ function maintenance() {
 }
 
 onBeforeMount(() => {
+  router.push({path: '/maintenance'})
   //maintenance()
   console.log('mainLayout beforeMount')
   document.body.style.backgroun = "none";

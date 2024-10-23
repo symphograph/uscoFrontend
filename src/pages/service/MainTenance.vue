@@ -13,7 +13,7 @@
       <q-card-section>
         <q-item-label caption>Мы тут кое-что улучшаем. Скоро всё заработает.</q-item-label>
       </q-card-section>
-      <q-card-section>
+      <q-card-section v-if="false">
         <q-btn
           class="q-mt-xl"
           color="white"
