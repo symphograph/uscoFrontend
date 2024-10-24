@@ -1,0 +1,1 @@
+import{i as n,v as t,m as r,n as s,A as i,l as a}from"./index.7551532c.js";import{m}from"./myAuth.5621b016.js";const p={__name:"BtnLibEdit",setup(c){const e=n("editMode");return(l,o)=>t(m).self.isPermit([5])?(r(),s(i,{key:0,icon:"edit",flat:"",color:t(e)?"red":void 0,onClick:o[0]||(o[0]=d=>e.value=!t(e))},null,8,["color"])):a("",!0)}};export{p as _};
