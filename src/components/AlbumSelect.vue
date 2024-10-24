@@ -20,7 +20,7 @@ const avatar = computed(() => {
 
 function loadList() {
 
-  api.post(apiUrl + '/api/album/list.php', {})
+  api.post(apiUrl + 'epoint/album/list.php', {})
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -37,7 +37,7 @@ function loadList() {
 }
 
 function loadAlbum() {
-  api.post(apiUrl + '/api/album/img/list.php', {
+  api.post(apiUrl + 'epoint/album/img/list.php', {
     params: {
       albumName: album.value.name
     }

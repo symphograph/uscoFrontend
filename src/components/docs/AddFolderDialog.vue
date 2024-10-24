@@ -30,7 +30,7 @@ function addFolder() {
       title: title.value
     }
   }
-  api.post(apiUrl + 'api/docs/folder.php', data)
+  api.post(apiUrl + 'epoint/docs/folder.php', data)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

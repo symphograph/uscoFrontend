@@ -1,11 +1,11 @@
 <script setup>
 import {inject, provide, ref} from 'vue'
-import AnnounceList from 'components/announses/AnnounceList.vue'
+import AnnounceList from 'components/announсes/AnnounceList.vue'
 import {useQuasar, useMeta} from 'quasar'
 import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
 import {getMeta, notifyError, notifyOK} from "src/js/myFuncts";
-import SelectSort from "components/announses/SelectSort.vue";
+import SelectSort from "components/announсes/SelectSort.vue";
 import PageShell from "components/main/PageShell.vue";
 
 const pageTitle = 'Анонсы'
@@ -14,9 +14,12 @@ useMeta(metaData)
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const route = useRoute()
+
 const router = useRouter()
-const editMode = inject('announceEditMode')
+
+
+const editModes = inject('editModes');
+const editMode = editModes.announce;
 
 const compactCard = ref(false)
 provide('compactCard', compactCard)
@@ -44,8 +47,6 @@ function toggleCompactCard() {
   }, 500);
 }
 
-
-
 function Years() {
   let arr = []
   for (let year = 2018; year <= new Date().getFullYear(); year++) {
@@ -55,7 +56,7 @@ function Years() {
 }
 
 function addAnnounce() {
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'add'
     }

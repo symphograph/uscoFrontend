@@ -1,8 +1,8 @@
 <script setup>
 import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
-import AnnounceEditor from 'components/announses/AnnounceEditor.vue'
-import AnnounceDescr from 'components/announses/AnnounceDescr.vue';
+import AnnounceEditor from 'components/announсes/AnnounceEditor.vue'
+import AnnounceDescr from 'components/announсes/AnnounceDescr.vue';
 import {ref, inject, onMounted, provide} from 'vue'
 import {useRoute} from 'vue-router'
 import {getMeta, notifyError} from 'src/js/myFuncts';
@@ -14,7 +14,12 @@ const metaData = getMeta('Анонс')
 useMeta(metaData)
 
 const q = useQuasar()
-const editMode = inject('announceEditMode')
+
+
+const editModes = inject('editModes');
+const editMode = editModes.announce;
+provide('editMode', editMode)
+
 const apiUrl = String(process.env.API)
 const route = useRoute()
 const editorRef = ref()
@@ -24,7 +29,7 @@ provide('Announce', Announce)
 
 function loadData() {
 
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'get',
       id: route.params.evid

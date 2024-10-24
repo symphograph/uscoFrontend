@@ -17,11 +17,12 @@ const loading = ref(false)
 
 function save() {
   loading.value = true
-  api.post(apiStaff + '/api/lib/partition.php', {
+  api.post(apiStaff + 'epoint/lib/partition.php', {
     params: {
       method: partition.value.id ? 'update' : 'add',
       workId: partition.value.workId,
       title: partition.value.title,
+      caption: partition.value.caption,
       num: partition.value.num,
       id: partition.value.id ?? undefined
     }
@@ -31,6 +32,7 @@ function save() {
         throw new Error();
       }
       q.notify(notifyOK(response?.data?.result ?? null))
+      loadPartitions()
       isOpenPartitionDialog.value = false
     })
     .catch((error) => {
@@ -42,7 +44,6 @@ function save() {
 }
 
 function onHide() {
-  loadPartitions()
   loading.value = false
 }
 
@@ -60,7 +61,7 @@ function onSubmit() {
 }
 
 function isValid() {
-  return   refTitle.value.validate() && refNum.value.validate()
+  return refTitle.value.validate() && refNum.value.validate()
 }
 </script>
 
@@ -69,14 +70,24 @@ function isValid() {
     <q-card bordered class="dialogArea">
       <q-form @submit.prevent.stop="onSubmit">
         <q-card-actions>
-          <q-input type="number" :rules="numRules" ref="refNum" prefix="№" v-model="partition.num" style="width: 5em"></q-input>
+          <q-input type="number"
+                   :rules="numRules"
+                   ref="refNum"
+                   prefix="№"
+                   v-model="partition.num"
+                   style="width: 5em"></q-input>
+
           <q-input v-model="partition.title"
                    filled
                    label="Название части"
                    :rules="titleRules"
                    style="width: 100%"
-                   ref="refTitle">
-          </q-input>
+                   ref="refTitle"></q-input>
+
+          <q-input v-model="partition.caption"
+                   filled
+                   label="Дополнительное название"
+                   style="width: 100%"></q-input>
         </q-card-actions>
         <q-card-actions align="right">
           <q-btn class="goldBtn"

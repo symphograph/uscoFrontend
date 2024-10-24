@@ -10,7 +10,9 @@ const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
 const progress = inject('progress')
-const entryEditMode = inject('entryEditMode')
+
+const editModes = inject('editModes');
+const editMode = editModes.entryEditMode;
 
 const Items = ref([])
 
@@ -35,7 +37,7 @@ function loadData() {
     return;
   }
   progress.value = true
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: props.limit === 100 ? 'list' : 'toplist',
       category: categ.value,
@@ -79,7 +81,7 @@ onMounted(() => {
   <div class="newscol">
     <template v-if="Items?.length">
       <template v-for="item in Items" :key="item.id">
-        <NewItem v-if="item.isShow || entryEditMode"
+        <NewItem v-if="item.isShow || editMode"
                  :item="item"
                  @hideOrShow="(entryId) => { hideOrShow(entryId)}"
                  @delEntry="(entryId) => {delEntry(entryId)}"

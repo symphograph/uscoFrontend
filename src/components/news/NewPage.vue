@@ -17,8 +17,11 @@ provide('Entry', Entry)
 const q = useQuasar()
 const apiUrl = String(process.env.API)
 const route = useRoute()
-const editMode = inject('entryEditMode')
+
+const editModes = inject('editModes');
+const editMode = editModes.entry;
 provide('editMode', editMode)
+
 const isError = ref(false)
 const progress = ref(true)
 provide('progress', progress)
@@ -32,7 +35,7 @@ useMeta(() => {
 function loadData() {
 
   progress.value = true
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'get',
       id: route.params.id

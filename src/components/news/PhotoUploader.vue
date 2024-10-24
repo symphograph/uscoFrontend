@@ -23,7 +23,7 @@ const uploader = ref(null)
 const unlinkPhoto = inject('unlinkPhoto')
 
 function unlinkAll() {
-  api.post(apiUrl + 'api/news/photo.php', {
+  api.post(apiUrl + 'epoint/news/photo.php', {
     params: {
       method: 'unlinkAll',
       entryId: route.params.id,
@@ -44,7 +44,7 @@ function unlinkAll() {
 
 function addPhoto() {
   return {
-    url: apiUrl + 'api/news/photo.php',
+    url: apiUrl + 'epoint/news/photo.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -76,7 +76,7 @@ function failed(info) {
 }
 
 function loadPhotos() {
-  api.post(apiUrl + 'api/news/photo.php', {
+  api.post(apiUrl + 'epoint/news/photo.php', {
     params: {
       method: 'list',
       entryId: route.params.id

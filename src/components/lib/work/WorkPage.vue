@@ -8,13 +8,16 @@ import {copy, notifyError, notifyOK} from "src/js/myFuncts";
 import {myUser} from "src/js/myAuth";
 import BtnDelete from "components/main/BtnDelete.vue";
 import PartitionDialog from "components/lib/PartitionDialog.vue";
-import BtnLibEdit from "pages/lib/BtnLibEdit.vue";
+import BtnLibEdit from "components/lib/BtnLibEdit.vue";
 import AuthotItem from "components/lib/AuthorItem.vue";
+import {Partition} from "src/js/lib";
 
 const apiStaff = String(process.env.apiStaff)
 const q = useQuasar()
 const route = useRoute()
 const libEditMode = inject('libEditMode')
+
+const loading = ref(false)
 
 const work = ref({})
 const ClassicOnline = ref(null)
@@ -50,7 +53,7 @@ function editPartition(partition) {
 }
 
 function loadWork(){
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'get',
       workId: route.params.id
@@ -71,7 +74,7 @@ function loadWork(){
 const loadAuthor = inject('loadAuthor')
 
 function updateWork(){
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'update',
       workId: route.params.id,
@@ -90,7 +93,7 @@ function updateWork(){
 }
 
 function delWork(){
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'del',
       workId: route.params.id,
@@ -107,45 +110,24 @@ function delWork(){
     })
 }
 
-function delPartition(id){
-  api.post(apiStaff + '/api/lib/partition.php', {
-    params: {
-      method: 'del',
-      id: id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null))
-      loadPartitions()
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function delPartition(partitionId) {
+  if (await Partition.del(q, partitionId)) {
+    loadPartitions()
+  }
 }
 
-function loadPartitions(){
-  api.post(apiStaff + '/api/lib/partition.php', {
-    params: {
-      method: 'list',
-      workId: route.params.id
-    }
-  })
-    .then((response) => {
-      partitions.value = []
-      partitions.value = response?.data?.data ?? []
-      console.log(partitions.value)
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function loadPartitions() {
+  //partitions.value = []
+  const list = await Partition.getList(q, route.params.id)
+  if(list.length) {
+    partitions.value = []
+    partitions.value = list
+  }
 }
 provide('loadPartitions', loadPartitions)
 
 function loadClassicOnline() {
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'getCO',
       opus: work.value.opus,
@@ -160,7 +142,20 @@ function loadClassicOnline() {
     })
 }
 
+async function moveSort(direction, partitionId) {
+  loading.value = true
 
+  if (await Partition.moveSort(q, direction, partitionId)) {
+    await loadPartitions()
+  }
+
+  loading.value = false
+  /*
+  setTimeout(() => {
+    loading.value = false
+  }, 500)
+*/
+}
 
 onBeforeMount(() => {
   loadWork()
@@ -211,10 +206,19 @@ onBeforeMount(() => {
               <template v-for="partition in partitions" :key="partition.id">
                 <q-item>
                   <q-item-section avatar>
-                    <q-item-label>{{ partition.num }}</q-item-label>
+                    <q-item-label>{{ partition.sortVal }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-item-label>№{{ partition.num }}</q-item-label>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>{{ partition.title }}</q-item-label>
+                    <q-item-label caption>{{ partition.caption }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-item-label>
+                      <q-btn :label="`ID: ${partition.id}`" flat @click="copy(partition.id, q)" icon-right="content_copy"></q-btn>
+                    </q-item-label>
                   </q-item-section>
 
                   <template v-if="libEditMode">
@@ -229,6 +233,23 @@ onBeforeMount(() => {
                                  @onOk="delPartition(partition.id)"
                                  tooltip="Удалить часть"
                                  title="Удалить часть"></BtnDelete>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-btn round icon="keyboard_arrow_up"
+                             :loading="loading"
+                             :disable="partition.sortVal === 1"
+                             @click.stop.prevent="moveSort('up', partition.id)"
+                      >
+                        <q-tooltip>Сдвинуть вверх</q-tooltip>
+                      </q-btn>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-btn round icon="keyboard_arrow_down"
+                             :loading="loading"
+                             @click.stop.prevent="moveSort('down', partition.id)"
+                      >
+                        <q-tooltip>Сдвинуть вниз</q-tooltip>
+                      </q-btn>
                     </q-item-section>
                   </template>
                 </q-item>

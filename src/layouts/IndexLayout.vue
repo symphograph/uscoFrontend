@@ -4,7 +4,7 @@ import AnderHeader from "components/main/header/AnderHeader.vue";
 </script>
 
 <template>
-  <AnderHeader></AnderHeader>
+  <AnderHeader v-if="false"></AnderHeader>
   <q-page>
     <div class="bgArea">
       <div class="pageArea">

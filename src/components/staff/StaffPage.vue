@@ -15,7 +15,9 @@ import PageShell from "components/main/PageShell.vue";
 
 const q = useQuasar()
 const apiStaff = String(process.env.apiStaff)
-const editMode = inject('staffEditMode')
+
+const editModes = inject('editModes');
+const editMode = editModes.staff
 provide('editMode', editMode)
 
 const progress = ref(false)
@@ -72,7 +74,7 @@ function loadActionDates(force = false) {
   progress.value = true
   actionDates.value = []
 
-  return api.post(apiStaff + 'api/staff.php', {
+  return api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'actionDates',
       force: force
@@ -94,7 +96,7 @@ function loadActionDates(force = false) {
 function loadData() {
   console.log('start loadData')
   progress.value = true
-  api.post(apiStaff + 'api/staff.php', {
+  api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'get',
       date: condDate.value
@@ -117,7 +119,7 @@ provide('loadData', loadData)
 
 function staffEdit() {
   progress.value = true
-  api.post(apiStaff + '/api/staff.php', {
+  api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'update',
       groups: groups.value,
@@ -237,7 +239,7 @@ onMounted(() => {
                           {{ statusNames.find(el => el.id === statusId).name }}
                         </q-item-label>
                       </q-item-section>
-                      <q-item-section side v-if="editMode" @click.prevent.stop="openStatusDialog(element)">
+                      <q-item-section side v-if="editMode" @click.stop.prevent="openStatusDialog(element)">
                         <q-btn icon="edit" stretch size="1em" flat></q-btn>
                       </q-item-section>
                     </q-item>

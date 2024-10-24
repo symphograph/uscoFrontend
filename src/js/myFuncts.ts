@@ -104,15 +104,6 @@ export function notifyWarning (error :any, defaultMsg = 'Ой! Не работа
   }
 }
 
-export function isExpired(error :{ response :{ data :{ error :any; }; }; }) {
-  return [
-    'Session does not exist',
-    'Invalid tokenTime',
-    'Token is Expired',
-    'tokens is empty'
-  ].includes(error?.response?.data?.error)
-}
-
 export function dynamicForm(path: string,
                             params: { [key: string]: string }, // убрали hasOwnProperty
                             method = 'post') {

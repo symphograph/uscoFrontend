@@ -114,7 +114,7 @@ function onUploaded() {
 
 function uploadAvatar() {
   return {
-    url: apiStaff + `api/avatar.php`,
+    url: apiStaff + `epoint/avatar.php`,
     headers: [
       {
         name: 'ACCESSTOKEN',

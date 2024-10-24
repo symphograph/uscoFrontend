@@ -9,8 +9,7 @@ import {notifyError} from "src/js/myFuncts";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const route = useRoute()
-const router = useRouter()
+
 const compactCard = inject('compactCard')
 
 const announceList = inject('announceList')
@@ -25,7 +24,7 @@ const props = defineProps({
 
 function loadAnnounces() {
   progress.value = true
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: props.method,
       year: props.evYear
@@ -41,11 +40,6 @@ function loadAnnounces() {
     .finally(() => {
       progress.value = false
     })
-}
-
-function changeShow(announceId) {
-  // const announce = announceList.value.find(el => el.id === announceId)
-  // announce.isShow = !announce.isShow
 }
 
 onMounted(() => {
@@ -81,7 +75,6 @@ const sortedList = computed(() => {
     :key="announce.id"
     :Announce="announce"
     @IamDeleted="loadAnnounces()"
-    @changeShow="(announceId) => changeShow(announceId)"
     :compact="compactCard"
   ></AnnounceCard>
 </template>

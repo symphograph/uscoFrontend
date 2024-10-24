@@ -12,7 +12,9 @@ const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
 const progress = inject('progress')
-const editMode = inject('entryEditMode')
+
+const editModes = inject('editModes');
+const editMode = editModes.entry;
 provide('editMode', editMode)
 
 const evYear = ref(new Date().getFullYear())
@@ -34,7 +36,7 @@ const titles = ref({
 
 function addEntry() {
 
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'add'
     }

@@ -3,7 +3,7 @@ import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
 import { inject, ref } from 'vue';
 import SelectComposer from 'components/lib/SelectComposer.vue';
-import WorkSelectItem from 'components/announses/WorkSelectItem.vue';
+import WorkSelectItem from 'components/announсes/WorkSelectItem.vue';
 import { api } from 'boot/axios';
 
 const q = useQuasar()
@@ -25,7 +25,7 @@ function loadWorks() {
   if (!selectedAuthorId.value) return;
 
   loading.value = true;
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'list',
       authorId: selectedAuthorId.value,

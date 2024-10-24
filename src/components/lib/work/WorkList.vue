@@ -1,7 +1,7 @@
 <script setup>
 
 import {computed, inject, watch} from "vue";
-import WorkItem from "components/lib/WorkItem.vue";
+import WorkItem from "components/lib/work/WorkItem.vue";
 
 
 const works = inject('works')

@@ -76,7 +76,7 @@ function loadActionDates(force = false) {
   progress.value = true
   actionDates.value = []
   console.log('start loadActionDates')
-  return api.post(apiStaff + 'api/staff.php', {
+  return api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'actionDates',
       force: force
@@ -99,7 +99,7 @@ function loadActionDates(force = false) {
 function loadData() {
   console.log('start loadData')
   progress.value = true
-  api.post(apiStaff + 'api/staff.php', {
+  api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'get',
       date: condDate.value
@@ -121,7 +121,7 @@ function loadData() {
 provide('loadData', loadData)
 
 function staffEdit() {
-  api.post(apiStaff + '/api/staff.php', {
+  api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'update',
       groups: groups.value,

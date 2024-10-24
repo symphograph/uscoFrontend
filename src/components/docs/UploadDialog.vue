@@ -74,7 +74,7 @@ function send() {
     }
   };
 
-  api.post(apiUrl + 'api/docs/doc.php', params, config)
+  api.post(apiUrl + 'epoint/docs/doc.php', params, config)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

@@ -13,34 +13,120 @@ const routes: RouteRecordRaw[] = [
             path: '',
             component: () => import('layouts/WindowLayout.vue'),
             children: [
-              {path: '', component: () => import('pages/IndexPage.vue')},
-              {path: 'vacancies', component: () => import('pages/VacanciesPage.vue')},
-              {path: 'contacts', component: () => import('pages/ContactPage.vue')},
-              {path: 'announces', name: 'announces', meta: { allowedPowers: [14] }, component: () => import('pages/AnnounceListPage.vue')},
-              {path: 'staff', name: 'staff', meta: { allowedPowers: [18] }, component: () => import('pages/StaffPage.vue')},
-              {path: 'stafft', component: () => import('pages/StaffPageTest.vue')},
-              {path: 'announce/:evid', name: 'announce', meta: { allowedPowers: [14] }, component: () => import('pages/AnnouncePage.vue')},
-              {path: 'news/:category', name: 'news', meta: { allowedPowers: [13] }, component: () => import('pages/NewsPage.vue')},
-              {path: 'conductor', component: () => import('pages/ConductorPage.vue')},
-              {path: 'history', component: () => import('pages/HistoryPage.vue')},
-              {path: 'AlexandrZrazaev', component: () => import('pages/AlexandrZrazaev.vue')},
-              {path: 'pdn', component: () => import('pages/PdnInfo.vue')},
-              {path: 'video', component: () => import('pages/VideoPage.vue')},
-              {path: 'new/:id', name: 'new', meta: { allowedPowers: [13] }, component: () => import('pages/NewPage.vue')},
-              {path: 'corrupt', component: () => import('pages/CorruptPage.vue')},
-              {path: 'docs', name: 'docs', meta: { allowedPowers: [15] }, component: () => import('pages/DocsPage.vue')},
-              {path: 'gallery/:album', component: () => import('pages/GalleryPage.vue')},
-              {path: 'gallery', component: () => import('pages/GalleryPage.vue')},
-              {path: '/main', component: () => import('pages/MainInfo.vue')},
+              {
+                path: '',
+                component: () => import('pages/IndexPage.vue')
+              },
+              {
+                path: 'vacancies',
+                component: () => import('pages/VacanciesPage.vue')
+              },
+              {
+                path: 'contacts',
+                component: () => import('pages/ContactPage.vue')
+              },
+              {
+                path: 'announces',
+                name: 'announces',
+                meta: { allowedPowers: [14] },
+                component: () => import('components/announсes/AnnounceListPage.vue')
+              },
+              {
+                path: 'staff',
+                name: 'staff',
+                meta: { allowedPowers: [18] },
+                component: () => import('components/staff/StaffPage.vue')
+              },
+              {
+                path: 'stafft',
+                component: () => import('pages/StaffPageTest.vue')
+              },
+              {
+                path: 'announce/:evid',
+                name: 'announce',
+                meta: { allowedPowers: [14] },
+                component: () => import('components/announсes/AnnouncePage.vue')
+              },
+              {
+                path: 'news/:category',
+                name: 'news',
+                meta: { allowedPowers: [13] },
+                component: () => import('components/news/NewsPage.vue')
+              },
+              {
+                path: 'new/:id',
+                name: 'new',
+                meta: { allowedPowers: [13] },
+                component: () => import('components/news/NewPage.vue')
+              },
+              {
+                path: 'conductor',
+                component: () => import('pages/ConductorPage.vue')
+              },
+              {
+                path: 'history',
+                component: () => import('pages/HistoryPage.vue')
+              },
+              {
+                path: 'AlexandrZrazaev',
+                component: () => import('pages/AlexandrZrazaev.vue')
+              },
+              {
+                path: 'pdn',
+                component: () => import('pages/PdnInfo.vue')
+              },
+              {
+                path: 'video',
+                component: () => import('pages/VideoPage.vue')
+              },
+              {
+                path: 'corrupt',
+                component: () => import('pages/CorruptPage.vue')
+              },
+              {
+                path: 'docs',
+                name: 'docs',
+                meta: { allowedPowers: [15] },
+                component: () => import('components/docs/DocsPage.vue')
+              },
+              {
+                path: 'gallery/:album',
+                component: () => import('pages/GalleryPage.vue')
+              },
+              {
+                path: 'gallery',
+                component: () => import('pages/GalleryPage.vue')
+              },
+              {
+                path: '/main',
+                component: () => import('pages/MainInfo.vue')
+              },
               {
                 path: '/lib',
                 component: () => import('layouts/LibLayout.vue'),
                 children: [
-                  {path: 'works', component: () => import('pages/lib/WorkListPage.vue')},
-                  { path: 'works/:authorId', component: () => import('pages/lib/WorkListPage.vue') },
-                  {path: '/work/:id', component: () => import('pages/lib/WorkPage.vue')},
-                  {path: 'author/:id', component: () => import('pages/lib/AuthorPage.vue')},
-                  {path: 'videos', component: () => import('pages/lib/VKVideoPage.vue')},
+                  {
+                    path: 'works',
+                    component: () => import('components/lib/work/WorkListPage.vue')
+                  },
+                  {
+                    path: 'works/:authorId',
+                    component: () => import('components/lib/work/WorkListPage.vue')
+                  },
+                  {
+                    path: '/work/:id',
+                    component: () => import('components/lib/work/WorkPage.vue')
+                  },
+                  {
+                    path: 'author/:id',
+                    component: () => import('components/lib/AuthorPage.vue')
+                  },
+                  {
+                    path: 'videos',
+                    name: 'libVideo',
+                    meta: { allowedPowers: [25] },
+                    component: () => import('components/lib/video/VKVideoPage.vue')
+                  },
                 ]
               },
             ]

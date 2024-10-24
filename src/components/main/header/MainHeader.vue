@@ -184,7 +184,7 @@ const tabList = ref(
       permits: [16],
       tabs: [
         {id: 1, name: 'Ноты', caption: 'Партитуры и репертуар', url: '/lib/works', icon: 'music_notes'},
-        {id: 2, name: 'Видео', caption: '', url: '/lib/video', icon: 'smart_display'}
+        {id: 2, name: 'Видео', caption: '', url: '/lib/videos', icon: 'smart_display'}
       ]
     }
   ])
@@ -204,18 +204,16 @@ const editAvailable = computed(() => {
 })
 provide('editAvailable', editAvailable)
 
-const entryEditMode = inject('entryEditMode');
-const announceEditMode = inject('announceEditMode');
-const docEditMode = inject('docEditMode')
-const staffEditMode = inject('staffEditMode')
+const editModes = inject('editModes');
 
 const editModesMap = {
-  new: entryEditMode,
-  news: entryEditMode,
-  announce: announceEditMode,
-  announces: announceEditMode,
-  docs: docEditMode,
-  staff: staffEditMode
+  new: editModes.entry,
+  news: editModes.entry,
+  announce: editModes.announce,
+  announces: editModes.announce,
+  docs: editModes.doc,
+  staff: editModes.staff,
+  libVideo: editModes.libVideo
   // Добавьте другие страницы и соответствующие разрешения
 }
 
@@ -304,11 +302,11 @@ onMounted(() => {
             <img src="/icons/glasses2.svg" alt="img">
           </q-avatar>
         </q-item>
-        <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
-          <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'"></q-avatar>
-        </q-item>
       </q-tabs>
       <q-space></q-space>
+      <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
+        <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'"></q-avatar>
+      </q-item>
       <q-img height="35px"
              width="120px"
              v-if="scrollPos > 2 && false"
@@ -324,78 +322,7 @@ onMounted(() => {
                 @update:modelValue="darkSwitch()">
       </q-toggle>
     </q-toolbar>
-    <q-item dense v-if="false">
-      <q-item-section avatar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer"></q-btn>
-      </q-item-section>
-      <q-item-section avatar>
-            <q-img src="/usso.logo.svg"></q-img>
-      </q-item-section>
-      <q-item-section avatar>
-        <q-img ratio="300/71" fit="contain" style="width: 150px; height: 100%" src="/img/logo/brand-name.svg"></q-img>
-      </q-item-section>
 
-      <q-item-section avatar>
-        <q-item-label lines="1" caption style="color: lightgray; font-size: 6px">
-          Художественный руководитель
-        </q-item-label>
-        <q-item-label caption style="color: lightgray; font-size: 8px">
-          и главный дирижер
-        </q-item-label>
-        <q-item-label style="font-family: 'Rubik Mono One', sans-serif; color: white; font-size: 8px">
-          Тигран
-        </q-item-label>
-        <q-item-label style="font-family: 'Rubik Mono One', sans-serif; color: white; font-size: 8px">
-          Ахназарян
-        </q-item-label>
-      </q-item-section>
-      <q-item-section>
-        <q-tabs inline-label class="mobile-hide" dense>
-          <template v-for="tab in tabList" :key="tab.id">
-            <q-btn-dropdown v-if="tab.expand" stretch flat :label="tab.label" dense>
-              <q-list class="listBg">
-                <q-item-label header>{{ tab.caption }}</q-item-label>
-                <template v-for="li in tab.tabs" :key="li.id">
-                  <q-item clickable v-close-popup tabindex="0" :to="li.url">
-                    <q-item-section avatar>
-                      <q-avatar v-if="li.ava">
-                        <img :src="li.ava">
-                      </q-avatar>
-                      <q-avatar v-if="li.icon" :icon="li.icon"></q-avatar>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>{{ li.name }}</q-item-label>
-                      <q-item-label lines="2" caption>{{ li.caption }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-list>
-            </q-btn-dropdown>
-            <q-route-tab v-else :to="tab.url" :label="tab.label" d/>
-          </template>
-          <q-item clickable @click="fineVision()" dense>
-            <q-tooltip class="bg-gray" :offset="[10, 10]">
-              Версия для слабовидящих
-            </q-tooltip>
-            <q-avatar text-color="white">
-              <img src="/icons/glasses2.svg">
-            </q-avatar>
-          </q-item>
-          <q-item v-if="editAvailable" clickable @click="toggleEditMode" dense>
-            <q-avatar icon="edit" :text-color="activeEditMode ? 'red' : 'grey'"></q-avatar>
-          </q-item>
-        </q-tabs>
-      </q-item-section>
-
-      <q-item-section side v-if="$q.platform.is.desktop">
-        <q-toggle checked-icon="nightlight"
-                  unchecked-icon="light_mode"
-                  v-model="darkTrigger"
-                  dense
-                  @update:modelValue="darkSwitch()">
-        </q-toggle>
-      </q-item-section>
-    </q-item>
   </q-header>
   <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" elevated
             style="background-color: var(--drContentBg)">

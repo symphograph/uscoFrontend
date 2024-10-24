@@ -110,7 +110,7 @@ function onUploaded() {
 
 function uploadSketch() {
   return {
-    url: apiUrl + `api/${props.type}/sketch.php`,
+    url: apiUrl + `epoint/${props.type}/sketch.php`,
     headers: [
       {
         name: 'ACCESSTOKEN',

@@ -98,7 +98,7 @@ function savePlan() {
   if (selectedMode.value === 'Structure') {
     resetTickets()
   }
-  api.post(apiUrl + 'api/tickets/hallplan.php', {
+  api.post(apiUrl + 'epoint/tickets/hallplan.php', {
     params: {
       method: 'put',
       plan: HallPlan.value
@@ -214,7 +214,7 @@ function onSelectHall(hallId) {
 }
 
 function loadHallPlan() {
-  api.post(apiUrl + 'api/tickets/hallplan.php', {
+  api.post(apiUrl + 'epoint/tickets/hallplan.php', {
     params: {
       method: 'get',
       id: selectedAnnounce.value.id
@@ -242,7 +242,7 @@ function loadHallPlan() {
 
 function loadAnnounces() {
   progress.value = true
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'futureList'
     }

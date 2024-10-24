@@ -1,16 +1,17 @@
 <script setup>
 import 'src/css/dialog.css'
-import DateTime from 'components/announses/DateTime.vue'
+import DateTime from 'components/announсes/DateTime.vue'
 import {useQuasar} from 'quasar'
 import {api} from 'boot/axios'
-import AnnounceCard from 'components/announses/AnnounceCard.vue'
+import AnnounceCard from 'components/announсes/AnnounceCard.vue'
 import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/js/myFuncts";
-import SketchUploader from "components/announses/SketchUploader.vue";
+import SketchUploader from "components/announсes/SketchUploader.vue";
 import {myUser} from "src/js/myAuth";
-import AddWorkDialog from 'components/announses/AddWorkDialog.vue';
+import AddWorkDialog from 'components/announсes/AddWorkDialog.vue';
 import HallSelect from 'components/hall/HallSelect.vue';
+import {myAnnounce} from "src/js/entry";
 
 const apiStaff = String(process.env.apiStaff)
 const apiUrl = String(process.env.API)
@@ -82,7 +83,7 @@ watch(selectedAuthorId, () => {
 
 function loadAuthors() {
   loadingAuthors.value = true
-  api.post(apiStaff + '/api/lib/author.php',{
+  api.post(apiStaff + 'epoint/lib/author.php',{
     params: {
       method: 'all'
     }
@@ -105,7 +106,7 @@ function openAddWorkDialog() {
 
 function addPoster(files) {
   return {
-    url: apiUrl + 'api/event/poster.php',
+    url: apiUrl + 'epoint/event/poster.php',
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -154,7 +155,8 @@ function failed(info) {
 }
 
 function save() {
-  rAnnounceCard.value.saveData()
+  myAnnounce.save(q, Announce.value)
+  //rAnnounceCard.value.saveData()
 }
 
 function IamDeleted() {
@@ -171,7 +173,7 @@ function onDelSketch() {
 }
 
 function updateMarkdown() {
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'updateMarkdown',
       id: Announce.value.id,
@@ -190,12 +192,8 @@ function updateMarkdown() {
     })
 }
 
-
-
-
-
 function loadPoster() {
-  api.post(apiUrl + 'api/event/poster.php', {
+  api.post(apiUrl + 'epoint/event/poster.php', {
     params: {
       method: 'get',
       announceId: route.params.evid

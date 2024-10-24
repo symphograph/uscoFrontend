@@ -64,7 +64,7 @@ function clearTrash() {
       method: 'clearTrash'
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -92,7 +92,7 @@ function loadTrash() {
       method: 'trashList'
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

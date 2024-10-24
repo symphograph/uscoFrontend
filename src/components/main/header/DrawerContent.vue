@@ -39,12 +39,20 @@ const toggleEditMode = inject('toggleEditMode')
             :caption="tab.caption"
             default-closed
           >
-            <q-item v-for="li in tab.tabs" :key="li.id" clickable v-close-popup tabindex="0" :to="li.url">
+            <q-item v-for="li in tab.tabs"
+                    :key="li.id"
+                    clickable
+                    v-close-popup
+                    tabindex="0"
+                    :to="li.url">
               <q-item-section avatar v-if="li.ava || li.icon">
                 <q-avatar v-if="li.ava">
                   <img :src="li.ava" alt="img">
                 </q-avatar>
-                <q-avatar v-if="li.icon" :icon="li.icon" color="#ecd872" text-color="secondary"></q-avatar>
+                <q-avatar v-if="li.icon"
+                          :icon="li.icon"
+                          color="#ecd872"
+                          text-color="secondary"></q-avatar>
               </q-item-section>
               <q-item-section>
                 <q-item-label>{{ li.name }}</q-item-label>
@@ -59,7 +67,7 @@ const toggleEditMode = inject('toggleEditMode')
 
       </template>
 
-      <q-item tag="label" v-ripple v-if="editAvailable">
+      <q-item tag="label" v-ripple v-if="false && editAvailable">
         <q-item-section avatar>
           <q-avatar icon="edit" :text-color="activeEditMode.value ? 'red' : 'grey'">
           </q-avatar>
@@ -68,7 +76,9 @@ const toggleEditMode = inject('toggleEditMode')
 
         </q-item-section>
         <q-item-section>
-          <q-toggle :model-value="activeEditMode.value" left-label color="red" @click="toggleEditMode"></q-toggle>
+          <q-toggle :model-value="activeEditMode.value"
+                    left-label color="red"
+                    @click="toggleEditMode"></q-toggle>
         </q-item-section>
       </q-item>
 

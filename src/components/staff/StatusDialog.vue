@@ -23,7 +23,7 @@ function onHide() {
 }
 
 function setStatuses() {
-  api.post(apiStaff + 'api/staff.php', {
+  api.post(apiStaff + 'epoint/staff.php', {
     params: {
       method: 'setStatuses',
       date: condDate.value,

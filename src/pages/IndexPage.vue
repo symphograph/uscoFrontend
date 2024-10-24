@@ -3,12 +3,12 @@
 import VideoList from 'components/VideoList.vue'
 import TeaserList from 'components/TeaserList.vue'
 import NewsList from 'components/news/NewsList.vue'
-import AnnounceList from 'components/announses/AnnounceList.vue'
+import AnnounceList from 'components/announсes/AnnounceList.vue'
 import {inject, nextTick, onBeforeMount, onMounted, provide, ref} from 'vue'
 import {useMeta, useQuasar} from 'quasar'
 import {getMeta} from "src/js/myFuncts";
 import PageShell from "components/main/PageShell.vue";
-import SocialSelect from "components/main/SocialSelect.vue";
+import SocialSelect from "components/main/social/SocialSelect.vue";
 import {myUser} from "src/js/myAuth";
 
 const q = useQuasar()
@@ -16,6 +16,7 @@ const compactCard = ref(false)
 provide('compactCard', compactCard)
 
 const isMounting = ref(false)
+const editModes = inject('editModes');
 
 const metaData = getMeta('ЮССО')
 useMeta(metaData)
@@ -51,11 +52,9 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-console.log('IndexPage mounted')
-  nextTick().then(() => {
-    //isMounting.value = false
-  })
+  console.log('IndexPage mounted')
 
+  Object.values(editModes).forEach(mode => mode.value = false);
 
 })
 </script>

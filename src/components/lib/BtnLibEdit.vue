@@ -4,14 +4,14 @@
 import {inject} from "vue";
 import {myUser} from "src/js/myAuth";
 
-const libEditMode = inject('libEditMode')
+const editMode = inject('editMode')
 </script>
 
 <template>
   <q-btn icon="edit" flat
          v-if="myUser.self.isPermit([5])"
-         :color="libEditMode ? 'red' : undefined"
-         @click="libEditMode = !libEditMode"></q-btn>
+         :color="editMode ? 'red' : undefined"
+         @click="editMode = !editMode"></q-btn>
 </template>
 
 <style scoped>

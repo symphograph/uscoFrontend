@@ -9,7 +9,7 @@ import {api} from "boot/axios";
 import {notifyError, notifyOK, numDeclension} from "src/js/myFuncts";
 import {myUser} from "src/js/myAuth";
 import BtnDelete from "components/main/BtnDelete.vue";
-import BtnLibEdit from "pages/lib/BtnLibEdit.vue";
+import BtnLibEdit from "components/lib/BtnLibEdit.vue";
 
 const q = useQuasar()
 const route = useRoute()
@@ -34,7 +34,7 @@ function itSel() {
 
 
 function updateAuthor(){
-  api.post(apiStaff + '/api/lib/author.php', {
+  api.post(apiStaff + 'epoint/lib/author.php', {
     params: {
       method: 'update',
       id: route.params.id,
@@ -53,7 +53,7 @@ function updateAuthor(){
 }
 
 function delAuthor(){
-  api.post(apiStaff + '/api/lib/author.php', {
+  api.post(apiStaff + 'epoint/lib/author.php', {
     params: {
       method: 'del',
       workId: route.params.id,

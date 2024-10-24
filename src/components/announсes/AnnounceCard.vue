@@ -1,17 +1,19 @@
 <script setup>
 import DialogConfirm from '../DialogConfirm.vue';
 import { useQuasar } from 'quasar';
-import { api } from 'boot/axios';
 import { inject, onMounted, ref } from 'vue';
-import {fDateTime, imgUrl, notifyError, notifyOK, notifyWarning, numDeclension} from 'src/js/myFuncts';
+import {fDateTime, imgUrl, notifyWarning, numDeclension} from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
 import {Suggest} from "src/js/ya";
+import {myAnnounce} from "src/js/entry";
 
 
 const apiUrl = String(process.env.API);
 const q = useQuasar();
-const editMode = inject('announceEditMode');
+
+const editModes = inject('editModes');
+const editMode = editModes.announce;
 
 const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
 
@@ -59,58 +61,21 @@ function sketchUrl() {
 }
 
 function saveData() {
-  api.post(apiUrl + 'api/event/announce.php', {
-    params: {
-      method: 'update',
-      announce: props.Announce
-    }
-  })
-    .then((response) => {
-      q.notify(notifyOK(response?.data?.result ?? ''));
-    })
-    .catch((error) => {
-      q.notify(notifyError(error));
-    });
+  myAnnounce.save(q,props.Announce)
 }
 
-function delAnnounce() {
-  api.post(apiUrl + 'api/event/announce.php', {
-    params: {
-      method: 'del',
-      id: props.Announce.id
-    }
-  })
-    .then((response) => {
-      if (!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null));
-      emit('IamDeleted');
-    })
-    .catch((error) => {
-      q.notify(notifyError(error));
-    });
+async function delAnnounce() {
+  if (await myAnnounce.del(q, props.Announce.id)) {
+    emit('IamDeleted');
+  }
 }
 
-function hideOrShow() {
-  api.post(apiUrl + 'api/event/announce.php', {
-    params: {
-      method: AnnounceEditable.value.isShow ? 'show' : 'hide',
-      announceId: AnnounceEditable.value.id
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      emit('changeShow', AnnounceEditable.value.id);
-    })
-    .catch((error) => {
-      q.notify(notifyError(error));
-      AnnounceEditable.value.isShow = !AnnounceEditable.value.isShow;
-    })
-    .finally(() => {
-    });
+async function hideOrShow() {
+  if (await myAnnounce.hideOrShow(q, AnnounceEditable.value.id, AnnounceEditable.value.isShow)) {
+    emit('changeShow', AnnounceEditable.value.id);
+  } else {
+    AnnounceEditable.value.isShow = !AnnounceEditable.value.isShow;
+  }
 }
 
 function payType() {
@@ -125,23 +90,10 @@ function payType() {
 
 }
 
-function delSketch() {
-  api.post(apiUrl + 'api/event/sketch.php', {
-    params: {
-      method: 'unlink',
-      id: props.Announce.id
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      emit('delSketch', props.Announce.id);
-      q.notify(notifyOK(response?.data?.result ?? ''));
-    })
-    .catch((error) => {
-      q.notify(notifyError(error));
-    });
+async function delSketch() {
+  if (await myAnnounce.delSketch(q, props.Announce.id)) {
+    emit('delSketch', props.Announce.id);
+  }
 }
 
 function loadRadario() {
@@ -190,6 +142,7 @@ onMounted(() => {
                    v-if="editMode && !pwUrl"
                    tooltip="Удалить эскиз"
                    throw-confirm
+                   danger
                    @onOk="delSketch()"
         >
         </BtnDelete>

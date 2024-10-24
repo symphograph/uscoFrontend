@@ -21,7 +21,8 @@ useMeta(metaData)
 const q = useQuasar()
 const apiUrl = String(process.env.API)
 
-const editMode = inject('docEditMode')
+const editModes = inject('editModes');
+const editMode = editModes.doc
 provide('editMode', editMode)
 
 const trashRef = ref()
@@ -75,7 +76,7 @@ function loadList() {
       method: 'list'
     }
   }
-  api.post(apiUrl + 'api/docs/folder.php', formData)
+  api.post(apiUrl + 'epoint/docs/folder.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

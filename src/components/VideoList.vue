@@ -18,7 +18,7 @@ const videos = ref([]) as Ref<any[]>;
 
 function loadData() {
 
-  api.post(apiUrl + 'api/video/youtube.php', {
+  api.post(apiUrl + 'epoint/video/youtube.php', {
     params: {
       method: props.method,
       limit: props.limit

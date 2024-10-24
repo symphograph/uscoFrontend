@@ -23,7 +23,7 @@ function avaUrl(ava) {
 }
 
 function loadAvatars() {
-  api.post(apiStaff + 'api/avatar.php', {
+  api.post(apiStaff + 'epoint/avatar.php', {
     params: {
       method: 'list',
       persId: selectedPersId.value
@@ -46,7 +46,7 @@ function onUploaded() {
 }
 
 function delAvatar(fileId) {
-  api.post(apiStaff + 'api/avatar.php', {
+  api.post(apiStaff + 'epoint/avatar.php', {
     params: {
       method: 'del',
       persId: selectedPersId.value,
@@ -66,7 +66,7 @@ function delAvatar(fileId) {
 }
 
 function setAsDefault(fileId) {
-  api.post(apiStaff + 'api/avatar.php', {
+  api.post(apiStaff + 'epoint/avatar.php', {
     params: {
       method: 'set',
       persId: selectedPersId.value,
@@ -85,7 +85,7 @@ function setAsDefault(fileId) {
 }
 
 function resetAva() {
-  api.post(apiStaff + 'api/avatar.php', {
+  api.post(apiStaff + 'epoint/avatar.php', {
     params: {
       method: 'reset',
       persId: selectedPersId.value,
@@ -103,7 +103,7 @@ function resetAva() {
 }
 
 function downloadSource(fileId) {
-  api.post(apiStaff + 'api/avatar.php', {
+  api.post(apiStaff + 'epoint/avatar.php', {
     params: {
       method: 'getSource',
       persId: selectedPersId.value,

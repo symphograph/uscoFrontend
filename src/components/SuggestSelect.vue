@@ -253,7 +253,7 @@ function getSuggestList(inputAddressStr: string) {
 }
 
 function addSuggest() {
-  api.post(apiUrl + 'api/ya/suggest.php', {
+  api.post(apiUrl + 'epoint/ya/suggest.php', {
     params: {
       method: 'add',
       suggest: selectedSuggest.value
@@ -278,7 +278,7 @@ function onSelect() {
 }
 
 function getSuggestApiKey() {
-  const url = apiStaffUrl + 'api/ya/suggest.php';
+  const url = apiStaffUrl + 'epoint/ya/suggest.php';
   const params = { method: 'getApiKey' };
   api.post(url, { params })
     .then((response) => {

@@ -1,54 +1,39 @@
 <script setup>
 import { api } from 'boot/axios';
 import { notifyError } from 'src/js/myFuncts';
-import { onBeforeMount, provide, ref } from 'vue';
+import {inject, onBeforeMount, provide, ref} from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
-import WorkList from 'components/lib/WorkList.vue';
+import WorkList from 'components/lib/work/WorkList.vue';
 import PageShell from 'components/main/PageShell.vue';
-import BtnLibEdit from 'pages/lib/BtnLibEdit.vue';
+import BtnLibEdit from 'components/lib/BtnLibEdit.vue';
 import AuthotItem from 'components/lib/AuthorItem.vue';
-import VKVideoItem from 'components/lib/VKVideoItem.vue';
-import VKVideoDialog from 'components/lib/VKVideoDialog.vue';
+import VKVideoItem from 'components/lib/video/VKVideoItem.vue';
+import VKVideoDialog from 'components/lib/video/VKVideoDialog.vue';
+import {Video} from "src/js/lib";
 
 const q = useQuasar()
-const route = useRoute()
-const router = useRouter()
 const apiStaff = String(process.env.apiStaff)
 const apiUrl = String(process.env.API);
 
+const editModes = inject('editModes');
+const editMode = editModes.libVideo
+provide('editMode', editMode)
+
 const progress = ref(false)
+provide('progress', progress)
+
 const videos = ref([])
 const searchText = ref('')
+
 const announceList = ref([])
 provide('announceList', announceList)
 
-const isOpenVKVideoDialog = ref(false)
-provide('isOpenVKVideoDialog', isOpenVKVideoDialog)
-
-const VKVideo = ref(null)
-provide('VKVideo', VKVideo)
-
-function loadVideos() {
-
+async function loadVideos() {
   progress.value = true
-  api.post(apiStaff + '/api/lib/video.php', {
-    params: {
-      method: 'list'
-    }
-  })
-    .then((response) => {
-      videos.value = []
-      videos.value = response?.data?.data ?? []
-
-    })
-    .catch((error) => {
-      videos.value = []
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  const list = await Video.getList(q)
+  videos.value = [...list]
+  progress.value = false
 }
 
 function splitTitle(str) {
@@ -58,7 +43,7 @@ function splitTitle(str) {
 
 function updateAllFromVK() {
   progress.value = true
-  api.post(apiStaff + '/api/lib/video.php', {
+  api.post(apiStaff + 'epoint/lib/video.php', {
     params: {
       method: 'updateAllFromVK'
     }
@@ -77,7 +62,7 @@ function updateAllFromVK() {
 
 function loadAnnounces() {
   progress.value = true
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'listAll'
     }
@@ -110,7 +95,6 @@ onBeforeMount(() => {
           <q-icon name="search"></q-icon>
         </template>
       </q-input>
-      <BtnLibEdit></BtnLibEdit>
     </template>
     <template v-slot:PageContent>
       <div class="centralCol">
@@ -123,7 +107,6 @@ onBeforeMount(() => {
       </div>
     </template>
   </PageShell>
-  <VKVideoDialog></VKVideoDialog>
 </template>
 
 <style scoped>

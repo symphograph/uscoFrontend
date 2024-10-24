@@ -27,7 +27,7 @@ function delDoc() {
       id: props.doc.id
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -48,7 +48,7 @@ function moveToFolder(id) {
       folderId: id
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -69,7 +69,7 @@ function setAsTrash() {
       id: props.doc.id
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -90,7 +90,7 @@ function resFromTrash() {
       id: props.doc.id
     }
   }
-  api.post(apiUrl + 'api/docs/doc.php', formData)
+  api.post(apiUrl + 'epoint/docs/doc.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

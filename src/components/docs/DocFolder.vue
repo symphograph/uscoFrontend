@@ -83,7 +83,7 @@ function setAsTrash() {
       id: props.folder.id
     }
   }
-  api.post(apiUrl + 'api/docs/folder.php', formData)
+  api.post(apiUrl + 'epoint/docs/folder.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
@@ -104,7 +104,7 @@ function action(method) {
       id: props.folder.id
     }
   }
-  api.post(apiUrl + 'api/docs/folder.php', formData)
+  api.post(apiUrl + 'epoint/docs/folder.php', formData)
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();

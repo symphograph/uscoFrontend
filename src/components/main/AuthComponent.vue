@@ -5,15 +5,13 @@
 import {LocalStorage, useQuasar} from "quasar";
 import {inject, onBeforeMount, onMounted, provide, ref} from "vue";
 import {api} from "boot/axios";
-import {isExpired, notifyError, notifyWarning} from "src/js/myFuncts";
+import {notifyError} from "src/js/myFuncts";
 import {useRoute} from "vue-router";
 import {myUser} from "src/js/myAuth";
 import { Hall } from 'src/js/hall';
 
 
 const q = useQuasar()
-const apiUrl = String(process.env.API)
-const route = useRoute()
 
 /**
  *
@@ -70,7 +68,7 @@ function setToken(name, value, expires = '90d') {
 }
 
 function register(){
-  api.post(String(process.env.Auth) + '/api/register.php', {
+  api.post(String(process.env.Auth) + 'epoint/register.php', {
     params: {
       method: 'register',
       authType: 'default'
@@ -92,7 +90,7 @@ function register(){
 provide('register', register)
 
 function refreshAccessToken () {
-  api.post(String(process.env.Auth) + '/api/refresh.php', {
+  api.post(String(process.env.Auth) + 'epoint/refresh.php', {
     params: {
       method: 'refresh',
       SessionToken: myUser.self.SessionToken,
@@ -118,11 +116,6 @@ function refreshAccessToken () {
     })
 }
 provide('refreshAccessToken', refreshAccessToken)
-
-
-defineExpose({
-  //fnFromChild
-})
 
 onBeforeMount(() => {
   console.log('auth beforeMounted')

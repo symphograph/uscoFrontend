@@ -8,7 +8,10 @@ import BtnDelete from "components/main/BtnDelete.vue";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const editMode = inject('entryEditMode')
+
+const editModes = inject('editModes');
+const editMode = editModes.entry;
+
 const emit = defineEmits(['hideOrShow', 'delEntry'])
 
 
@@ -18,12 +21,7 @@ const props = defineProps({
 
 const isShow = ref(props.item.isShow)
 
-function imgUrl () {
-  if(props.item?.announceId){
-    return sketchUrl()
-  }
-  return entrySketch()
-}
+
 
 function entrySketch() {
   let size = q.platform.is.mobile ? 1080 : 260
@@ -62,7 +60,7 @@ function link () {
 }
 
 function hideOrShow() {
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: isShow.value ? 'hide' : 'show',
       entryId: props.item.id,
@@ -84,7 +82,7 @@ function hideOrShow() {
 
 function delEntry() {
 
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'del',
       entryId: props.item.id,

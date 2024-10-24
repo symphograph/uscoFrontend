@@ -62,17 +62,14 @@ module.exports = configure(function (ctx) {
       // analyze: true,
       env: {
         API: ctx.dev
-          ? 'https://tapi.sakh-orch.ru/'
-          : 'https://api.sakh-orch.ru/',
+          ? 'https://sakh-orch.ru/tapi/'
+          : 'https://sakh-orch.ru/api/',
         apiStaff: ctx.dev
-          ? 'https://tapi.staff.sakh-orch.ru/'
-          : 'https://api.staff.sakh-orch.ru/',
+          ? 'https://sakh-orch.ru/tstapi/'
+          : 'https://staff.sakh-orch.ru/stapi/',
         Auth: ctx.dev
-          ? 'https://tauth.symphograph.ru/'
-          : 'https://auth.symphograph.ru/',
-        STAFF: ctx.dev
-          ? 'https://192.168.0.200:9100/'
-          : 'https://staff.sakh-orch.ru/',
+          ? 'https://sakh-orch.ru/tauth/'
+          : 'https://sakh-orch.ru/auth/',
         isDebug: !!ctx.dev,
         ServiceUrl: ctx.dev
           ? 'https://192.168.0.200:9200/'

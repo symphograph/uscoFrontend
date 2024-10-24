@@ -25,7 +25,7 @@ export class Hall {
   }
 
   async save(q: QVueGlobals): Promise<boolean> {
-    const url = String(process.env.API) + 'api/hall.php';
+    const url = String(process.env.API) + 'epoint/hall.php';
     const params = {
       method: this.id > 0 ? 'update' : 'add',
       id: this.id,
@@ -47,7 +47,7 @@ export class Hall {
   }
 
   async del(q: QVueGlobals): Promise<boolean> {
-    const url = String(process.env.API) + 'api/hall.php';
+    const url = String(process.env.API) + 'epoint/hall.php';
 
     const params = {
       method: 'del',
@@ -70,7 +70,7 @@ export class Hall {
   }
 
   static async getList(q: QVueGlobals): Promise<Hall[]> {
-    const url = String(process.env.API) + 'api/hall.php';
+    const url = String(process.env.API) + 'epoint/hall.php';
 
     const params = {
       method: 'list'

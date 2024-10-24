@@ -8,7 +8,7 @@ const actionDates = inject('actionDates')
 const condDate = inject('condDate')
 const loadData = inject('loadData')
 const today = moment(new Date()).format('YYYY-MM-DD')
-const staffEditMode = inject('staffEditMode')
+const editMode = inject('staffEditMode')
 
 function events() {
   let dates = actionDates.value.map(date => fDate(date, 'YYYY/MM/DD'));
@@ -77,8 +77,8 @@ function nextDate() {
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
           <q-date v-model="condDate"
-                  :events="staffEditMode ? events() : undefined"
-                  :options="!staffEditMode ? events() : undefined"
+                  :events="editMode ? events() : undefined"
+                  :options="!editMode ? events() : undefined"
                   :navigation-min-year-month="minYearMonth()"
                   :navigation-max-year-month="maxYearMonth()"
                   years-in-month-view

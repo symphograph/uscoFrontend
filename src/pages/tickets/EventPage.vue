@@ -128,7 +128,7 @@ function diaLogin () {
 }
 
 function loadHallPlan() {
-  api.post(apiUrl + 'api/tickets/hallplan.php', {
+  api.post(apiUrl + 'epoint/tickets/hallplan.php', {
     params: {
       method: 'get',
       id: route.params.id
@@ -163,7 +163,7 @@ function loadHallPlan() {
 function loadAnnounce() {
   progress.value = true
   console.log('progress on')
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'get',
       id: route.params.id
@@ -188,7 +188,7 @@ function loadAnnounce() {
 
 function reserveTicket(ticketId) {
   HallPlan.value.tickets.find(el => el.id === ticketId).userId = userId
-  api.post(apiUrl + 'api/tickets/ticket.php', {
+  api.post(apiUrl + 'epoint/tickets/ticket.php', {
     params: {
       method: 'reserve',
       id: ticketId
@@ -211,7 +211,7 @@ function reserveTicket(ticketId) {
 
 function returnTicket(ticketId) {
   HallPlan.value.tickets.find(el => el.id === ticketId).userId = null
-  api.post(apiUrl + 'api/tickets/ticket.php', {
+  api.post(apiUrl + 'epoint/tickets/ticket.php', {
     params: {
       method: 'returnTicket',
       id: ticketId

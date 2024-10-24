@@ -5,7 +5,7 @@ import {api} from 'boot/axios'
 import {computed, inject, onMounted, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
-import SketchUploader from "components/announses/SketchUploader.vue";
+import SketchUploader from "components/announсes/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 
@@ -67,7 +67,7 @@ function sketchUrl() {
 
 function delPw() {
 
-  api.post(apiUrl + 'api/news/sketch.php', {
+  api.post(apiUrl + 'epoint/news/sketch.php', {
     params: {
       method: 'unlink',
       id: route.params.id
@@ -85,7 +85,7 @@ function delPw() {
 }
 
 function unlinkPhoto(id) {
-  api.post(apiUrl + 'api/news/photo.php', {
+  api.post(apiUrl + 'epoint/news/photo.php', {
     params: {
       method: 'unlink',
       entryId: route.params.id,
@@ -129,7 +129,7 @@ function categsFilter() {
 
 function save(addNew = 0) {
 
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'update',
       entry: Entry.value,
@@ -148,7 +148,7 @@ function save(addNew = 0) {
 
 function delEntry() {
 
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'del',
       entryId: Entry.value.id,
@@ -168,7 +168,7 @@ function delEntry() {
 
 function loadFutureAnnounces() {
 
-  api.post(apiUrl + 'api/event/announce.php', {
+  api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'futureList',
       date: Entry.value.date
@@ -187,7 +187,7 @@ function loadFutureAnnounces() {
 }
 
 function hideOrShow() {
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: Entry.value.isShow ? 'hide' : 'show',
       entryId: Entry.value.id,
@@ -207,7 +207,7 @@ function hideOrShow() {
 }
 
 function updateMarkdown() {
-  api.post(apiUrl + 'api/news/entry.php', {
+  api.post(apiUrl + 'epoint/news/entry.php', {
     params: {
       method: 'updateMarkdown',
       id: Entry.value.id,

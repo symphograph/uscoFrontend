@@ -28,7 +28,7 @@ watch(selectedAuthorId, () => {
 
 function loadAuthors() {
   loadingAuthors.value = true
-  api.post(apiStaff + '/api/lib/author.php',{
+  api.post(apiStaff + 'epoint/lib/author.php',{
     params: {
       method: 'all'
     }
@@ -46,7 +46,7 @@ function loadAuthors() {
 }
 
 function loadAuthor(){
-  api.post(apiStaff + '/api/lib/author.php', {
+  api.post(apiStaff + 'epoint/lib/author.php', {
     params: {
       method: 'get',
       id: selectedAuthorId.value

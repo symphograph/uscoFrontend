@@ -9,7 +9,7 @@ import {api} from "boot/axios";
 
 const apiUrl = String(process.env.API)
 const q = useQuasar()
-const editMode = inject('announceEditMode')
+const editMode = inject('editMode')
 const Announce = inject('Announce')
 const emit = defineEmits(['delPoster'])
 
@@ -34,7 +34,7 @@ function vkHref() {
 }
 
 function delPoster() {
-  api.post(apiUrl + 'api/event/poster.php', {
+  api.post(apiUrl + 'epoint/event/poster.php', {
     params: {
       method: 'unlink',
       id: Announce.value.id,

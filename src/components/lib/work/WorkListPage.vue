@@ -4,12 +4,12 @@ import SelectComposer from "components/lib/SelectComposer.vue";
 import {LocalStorage, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
 import {api} from "boot/axios";
-import WorkList from "components/lib/WorkList.vue";
+import WorkList from "components/lib/work/WorkList.vue";
 import {notifyError} from "src/js/myFuncts";
 import PageShell from "components/main/PageShell.vue";
-import BtnLibEdit from "pages/lib/BtnLibEdit.vue";
+import BtnLibEdit from "components/lib/BtnLibEdit.vue";
 import AuthotItem from "components/lib/AuthorItem.vue";
-import WorkDialog from "components/lib/WorkDialog.vue";
+import WorkDialog from "components/lib/work/WorkDialog.vue";
 
 
 const q = useQuasar()
@@ -50,7 +50,7 @@ function loadWorks() {
     return
   }
   progress.value = true
-  api.post(apiStaff + '/api/lib/work.php', {
+  api.post(apiStaff + 'epoint/lib/work.php', {
     params: {
       method: 'list',
       authorId: authorId
