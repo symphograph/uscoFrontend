@@ -141,7 +141,7 @@ function maintenance() {
 
 onBeforeMount(() => {
   //router.push({path: '/maintenance'})
-  maintenance()
+  //maintenance()
   console.log('mainLayout beforeMount')
   document.body.style.backgroun = "none";
 })
