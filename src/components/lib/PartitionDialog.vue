@@ -1,12 +1,11 @@
 <script setup>
 import 'src/css/dialog.css'
 import {inject, ref} from "vue";
-import {api} from "boot/axios";
-import {notifyError, notifyOK} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
+import {Partition} from "src/js/lib";
 
 const q = useQuasar()
-const apiStaff = String(process.env.apiStaff)
+const emit = defineEmits(['onSave'])
 
 
 const isOpenPartitionDialog = inject('isOpenPartitionDialog')
@@ -15,32 +14,18 @@ const partition = inject('selectedPartition')
 const loadPartitions = inject('loadPartitions')
 const loading = ref(false)
 
-function save() {
+function close() {
+  isOpenPartitionDialog.value = false
+}
+
+async function save() {
   loading.value = true
-  api.post(apiStaff + 'epoint/lib/partition.php', {
-    params: {
-      method: partition.value.id ? 'update' : 'add',
-      workId: partition.value.workId,
-      title: partition.value.title,
-      caption: partition.value.caption,
-      num: partition.value.num,
-      id: partition.value.id ?? undefined
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null))
-      loadPartitions()
-      isOpenPartitionDialog.value = false
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      loading.value = false
-    })
+  const result = await Partition.save(q, partition.value)
+  if(result){
+    await loadPartitions()
+    close()
+  }
+  loading.value = false
 }
 
 function onHide() {
@@ -68,7 +53,7 @@ function isValid() {
 <template>
   <q-dialog v-model="isOpenPartitionDialog" @before-hide="onHide">
     <q-card bordered class="dialogArea">
-      <q-form @submit.prevent.stop="onSubmit">
+      <q-form @submit.stop.prevent="onSubmit">
         <q-card-actions>
           <q-input type="number"
                    :rules="numRules"
@@ -90,11 +75,12 @@ function isValid() {
                    style="width: 100%"></q-input>
         </q-card-actions>
         <q-card-actions align="right">
-          <q-btn class="goldBtn"
+          <q-btn
                  label="Отмена"
+                 flat
                  @click="isOpenPartitionDialog = false"
           ></q-btn>
-          <q-btn color="green" type="submit" label="сохранить" :loading="loading"></q-btn>
+          <q-btn color="green" type="submit" label="сохранить" flat :loading="loading"></q-btn>
         </q-card-actions>
       </q-form>
     </q-card>

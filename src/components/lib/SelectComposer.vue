@@ -11,8 +11,8 @@ const AuthorSelectList = inject('AuthorSelectList')
 const options = ref([...AuthorSelectList.value])
 
 const emit = defineEmits(['itSel'])
-const selectedAuthorId = inject('selectedAuthorId')
-const selectedAuthor = inject('selectedAuthor')
+
+const selectedAuthor = ref()
 const loadingAuthors = inject('loadingAuthors')
 
 function filterFn(val, update, abort) {
@@ -50,11 +50,10 @@ onMounted(() => {
 <template>
   <q-select :options="options"
             ref="refSelect"
-            v-model="selectedAuthorId"
+            v-model="selectedAuthor"
             option-label="fioRu"
             option-value="id"
             map-options
-            emit-value
             :use-input="!loadingAuthors"
             hide-selected
             fill-input
@@ -63,7 +62,7 @@ onMounted(() => {
             @filter="filterFn"
             clearable
             style="width: 100%"
-            @update:model-value="emit('itSel')"
+            @update:model-value="emit('itSel', selectedAuthor)"
             label="Композитор"
             :loading="loadingAuthors"
 

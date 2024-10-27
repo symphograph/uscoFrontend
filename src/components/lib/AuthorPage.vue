@@ -10,27 +10,34 @@ import {notifyError, notifyOK, numDeclension} from "src/js/myFuncts";
 import {myUser} from "src/js/myAuth";
 import BtnDelete from "components/main/BtnDelete.vue";
 import BtnLibEdit from "components/lib/BtnLibEdit.vue";
+import {Author} from "src/js/lib";
 
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 const apiStaff = String(process.env.apiStaff)
-const libEditMode = inject('libEditMode')
+
+
+const editMode = inject('editMode');
 
 const searchText = ref(null)
 provide('searchText', searchText)
 
 const selectedAuthorId = inject('selectedAuthorId')
-const loadAuthor = inject('loadAuthor')
 const selectedAuthor = inject('selectedAuthor')
 
-function itSel() {
-  LocalStorage.set('lastAuthor', selectedAuthorId.value)
-  route.params.id = selectedAuthorId.value
-  router.push({ path: '/lib/author/' +  selectedAuthorId.value })
+function itSel(author) {
+  selectedAuthorId.value = author.id
+  LocalStorage.set('lastAuthor', author.id)
+  route.params.id = author.id
+  router.push({ path: '/lib/author/' +  author.id })
   loadAuthor()
 }
 
+async function loadAuthor() {
+  if(!selectedAuthorId.value) return
+  selectedAuthor.value = await Author.get(q, selectedAuthorId.value)
+}
 
 
 function updateAuthor(){
@@ -80,7 +87,6 @@ onMounted(() => {
   <PageShell page-title="Композитор ">
     <template v-slot:ToolPanel>
       <SelectComposer @itSel="itSel"></SelectComposer>
-        <BtnLibEdit></BtnLibEdit>
 
     </template>
     <template v-slot:PageContent>
@@ -88,10 +94,10 @@ onMounted(() => {
         <template v-if="selectedAuthor">
           <q-card>
             <q-card-section>
-              <q-input v-model="selectedAuthor.fioRu" :readonly="!libEditMode" label="Фамилия, Имя Отчество"></q-input>
-              <q-input v-model="selectedAuthor.iofEn" :readonly="!libEditMode" label="Name LastName"></q-input>
+              <q-input v-model="selectedAuthor.fioRu" :readonly="!editMode" label="Фамилия, Имя Отчество"></q-input>
+              <q-input v-model="selectedAuthor.iofEn" :readonly="!editMode" label="Name LastName"></q-input>
             </q-card-section>
-            <q-card-actions align="right" v-if="libEditMode">
+            <q-card-actions align="right" v-if="editMode">
               <q-btn label="Сохранить" color="green" @click="updateAuthor"></q-btn>
               <BtnDelete label="Удалить"
                          title="Удалить композитора"

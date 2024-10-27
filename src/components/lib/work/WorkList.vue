@@ -17,6 +17,7 @@ const filteredList = computed(() => {
     (work.titleEn ? work.titleEn.toLowerCase().includes(searchLower) : false)
   );
 })
+const emit = defineEmits(['onDel'])
 
 watch(searchText, (newValue, oldValue) => {
   console.log("Search text changed from", oldValue, "to", newValue);
@@ -26,7 +27,7 @@ watch(searchText, (newValue, oldValue) => {
 <template>
     <q-list separator>
       <template v-for="work in filteredList" :key="work.id">
-        <WorkItem :work="work"></WorkItem>
+        <WorkItem :work="work" @onDel="emit('onDel')"></WorkItem>
       </template>
     </q-list>
 </template>

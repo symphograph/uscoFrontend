@@ -14,10 +14,69 @@ export class Author {
   nameImslp = '';
   wikiId= 0;
 
+  private static path: string = 'epoint/lib/author.php';
+
+  static async get(q: QVueGlobals, authorId: number): Promise<any> {
+
+    const params = {
+      method: 'get',
+      authorId: authorId
+    }
+    const errMsg = 'Автор не загрузился'
+
+    return staffAxios.get(q, this.path, params, errMsg)
+  }
+
 }
 
 export class Work {
   private static path: string = 'epoint/lib/work.php';
+
+  static async get(q: QVueGlobals, workId: number): Promise<any> {
+
+    const params = {
+      method: 'get',
+      workId: workId
+    }
+    const errMsg = 'Произведение не загрузилось'
+
+    return staffAxios.get(q, this.path, params, errMsg)
+  }
+
+  static async del(q: QVueGlobals, workId: number): Promise<boolean> {
+    const params = {
+      method: 'del',
+      workId: workId,
+    }
+    const errMsg = 'Не получилось удалить'
+
+    return staffAxios.set(q, this.path, params)
+  }
+
+  static async add(q: QVueGlobals, work: Record<string, any>): Promise<boolean> {
+    const params = {
+      method: 'add',
+      titleRu: work.titleRu,
+      titleEn: work.titleEn,
+      authorId: work.authorId
+    }
+    const errMsg: string = "Не сохранилось"
+
+    return staffAxios.set(q, this.path, params, errMsg)
+  }
+
+  static async update(q: QVueGlobals, work: Record<string, any>): Promise<boolean> {
+    const params = {
+      method: 'update',
+      titleRu: work.titleRu,
+      titleEn: work.titleEn,
+      workId: work.id,
+      opus: work.opus
+    }
+    const errMsg: string = "Не сохранилось"
+
+    return staffAxios.set(q, this.path, params, errMsg)
+  }
 
   static async getListByAnnounce(q: QVueGlobals, announceId: number): Promise<any[]> {
 
@@ -38,6 +97,46 @@ export class Work {
     const errMsg: string = "Произведения не загрузились"
     return staffAxios.getList(q, this.path, params, errMsg)
   }
+
+  static async linkToAnnounce(q: QVueGlobals, announceId: number, workId: number, partitions: Array<any>): Promise<boolean> {
+    const params = {
+      method: 'linkToAnnounce',
+      announceId: announceId,
+      workId: workId,
+      partitions: partitions
+    }
+
+    return staffAxios.set(q, this.path, params)
+  }
+
+  static async unlinkFromAnnounce(q: QVueGlobals, announceId: number, workId: number, force: boolean = false): Promise<boolean> {
+    const params = {
+      method: 'unlinkFromAnnounce',
+      announceId: announceId,
+      workId: workId,
+      force: force
+    }
+
+    return staffAxios.set(q, this.path, params)
+  }
+
+  static async moveSortInAnnounce(
+    q: QVueGlobals,
+    direction: 'up'|'down',
+    workId: number,
+    announceId: number
+  ): Promise<boolean> {
+
+    const params = {
+      method: 'moveSortInAnnounce',
+      direction: direction,
+      workId: workId,
+      announceId: announceId
+    };
+
+    return staffAxios.set(q, this.path, params)
+  }
+
 }
 
 export class Partition {
@@ -62,23 +161,48 @@ export class Partition {
     return staffAxios.set(q, this.path, params)
   }
 
+  static async save(q: QVueGlobals, partition: Record<string, any>): Promise<boolean> {
+    const params = {
+      method: partition.id ? 'update' : 'add',
+        workId: partition.workId,
+        title: partition.title,
+        caption: partition.caption,
+        num: partition.num,
+        id: partition.id ?? undefined
+    }
+    const errMsg: string = "Раздел не сохранился"
+
+    return staffAxios.set(q, this.path, params, errMsg)
+  }
+
   static async getList(q: QVueGlobals, workId: number): Promise<any[]> {
-    const url = staffAxios.getApiUrl(this.path)
     const params = {
       method: 'list',
       workId: workId
     }
+    const errMsg: string = "Разделы не загрузились"
 
-    try {
-      const response = await api.post(url, { params });
+    return staffAxios.getList(q, this.path, params, errMsg)
+  }
 
-      if (!response?.data?.result) throw new Error("Части произведения не загрузились");
+  static async getListByAnnounce(q: QVueGlobals, announceId: number): Promise<any[]> {
 
-      return response.data.data;
-    } catch (error) {
-      q.notify(notifyError(error, "Части произведения не загрузились"));
-      return [];
+    const params = {
+      method: 'listByAnnounce',
+      announceId: announceId
     }
+    const errMsg: string = "Разделы не загрузились"
+    return staffAxios.getList(q, this.path, params, errMsg)
+  }
+
+  static async linkListToAnnounce(q: QVueGlobals, announceId: number, partitions: Array<number>): Promise<boolean> {
+    const params = {
+      method: 'linkListToAnnounce',
+      announceId: announceId,
+      partitions: partitions
+    }
+
+    return staffAxios.set(q, this.path, params)
   }
 }
 
@@ -131,6 +255,15 @@ export class Video {
     }
 
     return staffAxios.set(q, this.path, params)
+  }
+
+  static async updateAllFromVK(q: QVueGlobals): Promise<boolean> {
+    const params = {
+      method: 'updateAllFromVK'
+    }
+    const errMsg = 'Обновление не удалось'
+
+    return staffAxios.set(q, this.path, params, errMsg)
   }
 
   static async get(q: QVueGlobals, videoId: number): Promise<any> {

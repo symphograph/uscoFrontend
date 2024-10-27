@@ -7,8 +7,9 @@ import {useQuasar} from "quasar";
 const apiStaff = String(process.env.apiStaff)
 const q = useQuasar()
 
-const libEditMode = ref(false)
-provide('libEditMode', libEditMode)
+const editModes = inject('editModes');
+const editMode = editModes.lib
+provide('editMode', editMode)
 
 const AuthorSelectList = ref([])
 provide('AuthorSelectList', AuthorSelectList)
@@ -44,23 +45,6 @@ function loadAuthors() {
       loadingAuthors.value = false
     })
 }
-
-function loadAuthor(){
-  api.post(apiStaff + 'epoint/lib/author.php', {
-    params: {
-      method: 'get',
-      id: selectedAuthorId.value
-    }
-  })
-    .then((response) => {
-      selectedAuthor.value = response?.data?.data ?? undefined
-    })
-    .catch((error) => {
-      selectedAuthor.value = undefined
-      q.notify(notifyError(error))
-    })
-}
-provide('loadAuthor', loadAuthor)
 
 onBeforeMount(() => {
   loadAuthors()

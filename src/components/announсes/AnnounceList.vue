@@ -73,7 +73,7 @@ const sortedList = computed(() => {
   <AnnounceCard
     v-for="announce in sortedList"
     :key="announce.id"
-    :Announce="announce"
+    :announce="announce"
     @IamDeleted="loadAnnounces()"
     :compact="compactCard"
   ></AnnounceCard>

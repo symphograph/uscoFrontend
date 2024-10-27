@@ -73,7 +73,7 @@ function confirm (message, title) {
     :flat="flat"
     :icon="isLabel ? undefined : iconName"
     :icon-right="isLabel ? iconName : undefined"
-    @click.prevent.stop="confirm(message,title)"
+    @click.stop.prevent="confirm(message,title)"
   >
     <q-tooltip anchor="top middle"
                :offset="[30, 30]"

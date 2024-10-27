@@ -12,6 +12,7 @@ import {myUser} from "src/js/myAuth";
 import AddWorkDialog from 'components/announсes/AddWorkDialog.vue';
 import HallSelect from 'components/hall/HallSelect.vue';
 import {myAnnounce} from "src/js/entry";
+import WorkList from "components/announсes/WorkList.vue";
 
 const apiStaff = String(process.env.apiStaff)
 const apiUrl = String(process.env.API)
@@ -19,14 +20,14 @@ const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
-const Announce = inject('Announce')
-const selectedHall = ref(Announce.value.Hall)
+const announce = inject('Announce')
+const selectedHall = ref(announce.value.Hall)
 provide('selectedHall', selectedHall)
 
 function onHallSelect(hall) {
   console.log(hall)
-  Announce.value.hallId = hall.id
-  Announce.value.Hall = hall
+  announce.value.hallId = hall.id
+  announce.value.Hall = hall
 }
 
 const pwUrl = ref('')
@@ -37,7 +38,7 @@ const emit = defineEmits(['reload', 'posterUploaded'])
 const model = {}
 
 function test() {
-  //console.log(Announce)
+  //console.log(announce)
 }
 
 const paySelect = [
@@ -62,8 +63,7 @@ const paySelect = [
 const posterUploader = ref(null)
 const rAnnounceCard = ref(null)
 
-const isOpenAddWorkDialog = ref(false)
-provide('isOpenAddWorkDialog', isOpenAddWorkDialog)
+
 
 const AuthorSelectList = ref([])
 provide('AuthorSelectList', AuthorSelectList)
@@ -100,9 +100,7 @@ function loadAuthors() {
     })
 }
 
-function openAddWorkDialog() {
-  isOpenAddWorkDialog.value = true
-}
+
 
 function addPoster(files) {
   return {
@@ -116,7 +114,7 @@ function addPoster(files) {
     formFields: [
       {
         name: 'id',
-        value: Announce.value.id
+        value: announce.value.id
       },{
         name: 'method',
         value: 'add',
@@ -155,7 +153,7 @@ function failed(info) {
 }
 
 function save() {
-  myAnnounce.save(q, Announce.value)
+  myAnnounce.save(q, announce.value)
   //rAnnounceCard.value.saveData()
 }
 
@@ -168,23 +166,23 @@ function reload() {
 }
 
 function onDelSketch() {
-  delete Announce.value.sketch
-  delete Announce.value.sketchId
+  delete announce.value.sketch
+  delete announce.value.sketchId
 }
 
 function updateMarkdown() {
   api.post(apiUrl + 'epoint/event/announce.php', {
     params: {
       method: 'updateMarkdown',
-      id: Announce.value.id,
-      markdown: Announce.value.description,
+      id: announce.value.id,
+      markdown: announce.value.description,
     }
   })
     .then((response) => {
       if (!!!response?.data?.result) {
         throw new Error();
       }
-      Announce.value.parsedMD = response?.data.data
+      announce.value.parsedMD = response?.data.data
 
     })
     .catch((error) => {
@@ -204,8 +202,8 @@ function loadPoster() {
         throw new Error();
       }
 
-      Announce.value.poster = response?.data?.data ?? null
-      if (Announce.value?.poster?.status !== 'process') {
+      announce.value.poster = response?.data?.data ?? null
+      if (announce.value?.poster?.status !== 'process') {
         photoWatcher.value = false
       }
     })
@@ -217,6 +215,8 @@ function loadPoster() {
 
     })
 }
+
+const toggleWorks = ref(false)
 
 defineExpose({
 
@@ -236,28 +236,28 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="Announce" class="eventsarea">
+  <div v-if="announce" class="eventsarea">
     <div class="editArea">
       <div class="card" v-if="q.platform.is.desktop">
         <AnnounceCard
-          v-if="Announce.Hall"
+          v-if="announce.Hall"
           @IamDeleted="IamDeleted"
           @newAnnounce="reload"
           @delSketch="onDelSketch"
           ref="rAnnounceCard"
-          :Announce="Announce"
+          :announce="announce"
           :pwUrl="pwUrl"
         >
         </AnnounceCard>
       </div>
       <div class="editor">
         <div style="display: flex; justify-content: space-between">
-          <DateTime v-model:date="Announce.eventTime" @update:date="test()"></DateTime>
+          <DateTime v-model:date="announce.eventTime" @update:date="test()"></DateTime>
         </div>
         <br><hr>
         <div class="uploads" v-if="q.platform.is.desktop">
           <div style="width: 100%">
-            <SketchUploader :id="Announce.id"
+            <SketchUploader :id="announce.id"
                             :type="'event'"
                             @onUploaded="sketchUploaded"></SketchUploader>
           </div>
@@ -273,12 +273,12 @@ onUnmounted(() => {
 
         <q-separator spaced="1em"></q-separator>
         <q-input name="progName"
-                 v-model="Announce.progName"
+                 v-model="announce.progName"
                  label="Название"
         ></q-input>
         <HallSelect @selected="onHallSelect"></HallSelect>
         <q-select
-          v-model="Announce.pay"
+          v-model="announce.pay"
           emit-value
           map-options
           label="Условия входа"
@@ -286,11 +286,11 @@ onUnmounted(() => {
         >
         </q-select>
         <br>
-        <template v-if="[3,4].includes(Announce.pay)">
-          <q-input  type="text" v-model="Announce.ticketLink"
+        <template v-if="[3,4].includes(announce.pay)">
+          <q-input  type="text" v-model="announce.ticketLink"
                     label="Ссылка на приобретение билетов"></q-input>
           <br>
-          <q-input v-model="Announce.radarioEventId"
+          <q-input v-model="announce.radarioEventId"
                    type="number"
                    stack-label
                    placeholder="1234567"
@@ -299,25 +299,25 @@ onUnmounted(() => {
           </q-input>
           <br>
           <q-card-actions>
-            <q-toggle v-model="Announce.isPushkin" label="Пушкинская карта" color="green"></q-toggle>
+            <q-toggle v-model="announce.isPushkin" label="Пушкинская карта" color="green"></q-toggle>
             <q-space></q-space>
-            <q-toggle v-model="Announce.isShowTicketCount" color="green" label="Остаток билетов"></q-toggle>
+            <q-toggle v-model="announce.isShowTicketCount" color="green" label="Остаток билетов"></q-toggle>
           </q-card-actions>
 
           <br>
         </template>
 
-        <q-input type="number" v-model="Announce.age" label="Возрастные ограничения"></q-input>
+        <q-input type="number" v-model="announce.age" label="Возрастные ограничения"></q-input>
 
         <br>
         <q-separator spaced></q-separator>
-        <q-input name="evDescr" v-model="Announce.sdescr"
+        <q-input name="evDescr" v-model="announce.sdescr"
                  type="textarea"
                  autogrow
                  label="Краткое описание"
         ></q-input>
         <br>
-        <q-input name="evText" v-model="Announce.description"
+        <q-input name="evText" v-model="announce.description"
                  type="textarea"
                  autogrow
                  :debounce="300"
@@ -338,7 +338,7 @@ onUnmounted(() => {
           />
         </div>
         <q-card-actions align="right">
-          <q-btn label="Сохранить" @click="save" color="green"></q-btn>
+          <q-btn label="Сохранить" @click="save" color="green" icon-right="save" flat></q-btn>
         </q-card-actions>
       </div>
       <q-separator spaced="1em"></q-separator>
@@ -346,16 +346,16 @@ onUnmounted(() => {
 
 
   </div>
+
+  <q-separator></q-separator>
+  <q-expansion-item label="Список произведений" v-model="toggleWorks">
+    <WorkList :announce="announce" v-if="toggleWorks"></WorkList>
+  </q-expansion-item>
+  <q-separator></q-separator>
   <br>
   <hr>
   <br>
-  <q-card v-if="false">
-    <q-card-section>Список произведений:</q-card-section>
-    <q-card-section>
-      <q-btn icon="add" label="добавить" @click="openAddWorkDialog"></q-btn>
-    </q-card-section>
-  </q-card>
-  <AddWorkDialog></AddWorkDialog>
+
 </template>
 
 <style scoped>

@@ -41,23 +41,12 @@ function splitTitle(str) {
   return { date: parts[0], title: parts.slice(1).join(' - ') };
 }
 
-function updateAllFromVK() {
+async function updateAllFromVK() {
   progress.value = true
-  api.post(apiStaff + 'epoint/lib/video.php', {
-    params: {
-      method: 'updateAllFromVK'
-    }
-  })
-    .then((response) => {
-      loadVideos()
-    })
-    .catch((error) => {
-      videos.value = []
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  if (await Video.updateAllFromVK(q)){
+    await loadVideos()
+  }
+  progress.value = false
 }
 
 function loadAnnounces() {
@@ -100,7 +89,7 @@ onBeforeMount(() => {
       <div class="centralCol">
         <div class="vidarea" v-if="videos.length">
           <template v-for="video in videos" :key="video.id">
-            <VKVideoItem :video="video"></VKVideoItem>
+            <VKVideoItem :video="video" @onSave="loadVideos"></VKVideoItem>
           </template>
 
         </div>

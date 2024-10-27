@@ -7,6 +7,7 @@ import {TCode, Video} from "src/js/lib";
 import {useQuasar} from "quasar";
 import DescrDialog from "components/lib/video/DescrDialog.vue";
 import VKVideoDialog from "components/lib/video/VKVideoDialog.vue";
+import {copy} from "src/js/myFuncts";
 
 const q = useQuasar()
 
@@ -19,6 +20,8 @@ const props = defineProps({
 const videoMutable = ref(props.video)
 
 const announceList = inject('announceList')
+
+const emit = defineEmits(['onSave'])
 
 function getAnnounce() {
   return announceList.value.find((el) => el.id === videoMutable.value.announceId)
@@ -33,12 +36,16 @@ const dateHall = computed(() => {
 })
 
 async function onSave() {
+  emit('onSave')
+  /*
   loading.value = true
   const video = await Video.get(q, props.video.id)
   if (video) {
     Object.assign(videoMutable.value, video)
   }
   loading.value = false
+  */
+
 }
 
 const editMode = inject('editMode');
@@ -68,20 +75,29 @@ function splitTitle(str) {
   return { date: parts[0], title: parts.slice(1).join(' - ') };
 }
 
-function goToMoment(start = null) {
+function getVideoUrl(start = null)
+{
   let url = 'https://vk.com/video'
   const ownerAndId = `${props.video.owner_id}_${props.video.id}`
   let params = `list=${props.video.access_key}`
   if(start) {
     params = `${params}&t=${start}`
   }
-  url =  `${url}${ownerAndId}?${params}`
+  return  `${url}${ownerAndId}?${params}`
+}
 
+function goToMoment(start = null) {
+
+  const url =  getVideoUrl(start)
+  window.open(url, '_blank')
+  /*
   const otherWindow = window.open();
   if(!otherWindow) return;
 
   otherWindow.opener = null;
   otherWindow.location = url;
+
+   */
 }
 
 function openTimeCode() {
@@ -121,6 +137,11 @@ async function onSaveTCode() {
                    icon="edit"
                    flat
                    @click.stop.prevent="openDialog()"></q-btn>
+            <q-btn :loading="loading"
+                   v-if="false"
+                   icon="help"
+                   flat
+                   @click.stop.prevent="copy(getVideoUrl(), q)"></q-btn>
           </div>
           <div class="absolute-center" v-if="isHover" style="border-radius: 50%">
             <q-btn icon="play_circle"
@@ -151,12 +172,12 @@ async function onSaveTCode() {
 
     <q-slide-transition>
       <q-list separator v-if="isTimeCodesOpen">
-        <template v-for="(timeCode, tidx) in videoMutable.timeCodes" :key="`work_${video.id}_${tidx}`">
+        <template v-for="timeCode in videoMutable.timeCodes" :key="`work_${video.id}_${timeCode.id}`">
           <q-expansion-item v-if="timeCode?.children?.length"
                             :content-inset-level="0.5">
 
             <template v-slot:header>
-              <q-item class="full-width">
+              <q-item class="full-width no-padding">
                 <q-item-section>
                   <q-item-label caption>{{timeCode.caption}}</q-item-label>
                   <q-item-label>{{ timeCode.label }}</q-item-label>

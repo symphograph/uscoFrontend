@@ -8,16 +8,16 @@ export abstract class BaseAxios {
     throw new Error("Метод getApiUrl должен быть переопределён в подклассах.");
   }
 
-  public static async set(q: QVueGlobals, path: string, params: any): Promise<boolean> {
+  public static async set(q: QVueGlobals, path: string, params: any, errMsg?: string): Promise<boolean> {
     const url = this.getApiUrl(path);
     try {
       const response = await api.post(url, { params });
-      if (!response?.data?.result) throw new Error();
+      if (!response?.data?.result) throw new Error(errMsg);
 
       q.notify(notifyOK());
       return true;
     } catch (error) {
-      q.notify(notifyError(error));
+      q.notify(notifyError(error, errMsg));
       return false;
     }
   }

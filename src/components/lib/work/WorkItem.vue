@@ -1,12 +1,21 @@
-<script setup>
+<script setup lang="ts">
 
 import {copy} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
+import BtnDelete from "components/main/BtnDelete.vue";
+import {Work} from "src/js/lib";
 
 const q = useQuasar()
-const props = defineProps({
-  work: Object
-})
+const props = defineProps<{
+  work: Record<string, any>
+}>()
+const emit = defineEmits(['onDel'])
+
+async function del() {
+  if (await Work.del(q, props.work.id)) {
+    emit('onDel')
+  }
+}
 </script>
 
 <template>
@@ -14,6 +23,13 @@ const props = defineProps({
   <q-item-section>
     <q-item-label>{{work.titleRu}}</q-item-label>
     <q-item-label caption>{{work.titleEn}}</q-item-label>
+  </q-item-section>
+  <q-item-section side>
+    <BtnDelete :title="`Удалить: ${work.titleRu}`"
+               flat danger
+               throw-confirm
+               @onOk="del"
+    ></BtnDelete>
   </q-item-section>
   <q-item-section side class="opus">
     <q-item-label caption>{{work.opus ?? 'Op.?'}}</q-item-label>

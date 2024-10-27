@@ -211,7 +211,7 @@ async function del() {
                  :rules="[
                   val => !!val || '* Обязательное поле',
                   val => isValidStartFormat(val) || 'Нужен формат [HH:MM:SS]',
-                  val => toSec(String(val)) <= video.dur || 'За пределами видео',
+                  val => toSec(String(val)) <= video.duration || 'За пределами видео',
         ]"
                  v-model="tCodeMutable.start"></q-input>
 

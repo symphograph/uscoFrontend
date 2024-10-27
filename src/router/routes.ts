@@ -110,10 +110,14 @@ const routes: RouteRecordRaw[] = [
                     component: () => import('components/lib/work/WorkListPage.vue')
                   },
                   {
+                    name: 'libWorks',
+                    meta: { allowedPowers: [5] },
                     path: 'works/:authorId',
                     component: () => import('components/lib/work/WorkListPage.vue')
                   },
                   {
+                    name: 'libWork',
+                    meta: { allowedPowers: [5] },
                     path: '/work/:id',
                     component: () => import('components/lib/work/WorkPage.vue')
                   },

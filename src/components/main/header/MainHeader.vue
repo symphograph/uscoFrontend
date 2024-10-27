@@ -10,8 +10,6 @@ const $q = useQuasar()
 const toggleLeftDrawer = inject('toggleLeftDrawer')
 const leftDrawerOpen = inject('leftDrawerOpen')
 
-const admin = inject('admin')
-
 const route = useRoute()
 
 const tabList = ref(
@@ -180,7 +178,7 @@ const tabList = ref(
       id: 8,
       expand: true,
       label: 'Библиотека',
-      caption: '(В разнаботке. Не трогать)',
+      caption: 'Ноты и видео',
       permits: [16],
       tabs: [
         {id: 1, name: 'Ноты', caption: 'Партитуры и репертуар', url: '/lib/works', icon: 'music_notes'},
@@ -213,7 +211,9 @@ const editModesMap = {
   announces: editModes.announce,
   docs: editModes.doc,
   staff: editModes.staff,
-  libVideo: editModes.libVideo
+  libVideo: editModes.libVideo,
+  libWork: editModes.lib,
+  libWorks: editModes.lib
   // Добавьте другие страницы и соответствующие разрешения
 }
 

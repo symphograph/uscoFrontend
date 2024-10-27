@@ -10,6 +10,7 @@ import PageShell from "components/main/PageShell.vue";
 import BtnLibEdit from "components/lib/BtnLibEdit.vue";
 import AuthotItem from "components/lib/AuthorItem.vue";
 import WorkDialog from "components/lib/work/WorkDialog.vue";
+import {Author, Work} from "src/js/lib";
 
 
 const q = useQuasar()
@@ -26,10 +27,10 @@ provide('progress', progress)
 const works = ref([])
 provide('works', works)
 
-const AuthorSelectList = inject('AuthorSelectList')
+
 const selectedAuthorId = inject('selectedAuthorId')
 const selectedAuthor = inject('selectedAuthor')
-const libEditMode = inject('libEditMode')
+const editMode = inject('editMode')
 
 const isOpenWorkDialog = ref(false)
 provide('isOpenWorkDialog', isOpenWorkDialog)
@@ -44,32 +45,22 @@ function itSel() {
   loadWorks()
 }
 
-function loadWorks() {
-  let authorId = route.params.authorId * 1
-  if(!authorId) {
-    return
-  }
+async function loadWorks() {
   progress.value = true
-  api.post(apiStaff + 'epoint/lib/work.php', {
-    params: {
-      method: 'list',
-      authorId: authorId
-    }
-  })
-    .then((response) => {
-      works.value = []
-      works.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      works.value = []
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  const worksLoaded = await Work.getListByAuthor(q, route.params.authorId)
+  if(worksLoaded){
+    works.value = worksLoaded
+  }
+  progress.value = false
 }
 
-const loadAuthor = inject('loadAuthor')
+async function loadAuthor() {
+  const result = await Author.get(q, selectedAuthorId.value)
+  if(result) {
+    selectedAuthor.value = result
+  }
+
+}
 
 function createWork() {
   work.value = {
@@ -94,7 +85,7 @@ onMounted(() => {
 <template>
   <PageShell page-title="Произведения ">
     <template v-slot:ToolPanel>
-      <q-btn @click="createWork" icon="add" v-if="libEditMode" flat round></q-btn>
+      <q-btn @click="createWork" icon="add" v-if="editMode" flat round></q-btn>
       <AuthotItem :id="selectedAuthorId"
                   :iofEn="selectedAuthor?.iofEn"
                   :iconUrl="selectedAuthor?.iconUrl"
@@ -104,15 +95,14 @@ onMounted(() => {
           <q-icon name="search"></q-icon>
         </template>
       </q-input>
-      <BtnLibEdit></BtnLibEdit>
     </template>
     <template v-slot:PageContent>
       <div class="centralCol">
-        <WorkList v-if="works.length"></WorkList>
+        <WorkList v-if="works.length" @onDel="loadWorks"></WorkList>
       </div>
     </template>
   </PageShell>
-  <WorkDialog></WorkDialog>
+  <WorkDialog @onSave="loadWorks"></WorkDialog>
 </template>
 
 <style scoped>

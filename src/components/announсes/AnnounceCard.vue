@@ -20,7 +20,7 @@ const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch'
 const ticketCount = ref(null)
 
 function radarioUrl() {
-  return `https://radario.ru/buy-tickets/${props.Announce.radarioEventId}`
+  return `https://radario.ru/buy-tickets/${props.announce.radarioEventId}`
 }
 
 defineExpose({
@@ -37,7 +37,7 @@ const payTypes = ref([
 ]);
 
 const props = defineProps({
-  Announce: ref(false),
+  announce: ref(false),
   pwUrl: String,
   compact: {
     type: Boolean,
@@ -46,26 +46,26 @@ const props = defineProps({
   }
 });
 
-const AnnounceEditable = ref(props.Announce);
+const AnnounceEditable = ref(props.announce);
 
 function sketchUrl() {
   if (props.pwUrl) {
     return props.pwUrl;
   }
   let size = q.platform.is.mobile ? 1080 : 480;
-  if (!props.Announce.sketch) {
+  if (!props.announce.sketch) {
     return '/img/news/default_sketch.svg';
   }
-  return imgUrl(apiUrl, props.Announce.sketch.md5, props.Announce.sketch.ext, size);
+  return imgUrl(apiUrl, props.announce.sketch.md5, props.announce.sketch.ext, size);
 
 }
 
 function saveData() {
-  myAnnounce.save(q,props.Announce)
+  myAnnounce.save(q,props.announce)
 }
 
 async function delAnnounce() {
-  if (await myAnnounce.del(q, props.Announce.id)) {
+  if (await myAnnounce.del(q, props.announce.id)) {
     emit('IamDeleted');
   }
 }
@@ -79,26 +79,26 @@ async function hideOrShow() {
 }
 
 function payType() {
-  if (!props.Announce.pay) {
+  if (!props.announce.pay) {
     return '';
   }
 
-  if (props.Announce.pay === 3 && props.Announce.completed) {
+  if (props.announce.pay === 3 && props.announce.completed) {
     return 'Продажа завершена';
   }
-  return payTypes.value[props.Announce.pay];
+  return payTypes.value[props.announce.pay];
 
 }
 
 async function delSketch() {
-  if (await myAnnounce.delSketch(q, props.Announce.id)) {
-    emit('delSketch', props.Announce.id);
+  if (await myAnnounce.delSketch(q, props.announce.id)) {
+    emit('delSketch', props.announce.id);
   }
 }
 
 function loadRadario() {
 
-  if(!props.Announce?.radarioEventId || props.Announce.completed) {
+  if(!props.announce?.radarioEventId || props.announce.completed) {
     return
   }
   const instance = axios.create();
@@ -121,13 +121,13 @@ function loadRadario() {
 }
 
 function mapHref() {
-  const suggest = props.Announce.Hall.suggest
+  const suggest = props.announce.Hall.suggest
   const oid = suggest?.oid ?? 0
   return Suggest.getMapUrl(oid)
 }
 
 onMounted(() => {
-  if (props.Announce.completed === false) {
+  if (props.announce.completed === false) {
     loadRadario()
   }
 });
@@ -135,8 +135,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-card v-if="Announce && (Announce.isShow || editMode)" square class="eventbox tdno" separator>
-    <router-link :to="'/announce/'+Announce.id">
+  <q-card v-if="announce && (announce.isShow || editMode)" square class="eventbox tdno" separator>
+    <router-link :to="'/announce/'+announce.id">
       <div class="delBtnArea">
         <BtnDelete title="Удалить эскиз"
                    v-if="editMode && !pwUrl"
@@ -155,7 +155,7 @@ onMounted(() => {
     </router-link>
     <q-card-section color="info" expand-separator>
       <q-badge
-        v-if="Announce.completed === false"
+        v-if="announce.completed === false"
         class="absolute bage"
         color="green-6"
         rounded
@@ -163,7 +163,7 @@ onMounted(() => {
       >
         Скоро
       </q-badge>
-      <q-badge v-if="Announce.age" rounded style="background-color: orange;" floating>{{ Announce.age + '+' }}</q-badge>
+      <q-badge v-if="announce.age" rounded style="background-color: orange;" floating>{{ announce.age + '+' }}</q-badge>
       <q-item v-ripple dense>
         <q-item-section avatar>
           <q-icon name="schedule">
@@ -179,7 +179,7 @@ onMounted(() => {
         </q-item-section>
         <q-item-section>
           <q-item-label caption>
-            <span class="mapLink">{{ Announce.Hall.name }}</span>
+            <span class="mapLink">{{ announce.Hall.name }}</span>
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -187,19 +187,19 @@ onMounted(() => {
     <template v-if="!compact">
       <q-separator inset></q-separator>
       <q-card-section>
-        <div class="text-subtitle1 text-center prog-name" v-html="Announce.progName"></div>
+        <div class="text-subtitle1 text-center prog-name" v-html="announce.progName"></div>
       </q-card-section>
       <q-card-section class="text-body2 text-center">
-        <div v-html="Announce.sdescr"></div>
+        <div v-html="announce.sdescr"></div>
       </q-card-section>
       <q-card-section class="space">
         <div></div>
       </q-card-section>
       <q-separator inset></q-separator>
-      <q-card-section v-if="Announce.youtubeId">
+      <q-card-section v-if="announce.youtubeId">
         <q-item clickable
                 v-ripple
-                :href="'https://www.youtube.com/watch?v=' + Announce.youtubeId"
+                :href="'https://www.youtube.com/watch?v=' + announce.youtubeId"
                 target="_blank">
           <q-item-section avatar>
             <q-icon name="ion-logo-youtube"></q-icon>
@@ -211,11 +211,11 @@ onMounted(() => {
           </q-item-section>
         </q-item>
       </q-card-section>
-      <template v-if="Announce.pay">
+      <template v-if="announce.pay">
         <q-separator inset></q-separator>
         <q-card-section class="text-body2 text-center">
-          <template v-if="[3,4].includes(Announce.pay) && !Announce.completed && Announce.ticketLink">
-            <template v-if="Announce.isShowTicketCount && Announce.radarioEventId">
+          <template v-if="[3,4].includes(announce.pay) && !announce.completed && announce.ticketLink">
+            <template v-if="announce.isShowTicketCount && announce.radarioEventId">
               <q-item>
                 <q-item-section>
                   {{
@@ -226,8 +226,8 @@ onMounted(() => {
               <q-separator inset spaced></q-separator>
             </template>
 
-            <q-item clickable :href="Announce.ticketLink" target="_blank" dense style="text-align: left">
-              <template v-if="Announce.pay === 4">
+            <q-item clickable :href="announce.ticketLink" target="_blank" dense style="text-align: left">
+              <template v-if="announce.pay === 4">
                 <q-item-section avatar>
                   <q-icon name="img:/img/uds.svg"></q-icon>
                 </q-item-section>
@@ -235,13 +235,13 @@ onMounted(() => {
                   <q-item-label>Получить пригласительный</q-item-label>
                 </q-item-section>
               </template>
-              <template v-if="Announce.pay === 3">
+              <template v-if="announce.pay === 3">
                 <q-item-section avatar>
                   <q-icon name="shopping_cart"></q-icon>
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>Купить билет</q-item-label>
-                  <q-item-label caption v-if="Announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
+                  <q-item-label caption v-if="announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
                 </q-item-section>
               </template>
             </q-item>
@@ -254,7 +254,7 @@ onMounted(() => {
       </template>
       <q-separator inset></q-separator>
       <q-card-section class="text-body2 text-center">
-        Художественный руководитель и главный дирижер - <b>Тигран Ахназарян</b>.
+        Xудожественный руководитель и главный дирижер - <b>Тигран Ахназарян</b>.
       </q-card-section>
       <template v-if="editMode">
         <q-card-section>

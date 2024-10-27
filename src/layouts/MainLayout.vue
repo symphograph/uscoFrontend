@@ -60,7 +60,9 @@ const editModes = {
   announce: ref(false),
   doc: ref(false),
   staff: ref(false),
-  libVideo: ref(false)
+  libVideo: ref(false),
+  lib: ref(false)
+
 };
 provide('editModes', editModes);
 
