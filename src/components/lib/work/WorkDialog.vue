@@ -57,9 +57,11 @@ function isValid() {
           <q-input v-model="work.opus"
                    prefix="Op."
                    label="Опус"
+                   stack-label
           ></q-input>
           <q-input v-model="work.catalogIndex"
                    label="Каталог. Например: BWV 123"
+                   stack-label
           ></q-input>
           <q-btn type="submit" label="Отправить"></q-btn>
         </q-card-section>

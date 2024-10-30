@@ -213,7 +213,8 @@ const editModesMap = {
   staff: editModes.staff,
   libVideo: editModes.libVideo,
   libWork: editModes.lib,
-  libWorks: editModes.lib
+  libWorks: editModes.lib,
+  libAuthor: editModes.lib
   // Добавьте другие страницы и соответствующие разрешения
 }
 

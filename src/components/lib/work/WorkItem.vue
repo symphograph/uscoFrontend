@@ -4,12 +4,20 @@ import {copy} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {Work} from "src/js/lib";
+import {inject, Ref} from "vue";
 
 const q = useQuasar()
+const editMode = inject('editMode')
+const genres = inject('genres') as Ref<any[]>
+
 const props = defineProps<{
   work: Record<string, any>
 }>()
 const emit = defineEmits(['onDel'])
+
+function getGenre(genreId: number) {
+  return genres.value.find((el) => el.id === genreId)
+}
 
 async function del() {
   if (await Work.del(q, props.work.id)) {
@@ -23,9 +31,11 @@ async function del() {
   <q-item-section>
     <q-item-label>{{work.titleRu}}</q-item-label>
     <q-item-label caption>{{work.titleEn}}</q-item-label>
+    <q-item-label v-if="work.genreId" caption>{{getGenre(work.genreId).name}}</q-item-label>
   </q-item-section>
   <q-item-section side>
     <BtnDelete :title="`Удалить: ${work.titleRu}`"
+               v-if="editMode"
                flat danger
                throw-confirm
                @onOk="del"

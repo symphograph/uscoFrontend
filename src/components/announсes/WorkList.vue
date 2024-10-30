@@ -6,6 +6,7 @@ import {Partition, Work} from "src/js/lib";
 import {useQuasar} from "quasar";
 import BtnDelete from "components/main/BtnDelete.vue";
 import BtnMoveSort from "components/main/buttons/BtnMoveSort.vue";
+import WorkBatchAddDialog from "components/announсes/WorkBatchAddDialog.vue";
 
 const q = useQuasar()
 
@@ -21,9 +22,10 @@ const loading = ref(false)
 const isOpenAddWorkDialog = ref(false)
 provide('isOpenAddWorkDialog', isOpenAddWorkDialog)
 
-function openAddWorkDialog() {
-  isOpenAddWorkDialog.value = true
-}
+const isOpenBatchAddDialog = ref(false)
+provide('isOpenBatchAddDialog', isOpenBatchAddDialog)
+
+
 
 function onSelectWork(work: any) {
   console.log(work)
@@ -60,8 +62,6 @@ function toggleCheckAll(children: any[]) {
 
 const mainCheckBoxes = ref<{ [key: number]: any }>({});
 
-
-
 function setupMainCheckBox(work: any) {
   mainCheckBoxes.value[work.id] = computed({
     get() {
@@ -94,8 +94,6 @@ async function loadUsedPartitions() {
   loading.value = false
 }
 
-
-
 async function savePartitions() {
   loading.value = true
   await Partition.linkListToAnnounce(q, props.announce.id, checkedPartitions.value)
@@ -120,6 +118,11 @@ async function moveSort(direction: 'up' | 'down', workId: number) {
   loading.value = false
 }
 
+function onBatchAddWorks() {
+  loadUsedWorks()
+  worksEditMode.value = false
+}
+
 
 onBeforeMount(async () => {
   await loadUsedWorks()
@@ -133,7 +136,12 @@ onBeforeMount(async () => {
       <q-btn icon="add"
              v-if="worksEditMode"
              label="добавить"
-             @click="openAddWorkDialog"
+             @click="isOpenAddWorkDialog = true"
+             :loading="loading"></q-btn>
+      <q-btn icon="add"
+             v-if="worksEditMode"
+             label="Добавить все из другого концерта"
+             @click="isOpenBatchAddDialog = true"
              :loading="loading"></q-btn>
       <q-space></q-space>
       <q-btn icon="edit"
@@ -141,7 +149,6 @@ onBeforeMount(async () => {
              @click.stop.prevent="worksEditMode = !worksEditMode"
              :color="worksEditMode ? 'red' : 'gray'"></q-btn>
     </q-card-actions>
-
     <q-card-section>
       <q-list>
         <template v-for="(work, idx) in usedWorks" :key="`w${work.id}`">
@@ -236,7 +243,11 @@ onBeforeMount(async () => {
       </q-list>
     </q-card-section>
   </q-card>
-  <AddWorkDialog :announce="announce" @workSelected="onSelectWork" @onAddWork="loadUsedWorks"></AddWorkDialog>
+  <AddWorkDialog :announce="announce"
+                 @workSelected="onSelectWork"
+                 @onAddWork="loadUsedWorks"
+  ></AddWorkDialog>
+  <WorkBatchAddDialog :target-announce-id="announce.id" @onBatchAddWorks="onBatchAddWorks"></WorkBatchAddDialog>
 </template>
 
 <style scoped>

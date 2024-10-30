@@ -71,7 +71,8 @@ export class Work {
       titleRu: work.titleRu,
       titleEn: work.titleEn,
       workId: work.id,
-      opus: work.opus
+      opus: work.opus,
+      genreId: work.genreId
     }
     const errMsg: string = "Не сохранилось"
 
@@ -104,6 +105,16 @@ export class Work {
       announceId: announceId,
       workId: workId,
       partitions: partitions
+    }
+
+    return staffAxios.set(q, this.path, params)
+  }
+
+  static async linkListToAnnounce(q: QVueGlobals, announceId: number, workIds: number[]): Promise<boolean> {
+    const params = {
+      method: 'linkListToAnnounce',
+      announceId: announceId,
+      workIds: workIds
     }
 
     return staffAxios.set(q, this.path, params)
@@ -206,6 +217,19 @@ export class Partition {
   }
 }
 
+export class Genre {
+  private static path: string = 'epoint/lib/genre.php';
+
+  static async getList(q: QVueGlobals): Promise<any[]> {
+    const params = {
+      method: 'list'
+    }
+    const errMsg: string = "Жанры не загрузились"
+
+    return staffAxios.getList(q, this.path, params, errMsg)
+  }
+}
+
 export class Video {
   private static path: string = 'epoint/lib/video.php';
 
@@ -281,6 +305,16 @@ export class Video {
 
     const params = {
       method: 'list',
+    }
+    const errMsg: string = "Видеозаписи не загрузились"
+    return staffAxios.getList(q, this.path, params, errMsg)
+  }
+
+  static async getListByWork(q: QVueGlobals, workId: number): Promise<any[]> {
+
+    const params = {
+      method: 'listByWork',
+      workId: workId
     }
     const errMsg: string = "Видеозаписи не загрузились"
     return staffAxios.getList(q, this.path, params, errMsg)

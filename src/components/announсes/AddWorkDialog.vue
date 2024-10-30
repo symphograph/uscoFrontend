@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
-import {inject, provide, Ref, ref} from 'vue';
+import {inject, Ref, ref} from 'vue';
 import SelectComposer from 'components/lib/SelectComposer.vue';
 import WorkSelectItem from 'components/announсes/WorkSelectItem.vue';
 import {Partition, Work} from "src/js/lib";
@@ -32,8 +32,6 @@ function onSelectWork(work: any) {
   loadPartitions(work.id)
 }
 
-
-
 function onSelectAuthor(author: any) {
   selectedAuthor.value = author
   selectedWork.value = undefined
@@ -55,7 +53,11 @@ async function loadPartitions(workId: number) {
 
 async function addWork() {
   loading.value = true;
-  const result = await Work.linkToAnnounce(q, props.announce.id, selectedWork.value.id, checkedPartitions.value)
+  const result = await Work.linkToAnnounce(q,
+    props.announce.id,
+    selectedWork.value.id,
+    checkedPartitions.value
+  )
   if(result) {
     emit('onAddWork', selectedWork.value)
     close()

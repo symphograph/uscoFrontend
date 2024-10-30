@@ -40,7 +40,7 @@ export class myAnnounce {
   static async getList(q: QVueGlobals): Promise<any[]> {
 
     const params = {
-      method: 'list',
+      method: 'listAll',
     }
     const errMsg: string = "Анонсы не загрузились"
     return ussoAxios.getList(q, this.path, params, errMsg)
