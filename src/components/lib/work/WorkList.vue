@@ -25,7 +25,12 @@ watch(searchText, (newValue, oldValue) => {
 </script>
 
 <template>
-    <q-list separator>
+  <q-virtual-scroll :items="filteredList" style="height: 90vh">
+    <template v-slot="{item, index}">
+      <WorkItem :work="item" @onDel="emit('onDel')" :key="index"></WorkItem>
+    </template>
+  </q-virtual-scroll>
+    <q-list separator v-if="false">
       <template v-for="work in filteredList" :key="work.id">
         <WorkItem :work="work" @onDel="emit('onDel')"></WorkItem>
       </template>

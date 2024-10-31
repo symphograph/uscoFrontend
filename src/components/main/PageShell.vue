@@ -104,6 +104,7 @@ function onScroll(evt: { verticalPosition: number; }) {
   font-size: 25px;
   color: var(--PageTitle);
 }
+
 .pageToolbar {
   width: 100%;
   max-width: 1200px;

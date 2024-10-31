@@ -1,29 +1,25 @@
-<script setup>
-import { api } from 'boot/axios';
-import { notifyError } from 'src/js/myFuncts';
-import {computed, inject, onBeforeMount, provide, ref} from 'vue';
+<script setup lang="ts">
+
+import {computed, inject, onBeforeMount, provide, Ref, ref} from 'vue';
 import { useQuasar } from 'quasar';
-import { useRoute, useRouter } from 'vue-router';
-import WorkList from 'components/lib/work/WorkList.vue';
 import PageShell from 'components/main/PageShell.vue';
-import BtnLibEdit from 'components/lib/BtnLibEdit.vue';
-import AuthotItem from 'components/lib/AuthorItem.vue';
 import VKVideoItem from 'components/lib/video/VKVideoItem.vue';
-import VKVideoDialog from 'components/lib/video/VKVideoDialog.vue';
 import {Video} from "src/js/lib";
 import {myAnnounce} from "src/js/entry";
 
 const q = useQuasar()
 
-const editModes = inject('editModes');
+const editModes = inject('editModes') as Record<string, any>;
 const editMode = editModes.libVideo
 provide('editMode', editMode)
 
 const progress = ref(false)
 provide('progress', progress)
 
-const videos = ref([])
+const videos = ref([]) as Ref<Record<string, any>[]>
 const searchText = ref('')
+const isSearchFocused = ref(false)
+provide('scrollWatch', ref(!isSearchFocused.value))
 
 const filteredVideos = computed(() => {
   if(!searchText.value) {
@@ -56,7 +52,7 @@ async function updateAllFromVK() {
 }
 
 onBeforeMount(() => {
-  myAnnounce.initAllList()
+  myAnnounce.initAllList(q)
   loadVideos()
 })
 </script>
@@ -65,7 +61,13 @@ onBeforeMount(() => {
   <PageShell page-title="Видеотека">
     <template v-slot:ToolPanel>
       <q-btn icon="refresh" flat stretch @click="updateAllFromVK"></q-btn>
-      <q-input v-model="searchText" style="width: 100%; max-width: 16em" label="фильтр" stack-label clearable>
+      <q-input v-model="searchText"
+               style="width: 100%; max-width: 16em"
+               label="фильтр"
+               @blur="isSearchFocused = false"
+               @focus="isSearchFocused = true"
+               stack-label
+               clearable>
         <template v-slot:append>
           <q-icon name="search"></q-icon>
         </template>
