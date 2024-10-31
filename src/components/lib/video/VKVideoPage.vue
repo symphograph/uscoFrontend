@@ -20,8 +20,7 @@ const videos = ref([]) as Ref<Record<string, any>[]>
 const searchText = ref('')
 const isSearchFocused = ref(false)
 
-const scrollWatch = ref(true)
-provide('scrollWatch', scrollWatch)
+const scrollWatch = inject('scrollWatch') as Ref<boolean>
 
 function setFocus(val: boolean) {
   isSearchFocused.value = val
