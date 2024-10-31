@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, provide, inject} from "vue";
+import {onMounted, ref, provide, inject, onBeforeMount} from "vue";
 import SelectComposer from "components/lib/SelectComposer.vue";
 import {LocalStorage, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
@@ -16,7 +16,9 @@ import {Author, Work} from "src/js/lib";
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
-const apiStaff = String(process.env.apiStaff)
+
+
+const loadingAuthors = inject('loadingAuthors')
 
 const searchText = ref('')
 provide('searchText', searchText)
@@ -29,7 +31,7 @@ provide('works', works)
 
 
 const selectedAuthorId = inject('selectedAuthorId')
-const selectedAuthor = inject('selectedAuthor')
+
 const editMode = inject('editMode')
 
 const isOpenWorkDialog = ref(false)
@@ -55,11 +57,12 @@ async function loadWorks() {
 }
 
 async function loadAuthor() {
-  const result = await Author.get(q, selectedAuthorId.value)
+  loadingAuthors.value = true
+  const result = await Author.get(q, route.params.authorId)
   if(result) {
-    selectedAuthor.value = result
+    Author.selected.value = result
   }
-
+  loadingAuthors.value = false
 }
 
 function createWork() {
@@ -67,18 +70,21 @@ function createWork() {
     id: undefined,
     titleRu: '',
     titleEn: '',
-    authorId: selectedAuthorId.value,
+    authorId: route.params.authorId,
     opus: '',
     icatno: ''
   }
   isOpenWorkDialog.value = true
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   selectedAuthorId.value = route.params.authorId * 1
+})
+
+onMounted(() => {
+
   loadAuthor()
   loadWorks()
-  console.log(selectedAuthor.value)
 })
 </script>
 
@@ -87,9 +93,9 @@ onMounted(() => {
     <template v-slot:ToolPanel>
       <q-btn @click="createWork" icon="add" v-if="editMode" flat round></q-btn>
       <AuthotItem :id="selectedAuthorId"
-                  :iofEn="selectedAuthor?.iofEn"
-                  :iconUrl="selectedAuthor?.iconUrl"
-                  :fioRu="selectedAuthor?.fioRu"></AuthotItem>
+                  :iofEn="Author.selected.value?.iofEn"
+                  :iconUrl="Author.selected.value?.iconUrl"
+                  :fioRu="Author.selected.value?.fioRu"></AuthotItem>
       <q-input v-model="searchText" style="width: 100%; max-width: 16em" label="фильтр" stack-label clearable>
         <template v-slot:append>
           <q-icon name="search"></q-icon>

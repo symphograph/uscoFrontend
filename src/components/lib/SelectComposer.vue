@@ -1,28 +1,26 @@
 <script setup>
 
-import {computed, inject, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
 import AuthorItem from "components/lib/AuthorItem.vue";
+import {Author} from "src/js/lib";
 
 const router = useRouter()
 const refSelect = ref()
-const AuthorSelectList = inject('AuthorSelectList')
 
-const options = ref([...AuthorSelectList.value])
+const options = ref([...Author.list.value])
 
 const emit = defineEmits(['itSel'])
-
-const selectedAuthor = ref()
 const loadingAuthors = inject('loadingAuthors')
 
 function filterFn(val, update, abort) {
   update(() => {
     if(!val) {
-      options.value = [...AuthorSelectList.value]
+      options.value = [...Author.list.value]
       return
     }
     const needle = val.toLowerCase()
-    let List = [...AuthorSelectList.value]
+    let List = [...Author.list.value]
 
     if (val) {
       List = List.filter(author =>
@@ -38,8 +36,12 @@ watch(loadingAuthors, () => {
   if(loadingAuthors.value) {
     return
   }
-  options.value = [...AuthorSelectList.value]
+  options.value = [...Author.list.value]
   console.log('loadingAuthors',loadingAuthors.value)
+})
+
+onBeforeMount(() => {
+
 })
 
 onMounted(() => {
@@ -50,7 +52,7 @@ onMounted(() => {
 <template>
   <q-select :options="options"
             ref="refSelect"
-            v-model="selectedAuthor"
+            v-model="Author.selected.value"
             option-label="fioRu"
             option-value="id"
             map-options
@@ -62,21 +64,21 @@ onMounted(() => {
             @filter="filterFn"
             clearable
             style="width: 100%"
-            @update:model-value="emit('itSel', selectedAuthor)"
+            @update:model-value="emit('itSel', Author.selected.value)"
             label="Композитор"
             :loading="loadingAuthors"
 
   >
-    <template v-slot:prepend v-if="selectedAuthor">
+    <template v-slot:prepend v-if="Author.selected.value">
       <q-avatar>
-        <q-img :src="selectedAuthor.iconUrl"
+        <q-img :src="Author.selected.value.iconUrl"
                class="authorAva"
                eager
                no-spinner
                no-transition
                placeholder-src="/img/avatars/init_ava.png"
                style="width: 50px; cursor: pointer"
-               @click="() => router.push({ path: '/lib/author/' +  selectedAuthor.id})"
+               @click="() => router.push({ path: '/lib/author/' +  Author.selected.value.id})"
         />
       </q-avatar>
     </template>

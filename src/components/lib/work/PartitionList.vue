@@ -62,9 +62,7 @@ onBeforeMount(() => {
 <template>
   <q-card>
     <q-card-section>Части произведения
-      <q-btn icon="add" round v-if="editMode" @click="createPartition">
-        <q-tooltip>Добавить часть</q-tooltip>
-      </q-btn>
+
     </q-card-section>
     <q-card-section>
       <q-list>
@@ -79,6 +77,11 @@ onBeforeMount(() => {
         </template>
       </q-list>
     </q-card-section>
+    <q-card-actions align="right">
+      <q-btn icon="add" label="Добавить часть" flat v-if="editMode" @click="createPartition">
+        <q-tooltip>Добавить часть</q-tooltip>
+      </q-btn>
+    </q-card-actions>
   </q-card>
   <PartitionDialog></PartitionDialog>
 </template>

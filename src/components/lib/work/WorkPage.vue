@@ -25,7 +25,7 @@ const ClassicOnline = ref(null)
 
 
 const selectedAuthorId = inject('selectedAuthorId')
-const author = inject('selectedAuthor')
+const author = Author.selected
 
 const isOpenPartitions = ref(false)
 const isOpenPublications = ref(false)
@@ -95,7 +95,7 @@ onBeforeMount(() => {
   <PageShell :page-title="work.titleRu">
     <template v-slot:ToolPanel>
       <AuthotItem :id="selectedAuthorId"
-                  :iofEn="author?.iofEn"
+                  :iofEn="Author?.iofEn"
                   :iconUrl="author?.iconUrl"
                   :fioRu="author?.fioRu"></AuthotItem>
     </template>

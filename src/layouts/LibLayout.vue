@@ -3,17 +3,15 @@ import {inject, onBeforeMount, provide, ref, watch} from "vue";
 import {notifyError} from "src/js/myFuncts";
 import {api} from "boot/axios";
 import {useQuasar} from "quasar";
-import {Genre} from "src/js/lib";
+import {Author, Genre} from "src/js/lib";
 
-const apiStaff = String(process.env.apiStaff)
 const q = useQuasar()
 
 const editModes = inject('editModes');
 const editMode = editModes.lib
 provide('editMode', editMode)
 
-const AuthorSelectList = ref([])
-provide('AuthorSelectList', AuthorSelectList)
+const optionsLoaded = ref(false)
 
 const loadingAuthors = ref(false)
 provide('loadingAuthors',loadingAuthors)
@@ -21,47 +19,35 @@ provide('loadingAuthors',loadingAuthors)
 const selectedAuthorId = ref(0)
 provide('selectedAuthorId', selectedAuthorId)
 
-const selectedAuthor = ref(null)
-provide('selectedAuthor', selectedAuthor)
-
 const genres = ref([])
 provide('genres', genres)
 
 watch(selectedAuthorId, () => {
-  selectedAuthor.value = AuthorSelectList.value.find(el => el.id === selectedAuthorId.value)
+  if(!Author.selected?.value) return 0
+  Author.selected.value = Author.list.value.find(el => el.id === selectedAuthorId.value)
 })
 
-function loadAuthors() {
+async function loadAuthors() {
   loadingAuthors.value = true
-  api.post(apiStaff + 'epoint/lib/author.php',{
-    params: {
-      method: 'all'
-    }
-  })
-    .then((response) => {
-      AuthorSelectList.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      AuthorSelectList.value = []
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      loadingAuthors.value = false
-    })
+  await Author.initList(q)
+  optionsLoaded.value = Author.list.value.length > 0
+  loadingAuthors.value = false
 }
 
 async function loadGenres() {
   genres.value = await Genre.getList(q)
 }
 
-onBeforeMount(() => {
-  loadGenres()
-  loadAuthors()
+onBeforeMount(async () => {
+  await loadGenres()
+  await loadAuthors()
+  //Author.selected = ref()
+  console.log('libLayoutMount')
 })
 </script>
 
 <template>
-  <router-view/>
+  <router-view v-if="optionsLoaded"/>
 </template>
 
 <style>

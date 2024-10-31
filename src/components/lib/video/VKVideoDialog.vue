@@ -6,6 +6,7 @@ import {computed, inject, Ref, ref} from 'vue';
 import { imgUrl } from 'src/js/myFuncts';
 import {Video} from "src/js/lib";
 import {ussoAxios} from "src/js/myAxios";
+import {myAnnounce} from "src/js/entry";
 
 const q = useQuasar()
 
@@ -15,7 +16,7 @@ const loading = ref(false)
 const apiUrl = ussoAxios.getApiUrl('')
 
 
-const announceList = inject('announceList') as Ref<any[]>
+const announceList = myAnnounce.all
 const announceInput = ref('')
 function setInputVal(val: string) {
   announceInput.value = val

@@ -8,6 +8,7 @@ import {useQuasar} from "quasar";
 import DescrDialog from "components/lib/video/DescrDialog.vue";
 import VKVideoDialog from "components/lib/video/VKVideoDialog.vue";
 import {copy} from "src/js/myFuncts";
+import {myAnnounce} from "src/js/entry";
 
 const q = useQuasar()
 
@@ -19,12 +20,11 @@ const props = defineProps({
 })
 const videoMutable = ref(props.video)
 
-const announceList = inject('announceList')
-
 const emit = defineEmits(['onSave'])
 
 function getAnnounce() {
-  return announceList.value.find((el) => el.id === videoMutable.value.announceId)
+  const announceId = videoMutable.value.announceId
+  return myAnnounce.findById(announceId)
 }
 
 const dateHall = computed(() => {

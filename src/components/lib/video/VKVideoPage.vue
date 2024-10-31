@@ -1,7 +1,7 @@
 <script setup>
 import { api } from 'boot/axios';
 import { notifyError } from 'src/js/myFuncts';
-import {inject, onBeforeMount, provide, ref} from 'vue';
+import {computed, inject, onBeforeMount, provide, ref} from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
 import WorkList from 'components/lib/work/WorkList.vue';
@@ -11,10 +11,9 @@ import AuthotItem from 'components/lib/AuthorItem.vue';
 import VKVideoItem from 'components/lib/video/VKVideoItem.vue';
 import VKVideoDialog from 'components/lib/video/VKVideoDialog.vue';
 import {Video} from "src/js/lib";
+import {myAnnounce} from "src/js/entry";
 
 const q = useQuasar()
-const apiStaff = String(process.env.apiStaff)
-const apiUrl = String(process.env.API);
 
 const editModes = inject('editModes');
 const editMode = editModes.libVideo
@@ -26,6 +25,18 @@ provide('progress', progress)
 const videos = ref([])
 const searchText = ref('')
 
+const filteredVideos = computed(() => {
+  if(!searchText.value) {
+    return videos.value
+  }
+  const searchLower = searchText.value.toLowerCase();
+  return videos.value.filter(el =>
+    (el.description ? el.description.toLowerCase().includes(searchLower) : false)
+    || (el.recordedAt ? el.recordedAt.toLowerCase().includes(searchLower) : false)
+    || (el.title ? el.title.toLowerCase().includes(searchLower) : false)
+  );
+})
+
 const announceList = ref([])
 provide('announceList', announceList)
 
@@ -36,11 +47,6 @@ async function loadVideos() {
   progress.value = false
 }
 
-function splitTitle(str) {
-  const parts = str.split(' - ');
-  return { date: parts[0], title: parts.slice(1).join(' - ') };
-}
-
 async function updateAllFromVK() {
   progress.value = true
   if (await Video.updateAllFromVK(q)){
@@ -49,28 +55,8 @@ async function updateAllFromVK() {
   progress.value = false
 }
 
-function loadAnnounces() {
-  progress.value = true
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'listAll'
-    }
-  })
-    .then((response) => {
-      announceList.value = []
-      announceList.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-      announceList.value = []
-    })
-    .finally(() => {
-      progress.value = false
-    })
-}
-
 onBeforeMount(() => {
-  loadAnnounces()
+  myAnnounce.initAllList()
   loadVideos()
 })
 </script>
@@ -88,7 +74,7 @@ onBeforeMount(() => {
     <template v-slot:PageContent>
       <div class="centralCol">
         <div class="vidarea" v-if="videos.length">
-          <template v-for="video in videos" :key="video.id">
+          <template v-for="video in filteredVideos" :key="video.id">
             <VKVideoItem :video="video" @onSave="loadVideos"></VKVideoItem>
           </template>
 

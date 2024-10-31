@@ -24,7 +24,7 @@ const searchText = ref(null)
 provide('searchText', searchText)
 
 const selectedAuthorId = inject('selectedAuthorId')
-const selectedAuthor = inject('selectedAuthor')
+
 
 function itSel(author) {
   selectedAuthorId.value = author.id
@@ -36,7 +36,7 @@ function itSel(author) {
 
 async function loadAuthor() {
   if(!selectedAuthorId.value) return
-  selectedAuthor.value = await Author.get(q, selectedAuthorId.value)
+  Author.selected.value = await Author.get(q, selectedAuthorId.value)
 }
 
 
@@ -91,11 +91,11 @@ onMounted(() => {
     </template>
     <template v-slot:PageContent>
       <div class="centralCol">
-        <template v-if="selectedAuthor">
+        <template v-if="Author.selected.value">
           <q-card>
             <q-card-section>
-              <q-input v-model="selectedAuthor.fioRu" :readonly="!editMode" label="Фамилия, Имя Отчество"></q-input>
-              <q-input v-model="selectedAuthor.iofEn" :readonly="!editMode" label="Name LastName"></q-input>
+              <q-input v-model="Author.selected.value.fioRu" :readonly="!editMode" label="Фамилия, Имя Отчество"></q-input>
+              <q-input v-model="Author.selected.value.iofEn" :readonly="!editMode" label="Name LastName"></q-input>
             </q-card-section>
             <q-card-actions align="right" v-if="editMode">
               <q-btn label="Сохранить" color="green" @click="updateAuthor"></q-btn>
@@ -107,9 +107,9 @@ onMounted(() => {
                          tooltip="Удалить композитора"></BtnDelete>
             </q-card-actions>
             <q-card-section>
-              <q-item clickable :to="`/lib/works/${selectedAuthor.id}`">
-                <q-item-label>{{ selectedAuthor.cntWorks }}
-                  {{ numDeclension(selectedAuthor.cntWorks, ['произведение', 'произведения', 'произведений']) }}</q-item-label>
+              <q-item clickable :to="`/lib/works/${Author.selected.value.id}`">
+                <q-item-label>{{ Author.selected.value.cntWorks }}
+                  {{ numDeclension(Author.selected.value.cntWorks, ['произведение', 'произведения', 'произведений']) }}</q-item-label>
               </q-item>
             </q-card-section>
           </q-card>

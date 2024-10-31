@@ -2,6 +2,7 @@ import {QVueGlobals} from "quasar";
 import {staffAxios} from "src/js/myAxios";
 import {api} from "boot/axios";
 import {notifyError} from "src/js/myFuncts";
+import {ref, Ref} from "vue";
 
 export class Author {
   clonId = 0;
@@ -13,6 +14,9 @@ export class Author {
   imslpLink = '';
   nameImslp = '';
   wikiId= 0;
+
+  public static list: Ref<Record<string, any>[]>
+  public static selected: Ref<Record<string, any>|undefined> = ref()
 
   private static path: string = 'epoint/lib/author.php';
 
@@ -27,6 +31,18 @@ export class Author {
     return staffAxios.get(q, this.path, params, errMsg)
   }
 
+  static async getList(q: QVueGlobals): Promise<Record<string, any>[]> {
+    const params = {
+      method: 'all'
+    }
+    const errMsg: string = "Композиторы не загрузились"
+
+    return staffAxios.getList(q, this.path, params, errMsg)
+  }
+
+  static async initList(q: QVueGlobals): Promise<void> {
+    this.list = ref(await this.getList(q))
+  }
 }
 
 export class Work {
@@ -99,12 +115,11 @@ export class Work {
     return staffAxios.getList(q, this.path, params, errMsg)
   }
 
-  static async linkToAnnounce(q: QVueGlobals, announceId: number, workId: number, partitions: Array<any>): Promise<boolean> {
+  static async linkToAnnounce(q: QVueGlobals, announceId: number, workId: number): Promise<boolean> {
     const params = {
       method: 'linkToAnnounce',
       announceId: announceId,
-      workId: workId,
-      partitions: partitions
+      workId: workId
     }
 
     return staffAxios.set(q, this.path, params)

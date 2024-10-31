@@ -55,8 +55,7 @@ async function addWork() {
   loading.value = true;
   const result = await Work.linkToAnnounce(q,
     props.announce.id,
-    selectedWork.value.id,
-    checkedPartitions.value
+    selectedWork.value.id
   )
   if(result) {
     emit('onAddWork', selectedWork.value)
@@ -98,38 +97,7 @@ function onHide() {
           </template>
         </q-select>
       </q-card-section>
-      <q-card-section v-if="selectedWork">
-        <q-list separator v-if="partitionList.length">
-          <q-item v-for="partition in partitionList"
-                  :key="`part_${partition.id}`"
-                  tag="label"
-          >
-            <q-item-section>
-              <q-item-label>{{partition.title}}</q-item-label>
-              <q-item-label caption>{{partition.caption}}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-checkbox v-model="checkedPartitions"
-                          :val="partition.id"
-                          @update:model-value="() => {console.log(checkedPartitions)}"
-              ></q-checkbox>
-            </q-item-section>
-          </q-item>
-        </q-list>
-        <q-item v-else>
-          <q-item-section>
-            <q-item-label>
-              Части не найдены
-            </q-item-label>
-            <q-item-label caption>
-              Их можно добавить в библиотеке
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <template >
 
-        </template>
-      </q-card-section>
       <q-card-actions align="between">
         <q-space></q-space>
         <q-btn icon-right="save"
