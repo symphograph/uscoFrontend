@@ -2,7 +2,7 @@
 
 import AddWorkDialog from "components/announсes/AddWorkDialog.vue";
 import {computed, onBeforeMount, provide, Ref, ref, watch} from "vue";
-import {Partition, Work} from "src/js/lib";
+import {Author, Partition, Work} from "src/js/lib";
 import {useQuasar} from "quasar";
 import BtnDelete from "components/main/BtnDelete.vue";
 import BtnMoveSort from "components/main/buttons/BtnMoveSort.vue";
@@ -25,11 +25,6 @@ provide('isOpenAddWorkDialog', isOpenAddWorkDialog)
 const isOpenBatchAddDialog = ref(false)
 provide('isOpenBatchAddDialog', isOpenBatchAddDialog)
 
-
-
-function onSelectWork(work: any) {
-  console.log(work)
-}
 
 const usedWorks = ref([]) as Ref<any[]>
 const usedPartitions = ref([]) as Ref<any[]>
@@ -125,6 +120,7 @@ function onBatchAddWorks() {
 
 
 onBeforeMount(async () => {
+  await Author.initList(q)
   await loadUsedWorks()
 
 })
@@ -244,7 +240,6 @@ onBeforeMount(async () => {
     </q-card-section>
   </q-card>
   <AddWorkDialog :announce="announce"
-                 @workSelected="onSelectWork"
                  @onAddWork="loadUsedWorks"
   ></AddWorkDialog>
   <WorkBatchAddDialog :target-announce-id="announce.id" @onBatchAddWorks="onBatchAddWorks"></WorkBatchAddDialog>

@@ -63,11 +63,6 @@ const paySelect = [
 const posterUploader = ref(null)
 const rAnnounceCard = ref(null)
 
-
-
-const AuthorSelectList = ref([])
-provide('AuthorSelectList', AuthorSelectList)
-
 const loadingAuthors = ref(false)
 provide('loadingAuthors', loadingAuthors)
 
@@ -80,26 +75,6 @@ provide('selectedAuthor', selectedAuthor)
 watch(selectedAuthorId, () => {
   selectedAuthor.value = AuthorSelectList.value.find(el => el.id === selectedAuthorId.value)
 })
-
-function loadAuthors() {
-  loadingAuthors.value = true
-  api.post(apiStaff + 'epoint/lib/author.php',{
-    params: {
-      method: 'all'
-    }
-  })
-    .then((response) => {
-      AuthorSelectList.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      AuthorSelectList.value = []
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      loadingAuthors.value = false
-    })
-}
-
 
 
 function addPoster(files) {
@@ -223,7 +198,6 @@ defineExpose({
 })
 
 onMounted(() => {
-  loadAuthors()
   //photoWatcher.value = true
 })
 

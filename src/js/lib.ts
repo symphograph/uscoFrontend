@@ -41,6 +41,7 @@ export class Author {
   }
 
   static async initList(q: QVueGlobals): Promise<void> {
+    if(this.list?.value.length > 0) return
     this.list = ref(await this.getList(q))
   }
 }

@@ -219,7 +219,12 @@ async function del() {
                  v-if="resultType === 'init'"
                  clearable
                  label="Название таймкода"
-                 stack-label></q-input>
+                 stack-label>
+          <template v-slot:append v-if="!tCodeMutable.uLabel">
+            <q-btn label="вст. слово" @click="tCodeMutable.uLabel = 'Вступительное слово'"></q-btn>
+          </template>
+
+        </q-input>
 
         <template v-if="isNew">
 

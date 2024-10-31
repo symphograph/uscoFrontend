@@ -3,8 +3,8 @@ import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
 import {inject, Ref, ref} from 'vue';
 import SelectComposer from 'components/lib/SelectComposer.vue';
-import WorkSelectItem from 'components/announсes/WorkSelectItem.vue';
 import {Partition, Work} from "src/js/lib";
+import WorkSelect from "components/lib/WorkSelect.vue";
 
 const q = useQuasar()
 const isOpenDialog = inject('isOpenAddWorkDialog') as Ref<boolean>
@@ -24,10 +24,11 @@ const props = defineProps({
 
 const worksList = ref([]) as Ref<any[]>
 const partitionList = ref([]) as Ref<any[]>
-const checkedPartitions = ref([])
 
 function onSelectWork(work: any) {
   selectedWork.value = work
+  if(!work) return
+
   emit('workSelected', work)
   loadPartitions(work.id)
 }
@@ -35,6 +36,7 @@ function onSelectWork(work: any) {
 function onSelectAuthor(author: any) {
   selectedAuthor.value = author
   selectedWork.value = undefined
+  worksList.value = []
   if(!selectedAuthor.value?.id) return
   loadWorks(selectedAuthor.value.id)
 }
@@ -82,20 +84,7 @@ function onHide() {
         <SelectComposer @it-sel="onSelectAuthor"></SelectComposer>
       </q-card-section>
       <q-card-section v-if="selectedAuthor">
-        <q-select
-          v-model="selectedWork"
-          :options="worksList"
-          option-label="titleRu"
-          option-value="id"
-          map-options
-          clearable
-          label="Произведение"
-          @update:model-value="onSelectWork"
-        >
-          <template v-slot:option="scope">
-            <WorkSelectItem v-bind="scope.itemProps" :work="scope.opt"></WorkSelectItem>
-          </template>
-        </q-select>
+        <WorkSelect :works="worksList" @onSelect="onSelectWork"></WorkSelect>
       </q-card-section>
 
       <q-card-actions align="between">

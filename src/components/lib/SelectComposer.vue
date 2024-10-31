@@ -1,6 +1,6 @@
 <script setup>
 
-import {computed, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
 import AuthorItem from "components/lib/AuthorItem.vue";
 import {Author} from "src/js/lib";
@@ -46,6 +46,10 @@ onBeforeMount(() => {
 
 onMounted(() => {
 
+})
+
+onBeforeUnmount(() => {
+  Author.selected.value = undefined
 })
 </script>
 

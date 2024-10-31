@@ -45,7 +45,11 @@ async function del() {
     <q-item-label caption>{{work.opus ?? 'Op.?'}}</q-item-label>
     <q-item-label caption>{{work.icatno ?? 'cat№.?'}}</q-item-label>
     <q-item-label caption>{{work.catalogIndex ?? 'catIdx: ?'}}</q-item-label>
-    <q-btn dense icon-right="content_copy" flat :label="`ID: ${work.id}`" @click.prevent.stop="copy(work.id, q)"
+    <q-btn dense
+           icon-right="content_copy"
+           flat :label="`ID:
+           ${work.id}`"
+           @click.stop.prevent="copy(work.id, q)"
     ></q-btn>
   </q-item-section>
 </q-item>
