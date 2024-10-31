@@ -19,7 +19,14 @@ provide('progress', progress)
 const videos = ref([]) as Ref<Record<string, any>[]>
 const searchText = ref('')
 const isSearchFocused = ref(false)
-provide('scrollWatch', ref(!isSearchFocused.value))
+
+const scrollWatch = ref(true)
+provide('scrollWatch', scrollWatch)
+
+function setFocus(val: boolean) {
+  isSearchFocused.value = val
+  scrollWatch.value = !val
+}
 
 const filteredVideos = computed(() => {
   if(!searchText.value) {
@@ -64,8 +71,8 @@ onBeforeMount(() => {
       <q-input v-model="searchText"
                style="width: 100%; max-width: 16em"
                label="фильтр"
-               @blur="isSearchFocused = false"
-               @focus="isSearchFocused = true"
+               @blur="setFocus(false)"
+               @focus="setFocus(true)"
                stack-label
                clearable>
         <template v-slot:append>
