@@ -8,7 +8,7 @@ const works = inject('works')
 const searchText = inject('searchText')
 
 const filteredList = computed(() => {
-  if(!searchText.value) {
+  if (!searchText.value) {
     return works.value
   }
   const searchLower = searchText.value.toLowerCase();
@@ -25,18 +25,25 @@ watch(searchText, (newValue, oldValue) => {
 </script>
 
 <template>
-  <q-virtual-scroll :items="filteredList" style="height: 90vh">
-    <template v-slot="{item, index}">
-      <WorkItem :work="item" @onDel="emit('onDel')" :key="index"></WorkItem>
-    </template>
-  </q-virtual-scroll>
-    <q-list separator v-if="false">
-      <template v-for="work in filteredList" :key="work.id">
-        <WorkItem :work="work" @onDel="emit('onDel')"></WorkItem>
-      </template>
-    </q-list>
-</template>
+  <q-scroll-area
+    id="scroll-area-with-virtual-scroll-1"
+    style="height: 100%"
+  >
+    <q-virtual-scroll :items="filteredList"
+                      virtual-scroll-item-size="40"
+                      virtual-scroll-slice-size="30"
+                      :virtual-scroll-sticky-size-start="48"
+                      :virtual-scroll-sticky-size-end="132"
+                      scroll-target="#scroll-area-with-virtual-scroll-1 > .scroll"
+                      class="centralCol"
 
+    >
+      <template v-slot="{item}">
+        <WorkItem :work="item" @onDel="emit('onDel')" :key="`wrk${item.id}`"></WorkItem>
+      </template>
+    </q-virtual-scroll>
+  </q-scroll-area>
+</template>
 
 
 <style scoped>

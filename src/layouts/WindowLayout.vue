@@ -3,13 +3,12 @@
 </script>
 
 <template>
-  <q-page class="row no-wrap">
-    <div class="bgArea col">
-      <div class="column full-height">
+
+    <div class="bgArea WindowArea">
+      <div class="content-container">
         <router-view/>
       </div>
     </div>
-  </q-page>
 </template>
 
 <style>
@@ -20,5 +19,27 @@ body {
 .myScrollArea {
   width: 100%;
   max-width: 100vw;
+  height: 100%;
+}
+
+.WindowArea {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.centralCol {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  min-height: 80vh;
 }
 </style>

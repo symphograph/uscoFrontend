@@ -27,32 +27,38 @@ async function del() {
 </script>
 
 <template>
-<q-item clickable :to="`/work/${work.id}`" dense>
-  <q-item-section>
-    <q-item-label>{{work.titleRu}}</q-item-label>
-    <q-item-label caption>{{work.titleEn}}</q-item-label>
-    <q-item-label v-if="work.genreId" caption>{{getGenre(work.genreId).name}}</q-item-label>
-  </q-item-section>
-  <q-item-section side>
-    <BtnDelete :title="`Удалить: ${work.titleRu}`"
-               v-if="editMode"
-               flat danger
-               throw-confirm
-               @onOk="del"
-    ></BtnDelete>
-  </q-item-section>
-  <q-item-section side class="opus">
-    <q-item-label caption>{{work.opus ?? 'Op.?'}}</q-item-label>
-    <q-item-label caption>{{work.icatno ?? 'cat№.?'}}</q-item-label>
-    <q-item-label caption>{{work.catalogIndex ?? 'catIdx: ?'}}</q-item-label>
-    <q-btn dense
-           icon-right="content_copy"
-           flat :label="`ID:
+
+  <div :key="`w${work.id}`">
+    <q-item clickable :to="`/work/${work.id}`">
+      <q-item-section>
+        <q-item-label>{{work.titleRu}}</q-item-label>
+        <q-item-label caption>{{work.titleEn}}</q-item-label>
+        <q-item-label v-if="work.genreId" caption>{{getGenre(work.genreId).name}}</q-item-label>
+      </q-item-section>
+      <q-item-section side class="opus">
+        <q-item-label caption>{{work.opus ?? 'Op.?'}}</q-item-label>
+        <q-item-label caption>{{work.icatno ?? 'cat№.?'}}</q-item-label>
+        <q-item-label caption>{{work.catalogIndex ?? 'catIdx: ?'}}</q-item-label>
+        <q-btn dense
+               v-if="false"
+               icon-right="content_copy"
+               flat :label="`ID:
            ${work.id}`"
-           @click.stop.prevent="copy(work.id, q)"
-    ></q-btn>
-  </q-item-section>
-</q-item>
+               @click.stop.prevent="copy(work.id, q)"
+        ></q-btn>
+      </q-item-section>
+      <q-item-section side>
+        <BtnDelete :title="`Удалить: ${work.titleRu}`"
+                   v-if="editMode"
+                   flat danger
+                   throw-confirm
+                   @onOk="del"
+        ></BtnDelete>
+      </q-item-section>
+    </q-item>
+  </div>
+
+
 </template>
 
 

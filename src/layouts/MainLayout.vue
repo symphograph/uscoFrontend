@@ -145,7 +145,8 @@ onBeforeMount(() => {
   //router.push({path: '/maintenance'})
   //maintenance()
   console.log('mainLayout beforeMount')
-  document.body.style.backgroun = "none";
+  //document.body.style.background = "none";
+  document.body.style.backgroundImage = "none";
 })
 
 onMounted(() => {
@@ -179,7 +180,10 @@ onMounted(() => {
   src: url(/fonts/GoudyTrajan-Medium.otf) format("opentype");
 }
 
-
+html, body, #q-app, .q-layout, .q-page-container {
+  height: 100%;
+  margin: 0;
+}
 
 
 .p_title {
@@ -187,4 +191,6 @@ onMounted(() => {
   color: #a98700;
   border-bottom: 1px solid #a98700;
 }
+
+
 </style>

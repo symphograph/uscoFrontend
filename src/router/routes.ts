@@ -124,7 +124,7 @@ const routes: RouteRecordRaw[] = [
                   {
                     name: 'libAuthor',
                     meta: { allowedPowers: [5] },
-                    path: 'author/:id',
+                    path: 'author/:id?',
                     component: () => import('components/lib/AuthorPage.vue')
                   },
                   {

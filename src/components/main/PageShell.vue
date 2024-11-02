@@ -33,6 +33,7 @@ const progress = inject('progress') as Ref<boolean>
 
 const slots = useSlots();
 const hasToolPanel = computed(() => !!slots.ToolPanel);
+const hasPageContent = computed(() => !!slots.PageContent);
 
 
 const scrollPos = inject('scrollPos') as Ref<number>
@@ -40,7 +41,7 @@ const scrollWatch = inject('scrollWatch') as Ref<boolean>
 const stopScrollWatch = inject('stopScrollWatch') as Function
 
 function onScroll(evt: { verticalPosition: number; }) {
-
+  console.log('scroll')
   if (!scrollWatch.value) {
     scrollPos.value = evt.verticalPosition
     return;
@@ -83,7 +84,9 @@ function onScroll(evt: { verticalPosition: number; }) {
   <q-separator></q-separator>
   <ProgressLine :progress="progress"></ProgressLine>
   <slot name="menuBar"></slot>
+  <slot name="virtualScroll"></slot>
   <q-scroll-area class="col myScrollArea"
+                 v-if="hasPageContent"
                  ref="refScrollArea"
                  @scroll="onScroll">
     <div class="pageToolbar" v-if="noStickTitle">

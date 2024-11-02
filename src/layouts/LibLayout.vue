@@ -51,7 +51,5 @@ onBeforeMount(async () => {
 </template>
 
 <style>
-.centralCol {
-  min-height: 100vh;
-}
+
 </style>

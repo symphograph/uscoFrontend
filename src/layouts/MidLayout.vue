@@ -45,17 +45,18 @@ onMounted(() => {
   document.body.style.backgroundImage = "url('/img/header-bg.jpg')";
   console.log('midLayout Mounted')
 })
+// hHh LpR lFf
 </script>
 
 <template>
-  <q-layout view="hHh LpR lFf">
+  <q-layout view="lHh Lpr lFf">
 
     <MainHeader></MainHeader>
 
     <q-page-container v-if="myUser.self.AccessToken">
       <router-view/>
     </q-page-container>
-    <q-footer class="bg-grey-8 text-white"></q-footer>
+    <q-footer class="bg-grey-8 text-white">fdsa</q-footer>
   </q-layout>
 </template>
 
@@ -115,11 +116,7 @@ body, body.body--dark {
   backdrop-filter: blur(30px) saturate(200%) contrast(70%);
 }
 
-.centralCol {
-  width: 100%;
-  max-width: 1200px;
-  margin: auto;
-}
+
 
 .q-item--dark .q-item__label--caption {
   color: rgb(192, 192, 192, 0.8);

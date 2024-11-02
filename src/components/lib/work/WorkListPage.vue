@@ -1,14 +1,10 @@
 <script setup>
 import {onMounted, ref, provide, inject, onBeforeMount} from "vue";
-import SelectComposer from "components/lib/SelectComposer.vue";
 import {LocalStorage, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
-import {api} from "boot/axios";
 import WorkList from "components/lib/work/WorkList.vue";
-import {notifyError} from "src/js/myFuncts";
 import PageShell from "components/main/PageShell.vue";
-import BtnLibEdit from "components/lib/BtnLibEdit.vue";
-import AuthotItem from "components/lib/AuthorItem.vue";
+import AuthorItem from "components/lib/AuthorItem.vue";
 import WorkDialog from "components/lib/work/WorkDialog.vue";
 import {Author, Work} from "src/js/lib";
 
@@ -79,35 +75,38 @@ function createWork() {
 
 onBeforeMount(() => {
   selectedAuthorId.value = route.params.authorId * 1
+  if(!selectedAuthorId.value){
+    router.push({path: '/lib/author/'})
+  }
 })
 
 onMounted(() => {
-
+  if (!selectedAuthorId.value) return
   loadAuthor()
   loadWorks()
 })
 </script>
 
 <template>
-  <PageShell page-title="Произведения ">
-    <template v-slot:ToolPanel>
-      <q-btn @click="createWork" icon="add" v-if="editMode" flat round></q-btn>
-      <AuthotItem :id="selectedAuthorId"
-                  :iofEn="Author.selected.value?.iofEn"
-                  :iconUrl="Author.selected.value?.iconUrl"
-                  :fioRu="Author.selected.value?.fioRu"></AuthotItem>
-      <q-input v-model="searchText" style="width: 100%; max-width: 16em" label="фильтр" stack-label clearable>
-        <template v-slot:append>
-          <q-icon name="search"></q-icon>
+
+      <PageShell page-title="Произведения ">
+        <template v-slot:ToolPanel>
+          <q-btn @click="createWork" icon="add" v-if="editMode" flat round></q-btn>
+          <AuthorItem :id="selectedAuthorId"
+                      :iofEn="Author.selected.value?.iofEn"
+                      :iconUrl="Author.selected.value?.iconUrl"
+                      :fioRu="Author.selected.value?.fioRu"></AuthorItem>
+          <q-input v-model="searchText" style="width: 100%; max-width: 16em" label="фильтр" stack-label clearable>
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
+            </template>
+          </q-input>
         </template>
-      </q-input>
-    </template>
-    <template v-slot:PageContent>
-      <div class="centralCol">
-        <WorkList v-if="works.length" @onDel="loadWorks"></WorkList>
-      </div>
-    </template>
-  </PageShell>
+        <template v-slot:virtualScroll>
+            <WorkList  @onDel="loadWorks"></WorkList>
+        </template>
+      </PageShell>
+
   <WorkDialog @onSave="loadWorks"></WorkDialog>
 </template>
 
@@ -116,4 +115,6 @@ onMounted(() => {
   width: 100%;
   max-width: 400px;
 }
+
+
 </style>
