@@ -5,7 +5,7 @@ import {notifyError, notifyOK} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import HallCreatorMenu from "components/hall/HallCreatorMenu.vue";
 import HallTable from "components/hall/HallTable.vue";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 
 const apiUrl = String(process.env.API)

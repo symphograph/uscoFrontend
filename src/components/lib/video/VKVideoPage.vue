@@ -5,7 +5,7 @@ import {useMeta, useQuasar} from 'quasar';
 import PageShell from 'components/main/PageShell.vue';
 import VKVideoItem from 'components/lib/video/VKVideoItem.vue';
 import {Video} from "src/js/lib";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 import {getMeta} from "src/js/myFuncts";
 
 const q = useQuasar()

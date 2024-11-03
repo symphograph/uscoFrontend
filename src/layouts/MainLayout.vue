@@ -66,9 +66,6 @@ const editModes = {
 };
 provide('editModes', editModes);
 
-const admin = ref(false)
-provide('admin', admin)
-
 const leftDrawerOpen = ref(false)
 provide('leftDrawerOpen', leftDrawerOpen)
 

@@ -15,8 +15,6 @@ import {Author} from "src/js/lib";
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
-const apiStaff = String(process.env.apiStaff)
-
 
 const editMode = inject('editMode');
 
@@ -36,7 +34,6 @@ function itSel(author) {
 
 async function loadAuthor() {
   if(!selectedAuthorId.value) return
-  console.log(selectedAuthorId.value)
   Author.selected.value = await Author.get(q, selectedAuthorId.value)
 }
 
@@ -51,41 +48,14 @@ const wikiUrl = computed(() => {
 });
 
 
-function updateAuthor(){
-  api.post(apiStaff + 'epoint/lib/author.php', {
-    params: {
-      method: 'update',
-      id: route.params.id,
-      author: selectedAuthor.value
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null))
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function updateAuthor() {
+  if(await Author.update(q, Author.selected.value)){
+    await loadAuthor()
+  }
 }
 
 function delAuthor(){
-  api.post(apiStaff + 'epoint/lib/author.php', {
-    params: {
-      method: 'del',
-      workId: route.params.id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null))
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+  Author.del(q, route.params.id)
 }
 
 onMounted(() => {

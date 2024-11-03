@@ -6,7 +6,7 @@ import {useRouter} from 'vue-router'
 import {getMeta} from "src/js/myFuncts";
 import SelectSort from "components/announсes/SelectSort.vue";
 import PageShell from "components/main/PageShell.vue";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 const pageTitle = 'Анонсы'
 const metaData = getMeta(pageTitle)

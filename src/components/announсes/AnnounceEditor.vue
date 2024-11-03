@@ -11,7 +11,7 @@ import SketchUploader from "components/announсes/SketchUploader.vue";
 import {myUser} from "src/js/myAuth";
 import AddWorkDialog from 'components/announсes/AddWorkDialog.vue';
 import HallSelect from 'components/hall/HallSelect.vue';
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 import WorkList from "components/announсes/WorkList.vue";
 
 const apiUrl = String(process.env.API)

@@ -8,7 +8,7 @@ import {useRoute} from 'vue-router'
 import {getMeta, notifyError} from 'src/js/myFuncts';
 import PageTitle from "components/main/PageTitle.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 
 const metaData = getMeta('Анонс')

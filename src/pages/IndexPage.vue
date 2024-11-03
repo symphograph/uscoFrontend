@@ -40,12 +40,6 @@ provide('announceList', announceList)
 
 const progress = inject('progress')
 
- const query = {
-   category: 'usco',
-   year: 0,
-   limit: 5
- }
-
 onBeforeMount(() => {
   console.log('IndexPage before mounted')
   isMounting.value = true
@@ -75,7 +69,7 @@ onMounted(() => {
         <div class="contentBlock">
           <div class="p_title">Новости оркестра</div>
           <br><br>
-          <NewsList :query="query" :limit="5" :year="year" :category="'usco'"></NewsList>
+          <NewsList :isTop="true"></NewsList>
         </div>
         <div class="contentBlock">
           <VideoList method="someLast" :limit="6"></VideoList>

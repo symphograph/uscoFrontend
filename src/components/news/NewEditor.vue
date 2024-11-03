@@ -8,7 +8,7 @@ import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announсes/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 
 const Entry = inject('Entry')
@@ -276,7 +276,7 @@ onMounted(() => {
         margin: 1em auto 0;
         min-width: 300px;">
         <SketchUploader :id="Entry.id"
-                        :type="'news'"
+                        type="entry"
                         @onUploaded="sketchUploaded"></SketchUploader>
 
       </div>

@@ -1,67 +1,46 @@
-<script setup>
-import {useQuasar} from 'quasar'
-import {api} from 'boot/axios'
+<script setup lang="ts">
+
 import NewItem from 'components/news/NewItem.vue'
-import {inject, onMounted, ref, watch} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
+import {inject, onMounted, Ref, ref, watch} from 'vue'
+import {useRoute} from 'vue-router'
+import MainFooter from "components/main/footer/MainFooter.vue";
+import {Entry} from "src/js/entry";
+import {useQuasar} from "quasar";
 
-const apiUrl = String(process.env.API)
-const route = useRoute()
-const router = useRouter()
 const q = useQuasar()
-const progress = inject('progress')
+const route = useRoute()
+const progress = inject('progress') as Ref<boolean>
 
-const editModes = inject('editModes');
-const editMode = editModes.entryEditMode;
+const editModes = inject('editModes') as Record<string, any>;
+const editMode = editModes.entry;
 
-const Items = ref([])
+const Items = ref([]) as Ref<any[]>
 
-const props = defineProps({
-  category: String,
-  year: Number,
-  limit: Number
-})
-const categ = ref(props.category)
+const props = defineProps<{
+  category?: string,
+  year?: number,
+  isTop?: boolean
+}>()
+const categ = ref(props.category) as Ref<string>
 
 
-watch(route, (newpath) => {
+watch(route, (newpath: any) => {
 
   categ.value = newpath.params.category
   loadData()
-  //console.log(newpath.path)
-  // LocalStorage.set('lastPath',newpath.path)
 })
 
-function loadData() {
-  if (!categ.value) {
-    return;
-  }
+async function loadData() {
   progress.value = true
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: props.limit === 100 ? 'list' : 'toplist',
-      category: categ.value,
-      year: props.year,
-      limit: props.limit
-    }
-  })
-    .then((response) => {
-      Items.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      Items.value = []
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  if(props.isTop){
+    Items.value = await Entry.listTop(q);
+  }else {
+    Items.value = await Entry.listByYear(q, props?.year || 0, categ.value);
+  }
+  progress.value = false
 }
 
-function hideOrShow(entryId) {
-  const entry = Items.value.find(el=> el.id === entryId)
-  entry.isShow = !entry.isShow
-}
-
-function delEntry(entryId) {
+function delEntry(entryId: number) {
   const index = Items.value.findIndex(el => el.id === entryId);
   if (index !== -1) {
     Items.value.splice(index, 1);
@@ -78,13 +57,39 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="newscol">
-    <template v-if="Items?.length">
+    <q-scroll-area
+      v-if="Items?.length && !isTop"
+      id="scroll-area-with-virtual-scroll-1"
+      style="height: 100%"
+    >
+      <q-virtual-scroll :items="Items"
+                        virtual-scroll-item-size="40"
+                        virtual-scroll-slice-size="5"
+                        :virtual-scroll-sticky-size-start="148"
+                        :virtual-scroll-sticky-size-end="132"
+                        scroll-target="#scroll-area-with-virtual-scroll-1 > .scroll"
+
+      >
+        <template v-slot="{item}">
+          <NewItem v-if="item.isShow || editMode"
+                   class="EntryItem"
+                   :item="item"
+                   :key="`entry${item.id}`"
+                   @delEntry="delEntry"
+          ></NewItem>
+        </template>
+        <template v-slot:after v-if="!isTop">
+          <MainFooter></MainFooter>
+        </template>
+
+      </q-virtual-scroll>
+    </q-scroll-area>
+
+    <template v-if="Items?.length && isTop">
       <template v-for="item in Items" :key="item.id">
         <NewItem v-if="item.isShow || editMode"
                  :item="item"
-                 @hideOrShow="(entryId) => { hideOrShow(entryId)}"
-                 @delEntry="(entryId) => {delEntry(entryId)}"
+                 @delEntry="delEntry"
         ></NewItem>
         <q-separator></q-separator>
       </template>
@@ -92,10 +97,14 @@ onMounted(() => {
     <h5 v-if="!Items && !progress" class="noEntyes">
       Ошибка при загрузке. Попробуйте обновить страницу.
     </h5>
-  </div>
+
 </template>
 
 <style scoped>
+.EntryItem {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 .noEntyes {
   text-align: center;
 }

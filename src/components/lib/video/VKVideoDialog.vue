@@ -6,7 +6,7 @@ import {computed, inject, Ref, ref} from 'vue';
 import { imgUrl } from 'src/js/myFuncts';
 import {Video} from "src/js/lib";
 import {ussoAxios} from "src/js/myAxios";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 const q = useQuasar()
 

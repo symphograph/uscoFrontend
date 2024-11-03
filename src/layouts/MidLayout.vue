@@ -53,7 +53,7 @@ onMounted(() => {
 
     <MainHeader></MainHeader>
 
-    <q-page-container v-if="myUser.self.AccessToken">
+    <q-page-container>
       <router-view/>
     </q-page-container>
 

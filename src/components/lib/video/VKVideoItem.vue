@@ -8,7 +8,7 @@ import {useQuasar} from "quasar";
 import DescrDialog from "components/lib/video/DescrDialog.vue";
 import VKVideoDialog from "components/lib/video/VKVideoDialog.vue";
 import {copy} from "src/js/myFuncts";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 const q = useQuasar()
 

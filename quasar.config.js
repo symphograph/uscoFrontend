@@ -61,6 +61,12 @@ module.exports = configure(function (ctx) {
       // publicPath: '/',
       // analyze: true,
       env: {
+        SessionTokenName: ctx.dev
+          ? 'devSessionToken'
+          : 'SessionToken',
+        AccessTokenName: ctx.dev
+          ? 'devAccessToken'
+          : 'AccessToken',
         API: ctx.dev
           ? 'https://sakh-orch.ru/tapi/'
           : 'https://sakh-orch.ru/api/',
@@ -74,9 +80,6 @@ module.exports = configure(function (ctx) {
         ServiceUrl: ctx.dev
           ? 'https://192.168.0.200:9200/'
           : 'https://sakh-orch.ru/',
-        SelfDomain: ctx.dev
-          ? '192.168.0.200:9200'
-          : 'sakh-orch.ru'
 
       },
       // rawDefine: {}

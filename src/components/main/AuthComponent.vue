@@ -1,25 +1,15 @@
-<template>
-  <div v-if="false"></div>
-</template>
-<script setup>
-import {LocalStorage, useQuasar} from "quasar";
-import {inject, onBeforeMount, onMounted, provide, ref} from "vue";
+<script setup lang="ts">
+import {useQuasar} from "quasar";
+import {inject, onBeforeMount, onMounted, Ref, ref} from "vue";
 import {api} from "boot/axios";
-import {notifyError} from "src/js/myFuncts";
-import {useRoute} from "vue-router";
-import {myUser} from "src/js/myAuth";
+import {AccessToken, Auth, SessionToken} from "src/js/myAuth";
 import { Hall } from 'src/js/hall';
 
 
 const q = useQuasar()
 
-/**
- *
- * @type {Ref<boolean>}
- */
-const isOptionsLoaded = inject('isOptionsLoaded')
 
-const admin = inject('admin')
+const isOptionsLoaded = inject('isOptionsLoaded') as Ref<boolean>
 
 
 async function loadOptions() {
@@ -38,104 +28,41 @@ async function loadOptions() {
 
 //--------------------------------------------------------------------
 
-
-const AccessToken = ref('')
-const SessionToken = ref('')
-
-
-const SessionTokenName = 'SessionToken'
-const AccessTokenName = 'AccessToken'
-
-function setToken(name, value, expires = '90d') {
-  q.cookies.set(name, value, {
-    expires: expires,
-    path: '/',
-    domain: null,
-    sameSite: 'Strict',
-    secure: true,
-    httpOnly: false
-  })
-  if(name === AccessTokenName){
-    api.defaults.headers.common['AccessToken'] = value
-    AccessToken.value = value
-    myUser.self.AccessToken = value
-  }
-
-  if(name === SessionTokenName){
-    SessionToken.value = value
-    myUser.self.SessionToken = value
+async function register() {
+  if (await Auth.register(q)) {
+    await loadOptions()
   }
 }
 
-function register(){
-  api.post(String(process.env.Auth) + 'epoint/register.php', {
-    params: {
-      method: 'register',
-      authType: 'default'
-    }
-  })
-    .then((response) => {
-      if(!!!response?.data?.result){
-        throw new Error();
-      }
-      setToken(AccessTokenName, response?.data?.data.AccessToken ?? '')
-      setToken(SessionTokenName, response?.data?.data.SessionToken ?? '')
-      loadOptions()
-
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function refreshAccessToken() {
+  if (await AccessToken.refresh(q)){
+    await loadOptions()
+  }
 }
-provide('register', register)
-
-function refreshAccessToken () {
-  api.post(String(process.env.Auth) + 'epoint/refresh.php', {
-    params: {
-      method: 'refresh',
-      SessionToken: myUser.self.SessionToken,
-      AccessToken: myUser.self.AccessToken
-    }
-  })
-    .then((response) => {
-      if(!!!response?.data?.result){
-        throw new Error();
-      }
-      setToken(SessionTokenName, response?.data?.data.SessionToken ?? '')
-      setToken(AccessTokenName, response?.data?.data.AccessToken ?? '')
-      admin.value = myUser.self.isPermit([4])
-      loadOptions()
-
-    })
-    .catch((error) => {
-      if(error?.response?.status === 401){
-        register()
-        return
-      }
-      q.notify(notifyError(error))
-    })
-}
-provide('refreshAccessToken', refreshAccessToken)
 
 onBeforeMount(() => {
   console.log('auth beforeMounted')
   if(!process.env.isDebug){
     api.defaults.headers.common['Accept'] = "application/json"
   }
-  myUser.self = new myUser()
+
 })
 
 onMounted(() => {
   console.log('auth Mounted')
-  if(!!!q.cookies.getAll()[AccessTokenName] || !!!q.cookies.getAll()[SessionTokenName]){
+  if(!SessionToken.get(q) || !AccessToken.get(q)){
     register()
   } else {
-    setToken(SessionTokenName, q.cookies.getAll()[SessionTokenName])
-    setToken(AccessTokenName, q.cookies.getAll()[AccessTokenName])
+    SessionToken.set(q, SessionToken.get(q))
+    AccessToken.set(q, AccessToken.get(q))
     refreshAccessToken()
   }
 })
 </script>
+
+<template>
+  <div v-if="false"></div>
+</template>
 
 <style scoped>
 

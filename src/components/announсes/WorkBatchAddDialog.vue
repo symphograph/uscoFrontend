@@ -3,7 +3,7 @@ import {useQuasar} from "quasar";
 import {computed, inject, onBeforeMount, ref, Ref} from "vue";
 import AnnounceSelect from "components/announсes/AnnounceSelect.vue";
 import 'src/css/dialog.css'
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 import {Work} from "src/js/lib";
 
 const q = useQuasar()

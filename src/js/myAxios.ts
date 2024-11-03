@@ -2,7 +2,7 @@ import { QVueGlobals } from "quasar";
 import { api } from "boot/axios";
 import { notifyError, notifyOK } from "src/js/myFuncts";
 
-// Абстрактный класс с общим статическим методом set
+
 export abstract class BaseAxios {
   protected static getApiUrl(path: string): string {
     throw new Error("Метод getApiUrl должен быть переопределён в подклассах.");
@@ -60,5 +60,12 @@ export class ussoAxios extends BaseAxios {
 export class staffAxios extends BaseAxios {
   static getApiUrl(path: string): string {
     return String(process.env.apiStaff) + path;
+  }
+}
+
+// Класс для работы с API Auth
+export class authAxios extends BaseAxios {
+  static getApiUrl(path: string): string {
+    return String(process.env.Auth) + path;
   }
 }

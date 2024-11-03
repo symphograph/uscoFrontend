@@ -2,7 +2,7 @@
 import {useQuasar} from 'quasar'
 import AnnounceCard from './AnnounceCard.vue'
 import {computed, inject, onMounted, Ref, ref, watch} from 'vue'
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 
 const q = useQuasar()
 

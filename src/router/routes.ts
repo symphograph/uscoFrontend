@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'news/:category',
                 name: 'news',
                 meta: { allowedPowers: [13] },
-                component: () => import('components/news/NewsPage.vue')
+                component: () => import('components/news/EntryListPage.vue')
               },
               {
                 path: 'new/:id',

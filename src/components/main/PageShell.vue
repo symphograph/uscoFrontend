@@ -41,7 +41,7 @@ const scrollWatch = inject('scrollWatch') as Ref<boolean>
 const stopScrollWatch = inject('stopScrollWatch') as Function
 
 function onScroll(evt: { verticalPosition: number; }) {
-  console.log('scroll')
+  //console.log('scroll')
   if (!scrollWatch.value) {
     scrollPos.value = evt.verticalPosition
     return;

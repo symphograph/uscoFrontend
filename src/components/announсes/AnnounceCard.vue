@@ -1,26 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import DialogConfirm from '../DialogConfirm.vue';
 import { useQuasar } from 'quasar';
 import {computed, inject, onMounted, ref} from 'vue';
 import {fDateTime, imgUrl, notifyWarning, numDeclension} from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
-import {Suggest} from "src/js/ya";
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce, Sketch} from "src/js/announce";
 import {Hall} from "src/js/hall";
 
 
 const apiUrl = String(process.env.API);
 const q = useQuasar();
 
-const editModes = inject('editModes');
+const editModes = inject('editModes') as Record<string, any>;
 const editMode = editModes.announce;
 
 const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
 
 const ticketCount = ref(null)
 
-const hall = computed(() => {
+const hall = computed((): Hall => {
   return Hall.findById(props.announce.hallId)
 })
 
@@ -41,15 +40,11 @@ const payTypes = ref([
   'Продажа завершена'
 ]);
 
-const props = defineProps({
-  announce: ref(false),
-  pwUrl: String,
-  compact: {
-    type: Boolean,
-    required: false,
-    default: false
-  }
-});
+const props = defineProps<{
+  announce: Record<string, any>,
+  pwUrl?: string,
+  compact?: boolean
+}>();
 
 const AnnounceEditable = ref(props.announce);
 
@@ -96,7 +91,7 @@ function payType() {
 }
 
 async function delSketch() {
-  if (await myAnnounce.delSketch(q, props.announce.id)) {
+  if (await Sketch.del(q, props.announce.id)) {
     emit('delSketch', props.announce.id);
   }
 }
@@ -114,7 +109,7 @@ function loadRadario() {
     }
   })
     .then((response) => {
-      if (!!!response?.data?.result) {
+      if (!response?.data?.result) {
         //throw new Error();
       }
       console.log('radario loaded')
@@ -123,12 +118,6 @@ function loadRadario() {
     .catch((error) => {
       q.notify(notifyWarning(error,'Количество оставшихся билетов не загрузилось.'));
     });
-}
-
-function mapHref() {
-  const suggest = props.announce.Hall.suggest
-  const oid = suggest?.oid ?? 0
-  return Suggest.getMapUrl(oid)
 }
 
 onMounted(() => {
@@ -154,7 +143,7 @@ onMounted(() => {
       </div>
       <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
         <template v-slot:error>
-          <img src="/img/news/default_sketch.svg" />
+          <img src="/img/news/default_sketch.svg"  alt="sketch"/>
         </template>
       </q-img>
     </router-link>

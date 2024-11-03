@@ -1,24 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import {Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css';
 import 'vue-advanced-cropper/dist/theme.compact.css';
-import {computed, inject, provide, ref, watch} from "vue";
+import {computed, inject, provide, Ref, ref} from "vue";
 import {notifyError} from "src/js/myFuncts";
-import {useQuasar} from "quasar";
+import {QUploaderFactoryObject, useQuasar} from "quasar";
 import {myUser} from "src/js/myAuth";
 import RecommendsDialog from "components/sketch/RecommendsDialog.vue";
+import {Sketch as AnnounceSketch} from "src/js/announce";
+import {Sketch as EntrySketch} from "src/js/entry";
+import {ussoAxios} from "src/js/myAxios";
 
-const apiUrl = String(process.env.API)
 const q = useQuasar()
 
-const props = defineProps({
-  id: Number,
-  type: String
-})
+const props = defineProps<{
+  id: number,
+  type: string
+}>()
 
 const refCropper = ref()
 const refUploader = ref()
-const refPickBtn = ref()
 const model = {}
 
 const emit = defineEmits(['onUploaded'])
@@ -28,23 +29,15 @@ provide('showRecommends', showRecommends)
 const isRecommendsConfirmed = ref(false)
 
 const img = ref('')
-const blob = ref('')
-const image = ref({
-  src: '',
-  type: ''
-})
+const blob = ref('') as Ref<any>
 
-const result = ref({
-  coordinates: null,
-  image: null
-})
-const pwUrl = inject('pwUrl')
+const pwUrl = inject('pwUrl') as Ref<string>
 
 function change() {
   updateBlob()
 }
 
-function getMimeType(file, fallback = null) {
+function getMimeType(file: any, fallback = null) {
   const byteArray = (new Uint8Array(file)).subarray(0, 4);
   let header = '';
   for (let i = 0; i < byteArray.length; i++) {
@@ -67,7 +60,8 @@ function getMimeType(file, fallback = null) {
 }
 
 let currentMimeType = 'image/jpeg';
-function onAdd(ffff) {
+
+function onAdd(ffff: any) {
   img.value = URL.createObjectURL(ffff[0]);
   currentMimeType = ffff[0].type;
 }
@@ -75,7 +69,7 @@ function onAdd(ffff) {
 function updateBlob() {
   const {canvas} = refCropper.value.getResult();
 
-  canvas.toBlob((blobb) => {
+  canvas.toBlob((blobb: Blob|MediaSource) => {
     blob.value = blobb
     pwUrl.value = URL.createObjectURL(blobb);
   }, currentMimeType);
@@ -97,7 +91,7 @@ function onRemove() {
   pwUrl.value = ''
 }
 
-function failed(info) {
+function failed(info: any) {
   let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
   q.notify(notifyError(null, msg))
 }
@@ -108,9 +102,30 @@ function onUploaded() {
   emit('onUploaded')
 }
 
-function uploadSketch() {
+function getUrl() {
+  let path
+  switch (props.type) {
+    case 'event':
+      path = AnnounceSketch.path
+      break
+    case 'entry':
+      path = EntrySketch.path
+      break
+    default:
+      path = ''
+  }
+  if(!path) {
+    q.notify(notifyError(new Error('Недопустимый URL для изображения')));
+    return ''
+  }
+  return ussoAxios.getApiUrl(String(path))
+}
+
+function uploadSketch(): QUploaderFactoryObject {
+  const url = getUrl()
+
   return {
-    url: apiUrl + `epoint/${props.type}/sketch.php`,
+    url: url,
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -120,7 +135,7 @@ function uploadSketch() {
     formFields: [
       {
         name: 'id',
-        value: props.id
+        value: String(props.id)
       }, {
         name: 'method',
         value: 'add',
@@ -129,7 +144,18 @@ function uploadSketch() {
   }
 }
 
-function defaultSize({ imageSize, visibleArea }) {
+interface Size {
+  width: number;
+  height: number;
+}
+
+function defaultSize({
+                       imageSize,
+                       visibleArea,
+                     }: {
+  imageSize: Size;
+  visibleArea?: Size;
+}): Size {
   return {
     width: (visibleArea || imageSize).width,
     height: (visibleArea || imageSize).height,
@@ -139,11 +165,6 @@ function defaultSize({ imageSize, visibleArea }) {
 function onConfirm() {
   isRecommendsConfirmed.value = true
 }
-
-function openConfirm() {
-  showRecommends.value = true;
-}
-
 
 const defaultPosition = {
   left: 0,

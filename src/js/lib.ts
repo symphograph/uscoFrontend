@@ -1,5 +1,5 @@
 import {QVueGlobals} from "quasar";
-import {staffAxios} from "src/js/myAxios";
+import {staffAxios, ussoAxios} from "src/js/myAxios";
 import {api} from "boot/axios";
 import {notifyError} from "src/js/myFuncts";
 import {ref, Ref} from "vue";
@@ -29,6 +29,22 @@ export class Author {
     const errMsg = 'Автор не загрузился'
 
     return staffAxios.get(q, this.path, params, errMsg)
+  }
+
+  static async del(q: QVueGlobals, authorId: number): Promise<boolean> {
+    const params = {
+      method: 'del',
+      authorId: authorId
+    }
+    return staffAxios.set(q, this.path, params)
+  }
+
+  static async update(q: QVueGlobals, author: Record<string, any>): Promise<boolean> {
+    const params = {
+      method: 'update',
+      author: author
+    }
+    return staffAxios.set(q, this.path, params)
   }
 
   static async getList(q: QVueGlobals): Promise<Record<string, any>[]> {

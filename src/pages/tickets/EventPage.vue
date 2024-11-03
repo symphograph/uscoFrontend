@@ -9,7 +9,7 @@ import TicketCard from "components/hall/TicketCard.vue";
 import { scroll } from 'quasar'
 import DialogLogin from "components/hall/DialogLogin.vue";
 import { myUser } from 'src/js/myAuth';
-import {myAnnounce} from "src/js/entry";
+import {myAnnounce} from "src/js/announce";
 const { getHorizontalScrollPosition, setHorizontalScrollPosition } = scroll
 
 const apiUrl = String(process.env.API)

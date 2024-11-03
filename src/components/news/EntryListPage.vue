@@ -21,7 +21,6 @@ const evYear = ref(new Date().getFullYear())
 const listRef = ref()
 
 function onSetYear() {
-  console.log(evYear)
   nextTick(() => {
     listRef.value.loadData()
   })
@@ -86,10 +85,8 @@ const category = ref(route.params.category)
                 @update:model-value="onSetYear()">
       </q-select>
     </template>
-    <template v-slot:PageContent>
-      <div class="centralCol">
+    <template v-slot:virtualScroll>
         <NewsList :year="evYear" :limit="100" :category="category" ref="listRef"></NewsList>
-      </div>
     </template>
   </PageShell>
 </template>
