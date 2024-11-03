@@ -8,6 +8,7 @@ import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announсes/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
+import {myAnnounce} from "src/js/entry";
 
 
 const Entry = inject('Entry')
@@ -18,7 +19,7 @@ const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['uploaded'])
 const announces = ref([])
-
+const loadingAnnounces = ref(false)
 
 const categs = ref([
   {
@@ -166,24 +167,10 @@ function delEntry() {
     })
 }
 
-function loadFutureAnnounces() {
-
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'futureList',
-      date: Entry.value.date
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      announces.value = []
-      announces.value = response?.data?.data || []
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function loadFutureAnnounces() {
+  loadingAnnounces.value = true
+  announces.value = await myAnnounce.listFuture(q, Entry.value.date)
+  loadingAnnounces.value = false
 }
 
 function hideOrShow() {
@@ -312,6 +299,7 @@ onMounted(() => {
                  @change="loadFutureAnnounces()"
         ></q-input>
         <q-select v-model="Entry.announceId"
+                  :loading="loadingAnnounces"
                   :options="announces"
                   clearable
                   emit-value

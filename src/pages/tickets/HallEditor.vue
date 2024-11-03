@@ -5,6 +5,7 @@ import {notifyError, notifyOK} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import HallCreatorMenu from "components/hall/HallCreatorMenu.vue";
 import HallTable from "components/hall/HallTable.vue";
+import {myAnnounce} from "src/js/entry";
 
 
 const apiUrl = String(process.env.API)
@@ -240,29 +241,14 @@ function loadHallPlan() {
     })
 }
 
-function loadAnnounces() {
+async function loadAnnounces() {
   progress.value = true
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'futureList'
-    }
-  })
-    .then((response) => {
-      if (!response?.data?.result) {
-        throw new Error()
-      }
-      announceList.value = response?.data?.data ?? []
-
-      selectedAnnounce.value = announceList.value[0]
-      loadHallPlan()
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-      announceList.value = []
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  announceList.value = await myAnnounce.listFuture(q)
+  if(announceList.value.length){
+    selectedAnnounce.value = announceList.value[0]
+    loadHallPlan()
+  }
+  progress.value = false
 }
 
 function reset() {

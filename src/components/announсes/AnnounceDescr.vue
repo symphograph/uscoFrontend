@@ -5,6 +5,7 @@ import {fDateTime, imgUrl, notifyError} from 'src/js/myFuncts'
 import PhoneNumber from "components/contacts/PhoneNumber.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {api} from "boot/axios";
+import {Hall} from "src/js/hall";
 
 
 const apiUrl = String(process.env.API)
@@ -19,6 +20,10 @@ const posterUrl = computed(() => {
     return '/img/news/default_sketch.svg';
   }
   return imgUrl(apiUrl, Announce.value.poster.md5, Announce.value.poster.ext, size)
+})
+
+const hall = computed(() => {
+  return Hall.findById(Announce.value.hallId)
 })
 
 function vkHref() {
@@ -130,13 +135,13 @@ function delPoster() {
       </q-card-section>
 
       <q-card-section>
-        <q-item clickable :href="Announce.Hall.map" target="_blank">
+        <q-item clickable :href="hall.getMapHref()" target="_blank">
           <q-item-section avatar>
             <q-icon name="place"></q-icon>
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ Announce.Hall.name }}</q-item-label>
-            <q-item-label caption>{{ Announce.Hall.suggest.address.formatted }}</q-item-label>
+            <q-item-label>{{ hall?.name }}</q-item-label>
+            <q-item-label caption>{{ hall?.suggest.address.formatted }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-card-section>
@@ -197,16 +202,6 @@ function delPoster() {
   width: 100%;
   height: max-content;
   box-shadow: 0 0 1em black;
-}
-
-.posterArea .q-img {
-  /*border: black 1px solid;*/
-
-}
-
-.eventboxin {
-  /*text-align: justify;*/
-  /*padding: 1em;*/
 }
 
 .textBlock {

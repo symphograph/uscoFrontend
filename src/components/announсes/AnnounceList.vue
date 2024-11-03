@@ -1,57 +1,57 @@
-<script setup>
+<script setup lang="ts">
 import {useQuasar} from 'quasar'
-import {api} from 'boot/axios'
 import AnnounceCard from './AnnounceCard.vue'
-import {computed, inject, onMounted, ref, watch} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
-import {notifyError} from "src/js/myFuncts";
+import {computed, inject, onMounted, Ref, ref, watch} from 'vue'
+import {myAnnounce} from "src/js/entry";
 
-
-const apiUrl = String(process.env.API)
 const q = useQuasar()
 
-const compactCard = inject('compactCard')
+const compactCard = inject('compactCard') as Ref<boolean>
 
-const announceList = inject('announceList')
-const progress = inject('progress')
+const announceList = inject('announceList') as Ref<Record<string, any>[]>
+const progress = inject('progress') as Ref<boolean>
 
-const props = defineProps({
-  method: String,
-  evYear: Number,
-  sort: ref({})
-})
+const props = defineProps<{
+  method: string;
+  year?: number;
+  sort: string;
+}>();
 
 
-function loadAnnounces() {
+
+async function loadAnnounces() {
   progress.value = true
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: props.method,
-      year: props.evYear
-    }
-  })
-    .then((response) => {
-      announceList.value = response?.data?.data ?? []
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-      announceList.value = []
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  let result
+  const year = props.year ?? new Date().getFullYear()
+
+  switch (props.method) {
+    case 'futureList':
+      result = await myAnnounce.listFuture(q)
+      break
+    case 'listByYear':
+      result = await myAnnounce.listByYear(q, year)
+      break
+    case 'listByHall':
+      result = await myAnnounce.listByHall(q, year)
+      break
+    default:
+      result = undefined
+  }
+
+  announceList.value = result ?? []
+  progress.value = false
 }
 
 onMounted(() => {
   loadAnnounces()
 })
 
-watch(() => props.evYear, () => {
+watch(() => props.year, () => {
   loadAnnounces()
 })
 
-const sortFromOld = (d1, d2) => (d1.eventTime < d2.eventTime) ? 1 : -1
-const sortFromNew = (d1, d2) => (d1.eventTime > d2.eventTime) ? 1 : -1
+const sortFromOld = (d1: any, d2: any) => (d1.eventTime < d2.eventTime) ? 1 : -1
+const sortFromNew = (d1: any, d2: any) => (d1.eventTime > d2.eventTime) ? 1 : -1
 const sortedList = computed(() => {
   if (!announceList.value || !announceList.value.length) {
     return []

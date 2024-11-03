@@ -14,7 +14,6 @@ import HallSelect from 'components/hall/HallSelect.vue';
 import {myAnnounce} from "src/js/entry";
 import WorkList from "components/announсes/WorkList.vue";
 
-const apiStaff = String(process.env.apiStaff)
 const apiUrl = String(process.env.API)
 const q = useQuasar()
 const route = useRoute()
@@ -145,24 +144,11 @@ function onDelSketch() {
   delete announce.value.sketchId
 }
 
-function updateMarkdown() {
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'updateMarkdown',
-      id: announce.value.id,
-      markdown: announce.value.description,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      announce.value.parsedMD = response?.data.data
-
-    })
-    .catch((error) => {
-      // q.notify(notifyError(error, 'hhhh'))
-    })
+async function updateMarkdown() {
+  const result = await myAnnounce.updateMarkdown(q, announce.value.id, announce.value.description)
+  if(result) {
+    announce.value.parsedMD = result
+  }
 }
 
 function loadPoster() {

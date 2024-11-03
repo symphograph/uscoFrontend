@@ -69,7 +69,7 @@ onMounted(() => {
       <div class="centralCol">
         <div class="contentBlock">
           <div class="announceArea">
-            <AnnounceList :method="'futureList'"></AnnounceList>
+            <AnnounceList :method="'futureList'" sort="dateAsc"></AnnounceList>
           </div>
         </div>
         <div class="contentBlock">

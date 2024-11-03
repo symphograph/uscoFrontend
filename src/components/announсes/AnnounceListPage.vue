@@ -2,17 +2,16 @@
 import {inject, provide, ref} from 'vue'
 import AnnounceList from 'components/announсes/AnnounceList.vue'
 import {useQuasar, useMeta} from 'quasar'
-import {api} from 'boot/axios'
-import {useRoute, useRouter} from 'vue-router'
-import {getMeta, notifyError, notifyOK} from "src/js/myFuncts";
+import {useRouter} from 'vue-router'
+import {getMeta} from "src/js/myFuncts";
 import SelectSort from "components/announсes/SelectSort.vue";
 import PageShell from "components/main/PageShell.vue";
+import {myAnnounce} from "src/js/entry";
 
 const pageTitle = 'Анонсы'
 const metaData = getMeta(pageTitle)
 useMeta(metaData)
 
-const apiUrl = String(process.env.API)
 const q = useQuasar()
 
 const router = useRouter()
@@ -55,22 +54,14 @@ function Years() {
   return arr.reverse()
 }
 
-function addAnnounce() {
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'add'
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      q.notify(notifyOK(response?.data?.result ?? null))
-      router.push({path: '/announce/' + response.data.data.id})
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function addAnnounce() {
+  progress.value = true
+  const result = await myAnnounce.create(q)
+  console.log(result)
+  if (result?.id) {
+    await router.push({path: '/announce/' + result.id})
+  }
+  progress.value = false
 }
 
 </script>
@@ -95,7 +86,7 @@ function addAnnounce() {
     <template v-slot:PageContent>
       <div class="centralCol">
         <div class="gridArea">
-          <AnnounceList :evYear="evYear" :method="'listByYear'" :sort="sortType"></AnnounceList>
+          <AnnounceList :year="evYear" :method="'listByYear'" :sort="sortType"></AnnounceList>
         </div>
       </div>
     </template>

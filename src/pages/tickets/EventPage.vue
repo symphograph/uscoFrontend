@@ -9,6 +9,7 @@ import TicketCard from "components/hall/TicketCard.vue";
 import { scroll } from 'quasar'
 import DialogLogin from "components/hall/DialogLogin.vue";
 import { myUser } from 'src/js/myAuth';
+import {myAnnounce} from "src/js/entry";
 const { getHorizontalScrollPosition, setHorizontalScrollPosition } = scroll
 
 const apiUrl = String(process.env.API)
@@ -160,30 +161,10 @@ function loadHallPlan() {
     })
 }
 
-function loadAnnounce() {
+async function loadAnnounce() {
   progress.value = true
-  console.log('progress on')
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'get',
-      id: route.params.id
-    }
-  })
-    .then((response) => {
-      if (!response?.data?.result) {
-        console.log('announce err:', response.data)
-        throw new Error()
-      }
-      Announce.value = response?.data?.data ?? {}
-      console.log('Announce loaded')
-      loadHallPlan()
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-
-    })
+  Announce.value = await myAnnounce.get(q, route.params.id)
+  progress.value = false
 }
 
 function reserveTicket(ticketId) {

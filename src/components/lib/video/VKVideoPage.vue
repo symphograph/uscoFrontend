@@ -1,13 +1,17 @@
 <script setup lang="ts">
 
 import {computed, inject, onBeforeMount, provide, Ref, ref} from 'vue';
-import { useQuasar } from 'quasar';
+import {useMeta, useQuasar} from 'quasar';
 import PageShell from 'components/main/PageShell.vue';
 import VKVideoItem from 'components/lib/video/VKVideoItem.vue';
 import {Video} from "src/js/lib";
 import {myAnnounce} from "src/js/entry";
+import {getMeta} from "src/js/myFuncts";
 
 const q = useQuasar()
+
+const metaData = getMeta('Видеотека')
+useMeta(metaData)
 
 const editModes = inject('editModes') as Record<string, any>;
 const editMode = editModes.libVideo
@@ -57,9 +61,9 @@ async function updateAllFromVK() {
   progress.value = false
 }
 
-onBeforeMount(() => {
-  myAnnounce.initAllList(q)
-  loadVideos()
+onBeforeMount(async () => {
+  await myAnnounce.initAllList(q)
+  await loadVideos()
 })
 </script>
 

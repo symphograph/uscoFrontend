@@ -2,6 +2,7 @@ import { api } from 'boot/axios';
 import { notifyError, notifyOK } from 'src/js/myFuncts.js';
 import { QVueGlobals } from 'quasar';
 import { Ref } from 'vue';
+import {Suggest} from "src/js/ya";
 
 export class Hall {
 
@@ -69,6 +70,12 @@ export class Hall {
     }
   }
 
+  public getMapHref(): string
+  {
+    const oid = this.suggest?.oid ?? 0
+    return Suggest.getMapUrl(oid)
+  }
+
   static async getList(q: QVueGlobals): Promise<Hall[]> {
     const url = String(process.env.API) + 'epoint/hall.php';
 
@@ -96,5 +103,9 @@ export class Hall {
       q.notify(notifyError(error));
       return [];
     }
+  }
+
+  static findById(id: number) {
+    return this.List.value.find((el) => el.id === id)
   }
 }

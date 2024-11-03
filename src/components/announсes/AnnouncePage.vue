@@ -3,11 +3,12 @@ import {useMeta, useQuasar} from 'quasar'
 import {api} from 'boot/axios'
 import AnnounceEditor from 'components/announсes/AnnounceEditor.vue'
 import AnnounceDescr from 'components/announсes/AnnounceDescr.vue';
-import {ref, inject, onMounted, provide} from 'vue'
+import {ref, inject, onMounted, provide, onBeforeMount} from 'vue'
 import {useRoute} from 'vue-router'
 import {getMeta, notifyError} from 'src/js/myFuncts';
 import PageTitle from "components/main/PageTitle.vue";
 import MainFooter from "components/main/footer/MainFooter.vue";
+import {myAnnounce} from "src/js/entry";
 
 
 const metaData = getMeta('Анонс')
@@ -27,24 +28,15 @@ const editorRef = ref()
 const Announce = ref(null)
 provide('Announce', Announce)
 
-function loadData() {
+const loading = ref(false)
 
-  api.post(apiUrl + 'epoint/event/announce.php', {
-    params: {
-      method: 'get',
-      id: route.params.evid
-    }
-  })
-    .then((response) => {
-      Announce.value = response?.data?.data ?? null
-      console.log('Announce loaded')
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function loadData() {
+  loading.value = true
+  Announce.value = await myAnnounce.get(q, route.params.evid)
+  loading.value = false
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   loadData()
 })
 </script>

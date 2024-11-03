@@ -1,12 +1,13 @@
 <script setup>
 import DialogConfirm from '../DialogConfirm.vue';
 import { useQuasar } from 'quasar';
-import { inject, onMounted, ref } from 'vue';
+import {computed, inject, onMounted, ref} from 'vue';
 import {fDateTime, imgUrl, notifyWarning, numDeclension} from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
 import {Suggest} from "src/js/ya";
 import {myAnnounce} from "src/js/entry";
+import {Hall} from "src/js/hall";
 
 
 const apiUrl = String(process.env.API);
@@ -18,6 +19,10 @@ const editMode = editModes.announce;
 const emit = defineEmits(['newAnnounce', 'IamDeleted', 'changeShow', 'delSketch']);
 
 const ticketCount = ref(null)
+
+const hall = computed(() => {
+  return Hall.findById(props.announce.hallId)
+})
 
 function radarioUrl() {
   return `https://radario.ru/buy-tickets/${props.announce.radarioEventId}`
@@ -173,13 +178,13 @@ onMounted(() => {
           <q-item-label caption>{{ fDateTime(AnnounceEditable.eventTime) }}</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple :href="mapHref()" target="_blank" dense>
+      <q-item clickable v-ripple :href="hall.getMapHref()" target="_blank" dense>
         <q-item-section avatar>
           <q-icon name="place"></q-icon>
         </q-item-section>
         <q-item-section>
           <q-item-label caption>
-            <span class="mapLink">{{ announce.Hall.name }}</span>
+            <span class="mapLink">{{ hall.name }}</span>
           </q-item-label>
         </q-item-section>
       </q-item>

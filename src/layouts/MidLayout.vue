@@ -56,7 +56,7 @@ onMounted(() => {
     <q-page-container v-if="myUser.self.AccessToken">
       <router-view/>
     </q-page-container>
-    <q-footer class="bg-grey-8 text-white">fdsa</q-footer>
+
   </q-layout>
 </template>
 
