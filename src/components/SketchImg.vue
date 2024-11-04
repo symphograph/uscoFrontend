@@ -1,38 +1,34 @@
-<script setup>
+<script setup lang="ts">
 
-import {imgUrl} from "src/js/myFuncts";
-import {useQuasar} from "quasar";
-import {inject} from "vue";
+import {SketchBase} from "src/js/img";
 
-const apiUrl = String(process.env.API)
+const props = defineProps<{
+  md5?: string,
+  ext?: string,
+  size?: number,
+  url?: string
+}>()
 
+function getUrl(){
+  if(props.url) return props.url
 
-const props = defineProps({
-  md5: {
-    type: String,
-    required: true
-  },
-  ext: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: Number,
-    required: false,
-    default: 0
-  }
-})
+  return SketchBase.getSrc(props.md5 || '', props.ext || '', props.size)
+}
 </script>
 
 <template>
   <q-img
-    :src="imgUrl(apiUrl, md5, ext, size)"
+    :src="getUrl()"
     :ratio="1920/1080"
+    no-transition
+    :loading-show-delay="150"
     fit="fill"
-    placeholder-src="/img/news/default_sketch.svg"
   >
     <template v-slot:error>
-      <q-img src="/img/news/default_sketch.svg"></q-img>
+      <q-img :src="SketchBase.defaultUrl"
+             no-spinner
+             no-transition
+      ></q-img>
     </template>
   </q-img>
 </template>

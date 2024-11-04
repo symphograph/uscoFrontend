@@ -2,11 +2,13 @@
 import DialogConfirm from '../DialogConfirm.vue';
 import { useQuasar } from 'quasar';
 import {computed, inject, onMounted, ref} from 'vue';
-import {fDateTime, imgUrl, notifyWarning, numDeclension} from 'src/js/myFuncts';
+import {fDateTime, notifyWarning, numDeclension} from 'src/js/myFuncts';
 import BtnDelete from 'components/main/BtnDelete.vue';
 import axios from 'axios';
 import {myAnnounce, Sketch} from "src/js/announce";
 import {Hall} from "src/js/hall";
+import {SketchBase} from "src/js/img";
+import SketchImg from "components/SketchImg.vue";
 
 
 const apiUrl = String(process.env.API);
@@ -54,10 +56,9 @@ function sketchUrl() {
   }
   let size = q.platform.is.mobile ? 1080 : 480;
   if (!props.announce.sketch) {
-    return '/img/news/default_sketch.svg';
+    return SketchBase.defaultUrl;
   }
-  return imgUrl(apiUrl, props.announce.sketch.md5, props.announce.sketch.ext, size);
-
+  return SketchBase.getSrc(props.announce.sketch.md5, props.announce.sketch.ext, size)
 }
 
 function saveData() {
@@ -91,7 +92,7 @@ function payType() {
 }
 
 async function delSketch() {
-  if (await Sketch.del(q, props.announce.id)) {
+  if (await Sketch.unlink(q, props.announce.id)) {
     emit('delSketch', props.announce.id);
   }
 }
@@ -141,11 +142,7 @@ onMounted(() => {
         >
         </BtnDelete>
       </div>
-      <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
-        <template v-slot:error>
-          <img src="/img/news/default_sketch.svg"  alt="sketch"/>
-        </template>
-      </q-img>
+      <SketchImg :url="sketchUrl()"></SketchImg>
     </router-link>
     <q-card-section color="info" expand-separator>
       <q-badge

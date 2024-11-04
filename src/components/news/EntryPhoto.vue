@@ -1,30 +1,21 @@
-<script setup>
+<script setup lang="ts">
 
-import {imgUrl} from "src/js/myFuncts";
+
 import BtnDelete from "components/main/BtnDelete.vue";
 import {inject} from "vue";
+import {Photo} from "src/js/entry";
 
-const apiUrl = String(process.env.API)
 const editMode = inject('editMode')
 
-const props = defineProps({
-  id: {
-    type: Number,
-    required: true
-  },
-  md5: {
-    type: String,
-    required: true
-  },
-  ext: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: Number,
-    required: false,
-    default: 1080
-  }
+export interface PhotoProps {
+  id: number;
+  md5: string;
+  ext: string;
+  size?: number;
+}
+
+const props = withDefaults(defineProps<PhotoProps>(), {
+  size: 1080
 })
 
 const emit = defineEmits(['onDel'])
@@ -41,7 +32,7 @@ const emit = defineEmits(['onDel'])
     </div>
 
     <q-img
-      :src="imgUrl(apiUrl,md5,ext, size)"
+      :src="Photo.getSrc(md5,ext, size)"
       fit="fill"
     >
     </q-img>

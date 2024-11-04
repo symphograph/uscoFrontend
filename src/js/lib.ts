@@ -83,7 +83,7 @@ export class Work {
     }
     const errMsg = 'Не получилось удалить'
 
-    return staffAxios.set(q, this.path, params)
+    return staffAxios.set(q, this.path, params, errMsg)
   }
 
   static async add(q: QVueGlobals, work: Record<string, any>): Promise<boolean> {

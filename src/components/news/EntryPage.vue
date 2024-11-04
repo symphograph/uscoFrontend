@@ -1,80 +1,60 @@
-<script setup>
+<script setup lang="ts">
 import {useMeta, useQuasar} from 'quasar'
-import {api} from 'boot/axios'
 import NewEditor from 'components/news/NewEditor.vue'
-import PageTitle from "components/main/PageTitle.vue";
 import {ref, inject, onMounted, provide, computed} from 'vue'
 import {useRoute} from 'vue-router'
-import {getMeta, imgUrl, notifyError} from "src/js/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import EntryPhoto from "components/news/EntryPhoto.vue";
 import PageShell from "components/main/PageShell.vue";
+import {Entry} from "src/js/entry";
 
 
-const id = ref(0)
-const Entry = ref(null)
-provide('Entry', Entry)
+const entry = ref()
+provide('Entry', entry)
 
 const q = useQuasar()
-const apiUrl = String(process.env.API)
 const route = useRoute()
 
-const editModes = inject('editModes');
+const editModes = inject('editModes') as Record<string, any>;
 const editMode = editModes.entry;
 provide('editMode', editMode)
 
-const isError = ref(false)
 const progress = ref(true)
 provide('progress', progress)
+
 const editorRef = ref()
 
 useMeta(() => {
-  return getMeta(Entry?.value?.title ?? 'Новость')
+  return getMeta(entry?.value?.title ?? 'Новость')
 })
 
 
-function loadData() {
-
+async function loadData() {
   progress.value = true
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: 'get',
-      id: route.params.id
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      Entry.value = response?.data?.data ?? null
-
-    })
-    .catch((error) => {
-      isError.value = true
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-      progress.value = false
-    })
+  entry.value = await Entry.get(q, Number(route.params.id))
+  progress.value = false
 }
 
 const usedPhotos = computed(() => {
-  let sections = Entry.value.parsedMD.filter(el => el.type === 'img')
+  let sections = entry.value.parsedMD.filter((el: any) => el.type === 'img')
 
   return sections
-    .map(section => Entry.value.Photos.find(photo => photo.id === section.fileId))
+    .map((section: any) => entry.value.Photos.find((photo: any) => photo.id === section.fileId))
     .filter(Boolean)
 })
 
 const unusedPhotos = computed(() => {
-  const usedPhotoIds = usedPhotos.value.map(photo => photo.id);
-  return Entry.value.Photos.filter(photo => !usedPhotoIds.includes(photo.id));
+  const usedPhotoIds = usedPhotos.value.map((photo: any) => photo.id);
+  return entry.value.Photos.filter((photo: any) => !usedPhotoIds.includes(photo.id));
 })
-function onDelPhoto(id) {
-  if(editMode.value){
+
+function onDelPhoto(id: number) {
+  if (editMode.value) {
     editorRef.value.unlinkPhoto(id)
   }
 
 }
+
 onMounted(() => {
   loadData()
 })
@@ -82,17 +62,17 @@ onMounted(() => {
 
 <template>
 
-  <PageShell :page-title="Entry?.title ?? 'Новость'" no-stick-title>
+  <PageShell :page-title="entry?.title ?? 'Новость'" no-stick-title>
     <template v-slot:PageContent>
-      <div class="contentArea" v-if="editMode && Entry">
+      <div class="contentArea" v-if="editMode && entry">
         <NewEditor
-          v-if="editMode && Entry"
+          v-if="editMode && entry"
           @uploaded="loadData()"
           ref="editorRef"
         ></NewEditor>
       </div>
-      <div class="contentArea" v-if="Entry">
-        <template v-for="(row, idx) in Entry.parsedMD" :key="idx">
+      <div class="contentArea" v-if="entry">
+        <template v-for="(row, idx) in entry.parsedMD" :key="idx">
 
           <div v-if="row.type === 'text'" class="textBlock">
             <section v-if="row.content !== '\n'" v-html="row.content"></section>
@@ -110,14 +90,14 @@ onMounted(() => {
           </div>
         </template>
 
-        <template v-if="Entry.refLink">
+        <template v-if="entry.refLink">
           <q-separator spaced="1em"></q-separator>
-          <q-item clickable :href="Entry.refLink">
+          <q-item clickable :href="entry.refLink">
             <q-item-section avatar>
               <q-icon name="link"></q-icon>
             </q-item-section>
             <q-item-section>
-              <q-item-label>Источник: {{ Entry.refName }}</q-item-label>
+              <q-item-label>Источник: {{ entry.refName }}</q-item-label>
             </q-item-section>
           </q-item>
         </template>

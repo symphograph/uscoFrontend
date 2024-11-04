@@ -5,7 +5,7 @@ import { notifyError, notifyOK } from "src/js/myFuncts";
 
 export abstract class BaseAxios {
   protected static getApiUrl(path: string): string {
-    throw new Error("Метод getApiUrl должен быть переопределён в подклассах.");
+    throw new Error("getApiUrl must be implemented in derived classes");
   }
 
   public static async set(q: QVueGlobals, path: string, params: any, errMsg?: string): Promise<boolean> {

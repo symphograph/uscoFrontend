@@ -1,55 +1,28 @@
 <script setup>
 
 import {useQuasar} from 'quasar'
-import {api} from 'boot/axios'
-import {computed, inject, onMounted, provide, ref} from 'vue'
+import {inject, onMounted, provide, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import { imgUrl, notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announсes/SketchUploader.vue";
 import PhotoUploader from "components/news/PhotoUploader.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {myAnnounce} from "src/js/announce";
+import {SketchBase} from "src/js/img";
+import {Entry, Photo, Sketch} from "src/js/entry";
+import SketchImg from "components/SketchImg.vue";
+import BtnHideOrShow from "components/main/buttons/BtnHideOrShow.vue";
 
 
-const Entry = inject('Entry')
+const entry = inject('Entry')
 
-const apiUrl = String(process.env.API)
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 const emit = defineEmits(['uploaded'])
 const announces = ref([])
 const loadingAnnounces = ref(false)
-
-const categs = ref([
-  {
-    id: 1,
-    name: 'Новости ЮССО',
-    caption: 'Новости оркестра',
-    url: '/news/usco',
-    ava: '/img/logo/logo_init.svg',
-    icon: '',
-    checked: false
-  },
-  {
-    id: 2,
-    name: 'Звезды Эвтерпы',
-    caption: 'Международный фестиваль',
-    url: '/news/euterpe',
-    ava: '/img/logo/logo_init.svg',
-    icon: '',
-    checked: false
-  },
-  {
-    id: 3,
-    name: 'Новости партнеров',
-    caption: 'Прочие новости',
-    url: '/news/other',
-    ava: '',
-    icon: 'volunteer_activism',
-    checked: false
-  }
-])
+const loading = ref(false)
+provide('loading', loading)
 
 const pwUrl = ref('')
 provide('pwUrl', pwUrl)
@@ -58,169 +31,87 @@ function sketchUrl() {
   if (pwUrl.value) {
     return pwUrl.value
   }
-  let size = q.platform.is.mobile ? 1080 : 260
-  if(!Entry.value.sketch) {
-    return '/img/news/default_sketch.svg';
+
+  return SketchBase.srcByProps(q, entry.value.sketch)
+}
+
+async function delSketch() {
+  loading.value = true
+  if (await Sketch.unlink(q, route.params.id)) {
+    emit('uploaded')
   }
-  return imgUrl(apiUrl, Entry.value.sketch.md5, Entry.value.sketch.ext, size)
-
+  loading.value = false
 }
 
-function delPw() {
-
-  api.post(apiUrl + 'epoint/news/sketch.php', {
-    params: {
-      method: 'unlink',
-      id: route.params.id
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      emit('uploaded')
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function unlinkPhoto(id) {
+  loading.value = true
+  const result = await Photo.unlink(q, route.params.id, id)
+  if (result){
+    let idx = entry.value.Photos.findIndex(el => el.id === id)
+    let img = entry.value.Photos[idx]
+    removeImageCode(img.md5)
+    entry.value.Photos.splice(idx, 1)
+  }
+  loading.value = false
 }
 
-function unlinkPhoto(id) {
-  api.post(apiUrl + 'epoint/news/photo.php', {
-    params: {
-      method: 'unlink',
-      entryId: route.params.id,
-      imgId: id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-
-      let idx = Entry.value.Photos.findIndex(el => el.id === id)
-      let img = Entry.value.Photos[idx]
-      removeImageCode(img.md5)
-      Entry.value.Photos.splice(idx, 1)
-
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-}
 provide('unlinkPhoto', unlinkPhoto)
 
 function removeImageCode(md5) {
   const regex = new RegExp(`!\\[]\\(${md5}\\.[a-zA-Z0-9]+\\)`, 'g');
-  const oldText = Entry.value.markdown
-  Entry.value.markdown = Entry.value.markdown.replace(regex, '')
-  if(Entry.value.markdown !== oldText) {
+  const oldText = entry.value.markdown
+  entry.value.markdown = entry.value.markdown.replace(regex, '')
+  if (entry.value.markdown !== oldText) {
     updateMarkdown()
   }
 }
 
-function categsFilter() {
-  const categsF = Object.keys(categs.value)
-  let arr = []
-  categsF.forEach(key => {
-    arr[categs.value[key].id] = categs.value[key].checked
-  })
-  return arr
+async function update() {
+  loading.value = true
+  if (await Entry.update(q, entry.value)) {
+    emit('uploaded')
+  }
+
+  loading.value = false
 }
 
-function save(addNew = 0) {
+async function delEntry() {
+  loading.value = true
 
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: 'update',
-      entry: Entry.value,
-      addNew: addNew,
-      categs: categsFilter()
-    }
-  })
-    .then((response) => {
-      q.notify(notifyOK(response?.data?.result ?? ''))
-      emit('uploaded')
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-}
+  const result = await Entry.del(q, entry.value.id)
+  if (result) router.push({path: '/news/all'})
 
-function delEntry() {
-
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: 'del',
-      entryId: Entry.value.id,
-      force: false
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      router.push({path: '/news/all'})
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+  loading.value = false
 }
 
 async function loadFutureAnnounces() {
   loadingAnnounces.value = true
-  announces.value = await myAnnounce.listFuture(q, Entry.value.date)
+  announces.value = await myAnnounce.listFuture(q, entry.value.date)
   loadingAnnounces.value = false
 }
 
-function hideOrShow() {
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: Entry.value.isShow ? 'hide' : 'show',
-      entryId: Entry.value.id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      Entry.value.isShow = !Entry.value.isShow
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-    })
+async function hideOrShow() {
+  loading.value = true
+  const result = await Entry.hideOrShow(q, entry.value.id, !entry.value.isShow)
+  if(result) entry.value.isShow = !entry.value.isShow
+  loading.value = false
 }
 
-function updateMarkdown() {
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: 'updateMarkdown',
-      id: Entry.value.id,
-      markdown: Entry.value.markdown,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      Entry.value.parsedMD = response?.data.data
-
-    })
-    .catch((error) => {
-      // q.notify(notifyError(error, 'hhhh'))
-    })
+async function updateMarkdown() {
+  const result = await Entry.updateMarkdown(q, entry.value.id, entry.value.markdown)
+  if (result) entry.value.parsedMD = result
 }
+
 provide('updateMarkdown', updateMarkdown)
 
 function isPhotosCompleted() {
-  if (!Entry.value.Photos || Entry.value.Photos.length === 0) {
+  if (!entry.value.Photos || entry.value.Photos.length === 0) {
     return false;
   }
 
-  return Entry.value.Photos.every(photo => photo.status === 'completed');
+  return entry.value.Photos.every(photo => photo.status === 'completed');
 }
+
 provide('isPhotosCompleted', isPhotosCompleted)
 
 
@@ -240,181 +131,188 @@ onMounted(() => {
 
 <template>
 
-      <q-input label="Заголовок"
-               type="text"
-               class="inputArea"
-               v-model="Entry.title"
-      ></q-input>
+  <q-input label="Заголовок"
+           type="text"
+           class="inputArea"
+           v-model="entry.title"
+  ></q-input>
 
-    <div id="descr" style="
+  <div id="descr" style="
       padding: 1em;
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap">
 
-      <br><br><br>
-      <div class="nimg_block" style="position: relative">
-        <q-img :ratio="16/9" :src="sketchUrl()" fit="fill">
-          <template v-slot:error>
-            <img src="/img/news/default_sketch.svg" alt="img"/>
-          </template>
-        </q-img>
-        <q-btn
-          v-if="!pwUrl"
-          size="0.7em"
-          round
-          color="red"
-          icon="delete"
-          style="transform: translateY(-50%); right: 1em; z-index: 100; position: absolute; top: 2em"
-          @click="delPw(Entry.img)"
-        ></q-btn>
+    <br><br><br>
+    <div class="nimg_block" style="position: relative">
+      <div class="delBtnArea">
+        <BtnDelete title="Удалить эскиз"
+                   v-if="!pwUrl"
+                   tooltip="Удалить эскиз"
+                   throw-confirm
+                   danger
+                   @onOk="delSketch()"
+        >
+        </BtnDelete>
       </div>
+      <SketchImg :url="sketchUrl()"></SketchImg>
+    </div>
 
-      <div style="
+    <div style="
         width: calc(100% - 260px);
         padding: 0 1em;
         margin: 1em auto 0;
         min-width: 300px;">
-        <SketchUploader :id="Entry.id"
-                        type="entry"
-                        @onUploaded="sketchUploaded"></SketchUploader>
+      <SketchUploader :id="entry.id"
+                      type="entry"
+                      @onUploaded="sketchUploaded"></SketchUploader>
 
-      </div>
     </div>
-    <div class="inputArea">
-      <q-input label="Краткое описание"
-               style="width: 100%"
-               type="textarea"
-               autogrow
-               v-model="Entry.descr"
-               outlined
+  </div>
+  <div class="inputArea">
+    <q-input label="Краткое описание"
+             style="width: 100%"
+             type="textarea"
+             autogrow
+             v-model="entry.descr"
+             outlined
+    ></q-input>
+  </div>
+
+  <div class="inputArea">
+    <div class="input">
+      <q-input type="date"
+               v-model="entry.date"
+               label="Дата публикации"
+               @change="loadFutureAnnounces()"
       ></q-input>
-    </div>
-
-    <div class="inputArea">
-      <div class="input">
-        <q-input type="date"
-                 v-model="Entry.date"
-                 label="Дата публикации"
-                 @change="loadFutureAnnounces()"
-        ></q-input>
-        <q-select v-model="Entry.announceId"
-                  :loading="loadingAnnounces"
-                  :options="announces"
-                  clearable
-                  emit-value
-                  map-options
-                  option-value="id"
-                  option-label="progName"
-                  label="Перенаправлять на анонс"
-                  stack-label
-        >
-          <template v-slot:selected-item="scope" v-if="announces.length">
-            <q-item v-if="scope.opt">
-              <q-item-section avatar>
-                <q-img width="100px" :src="imgUrl(apiUrl,scope.opt?.sketch?.md5,scope.opt?.sketch?.ext,100)"
-                       :ratio="16/9"
-                       fit="fill"
-                ></q-img>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  {{ scope.opt.progName }}
-                </q-item-label>
-                <q-item-label caption>
-                  {{ scope.opt.eventTime }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:option="scope" v-if="announces.length">
-              <q-item v-bind="scope.itemProps"
-                      dense
-                      class="optionItem"
-                      v-if="scope.opt.isShow">
-                <q-item-section avatar>
-                  <q-img width="100px" :src="imgUrl(apiUrl,scope.opt?.sketch?.md5,scope.opt?.sketch?.ext,100)"
-                         :ratio="16/9"
-                         fit="fill"
-                  ></q-img>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>
-                    {{ scope.opt.progName }}
-                  </q-item-label>
-                  <q-item-label caption>
-                    {{ scope.opt.eventTime }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-          </template>
-        </q-select>
-        <template v-if="!Entry.announceId">
-          <q-input v-model="Entry.refName"
-                   label="Текст ссылки на источник"
-                   type="text"
-          ></q-input>
-          <q-input v-model="Entry.refLink"
-                   label="Адрес ссылки на источник"
-                   type="text"
-                   placeholder="https://example.com"
-          >
-            <template v-slot:append>
-              <q-toggle v-model="Entry.isExternal" color="green">
-                <q-tooltip>При клике в ленте открывать источник</q-tooltip>
-              </q-toggle>
-            </template>
-          </q-input>
-        </template>
-
-      </div>
-      <div id="categs"
-           class="input">
-        <q-list bordered padding>
-          <q-item-label header>Показывать в категориях</q-item-label>
-          <template v-for="categ in Entry.categs" :key="categ.id">
-            <q-item tag="label" v-ripple>
-              <q-item-section>
-                <q-item-label>{{ categ.label }}</q-item-label>
-                <q-item-label caption>{{ categ.caption }}</q-item-label>
-              </q-item-section>
-              <q-item-section side top>
-                <q-toggle color="green" v-model="categ.checked" val="friend"/>
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-list>
-      </div>
-    </div>
-    <template v-if="!Entry.announceId">
-      <PhotoUploader></PhotoUploader>
-
-      <q-separator spaced="2em"></q-separator>
-
-      <q-input label="Текст новости"
-               type="textarea"
-               autogrow
-               outlined
-               input-style="{padding: 5em}"
-               padding="1em"
-               v-model="Entry.markdown"
-               :debounce="300"
-               @update:model-value="updateMarkdown()"
-               dense
+      <q-select v-model="entry.announceId"
+                :loading="loadingAnnounces"
+                :options="announces"
+                clearable
+                emit-value
+                map-options
+                option-value="id"
+                option-label="progName"
+                label="Перенаправлять на анонс"
+                stack-label
       >
-      </q-input>
-    </template>
+        <template v-slot:selected-item="scope" v-if="announces.length">
+          <q-item v-if="scope.opt">
+            <q-item-section avatar>
+              <SketchImg :url="SketchBase.srcByProps(q, scope.opt?.sketch)"></SketchImg>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>
+                {{ scope.opt.progName }}
+              </q-item-label>
+              <q-item-label caption>
+                {{ scope.opt.eventTime }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+        <template v-slot:option="scope" v-if="announces.length">
+          <q-item v-bind="scope.itemProps"
+                  dense
+                  class="optionItem"
+                  v-if="scope.opt.isShow">
+            <q-item-section avatar>
+              <SketchImg :url="SketchBase.srcByProps(q, scope.opt?.sketch)"></SketchImg>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>
+                {{ scope.opt.progName }}
+              </q-item-label>
+              <q-item-label caption>
+                {{ scope.opt.eventTime }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <template v-if="!entry.announceId">
+        <q-input v-model="entry.refName"
+                 label="Текст ссылки на источник"
+                 type="text"
+        ></q-input>
+        <q-input v-model="entry.refLink"
+                 label="Адрес ссылки на источник"
+                 type="text"
+                 placeholder="https://example.com"
+        >
+          <template v-slot:append>
+            <q-toggle v-model="entry.isExternal" color="green">
+              <q-tooltip>При клике в ленте открывать источник</q-tooltip>
+            </q-toggle>
+          </template>
+        </q-input>
+      </template>
 
-    <div style="display: flex; justify-content: flex-end; grid-gap:1em; padding: 1em;">
-      <BtnDelete label="Удалить" title="Удалить новость" danger @onOk="delEntry()" throw-confirm></BtnDelete>
-      <q-btn label="Скрыть" color="orange" v-if="Entry.isShow" outline @click="hideOrShow()">
-      </q-btn>
-      <q-btn label="Опубликовать" color="green" outline v-else @click="hideOrShow()"></q-btn>
-      <q-btn label="Сохранить" color="green" @click="save(0)"></q-btn>
     </div>
-    <br><br>
+    <div id="categs"
+         class="input">
+      <q-list bordered padding>
+        <q-item-label header>Показывать в категориях</q-item-label>
+        <template v-for="categ in entry.categs" :key="categ.id">
+          <q-item tag="label" v-ripple>
+            <q-item-section>
+              <q-item-label>{{ categ.label }}</q-item-label>
+              <q-item-label caption>{{ categ.caption }}</q-item-label>
+            </q-item-section>
+            <q-item-section side top>
+              <q-toggle color="green" v-model="categ.checked" val="friend"/>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </div>
+  </div>
+  <template v-if="!entry.announceId">
+    <PhotoUploader @onDel="unlinkPhoto"></PhotoUploader>
 
-    <br><br>
+    <q-separator spaced="2em"></q-separator>
+
+    <q-input label="Текст новости"
+             type="textarea"
+             autogrow
+             outlined
+             input-style="{padding: 5em}"
+             padding="1em"
+             v-model="entry.markdown"
+             :debounce="300"
+             @update:model-value="updateMarkdown()"
+             dense
+    >
+    </q-input>
+  </template>
+
+  <div style="display: flex; justify-content: flex-end; grid-gap:1em; padding: 1em;">
+
+    <BtnDelete
+               :loading="loading"
+               title="Удалить новость"
+               tooltip="Удалить новость"
+               danger
+               flat
+               @onOk="delEntry()"
+               throw-confirm></BtnDelete>
+
+    <BtnHideOrShow :is-show="entry.isShow"
+                   @onOk="hideOrShow()"
+                   :loading="loading"
+                   throw-confirm></BtnHideOrShow>
+
+    <q-btn label="Сохранить"
+           :loading="loading"
+           icon-right="save"
+           :flat="q.dark.isActive"
+           color="green"
+           @click="update()"><q-tooltip>Сохранить</q-tooltip></q-btn>
+  </div>
+  <br><br>
+
+  <br><br>
 
   <br><br>
 
@@ -455,5 +353,12 @@ onMounted(() => {
 
 .optionItem {
   width: 30em;
+}
+
+.delBtnArea {
+  position: absolute;
+  z-index: 1;
+  top: 0.7em;
+  right: 0.7em;
 }
 </style>

@@ -1,19 +1,18 @@
-<script setup>
-import {computed, inject, nextTick, provide, ref} from 'vue'
+<script setup lang="ts">
+import {computed, inject, nextTick, provide, Ref, ref} from 'vue'
 import NewsList from 'components/news/NewsList.vue'
 import {useMeta, useQuasar} from 'quasar'
-import {api} from 'boot/axios'
 import {useRoute, useRouter} from 'vue-router'
-import {getMeta, notifyError} from "src/js/myFuncts";
+import {getMeta} from "src/js/myFuncts";
 import PageShell from "components/main/PageShell.vue";
+import {Entry} from "src/js/entry";
 
-const apiUrl = String(process.env.API)
 const route = useRoute()
 const router = useRouter()
 const q = useQuasar()
-const progress = inject('progress')
+const progress = inject('progress') as Ref<boolean>
 
-const editModes = inject('editModes');
+const editModes = inject('editModes') as Record<string, any>;
 const editMode = editModes.entry;
 provide('editMode', editMode)
 
@@ -26,28 +25,15 @@ function onSetYear() {
   })
 }
 
-const titles = ref({
-  all: 'Все новости',
-  euterpe: 'Новости Эвтерпы',
-  other: 'Новости партнеров',
-  usso: 'Новости оркестра'
-})
 
-function addEntry() {
 
-  api.post(apiUrl + 'epoint/news/entry.php', {
-    params: {
-      method: 'add'
-    }
-  })
-    .then((response) => {
-      route.params.id = response.data.data.id
-      router.push({path: '/new/' + response.data.data.id})
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-
+async function addEntry() {
+  progress.value = true
+  const result = await Entry.create(q)
+  if (result) {
+    route.params.id = result.id
+    router.push({path: '/new/' + result.id})
+  }
 }
 
 function Years() {
@@ -58,14 +44,20 @@ function Years() {
   return arr.reverse()
 }
 
-const title = computed(() => {
-  return titles.value[route.params.category]
+const titles = ref<Record<string, string>>({
+  all: 'Все новости',
+  euterpe: 'Новости Эвтерпы',
+  other: 'Новости партнеров',
+  usso: 'Новости оркестра'
 })
+
+const title = computed(() => {
+  const category = route.params.category as string;
+  return titles.value[category] || 'Неизвестная категория';
+});
 
 const metaData = getMeta(title.value)
 useMeta(metaData)
-
-const category = ref(route.params.category)
 
 </script>
 
@@ -86,7 +78,7 @@ const category = ref(route.params.category)
       </q-select>
     </template>
     <template v-slot:virtualScroll>
-        <NewsList :year="evYear" :limit="100" :category="category" ref="listRef"></NewsList>
+        <NewsList :year="evYear" :limit="100" :category="String(route.params.category)" ref="listRef"></NewsList>
     </template>
   </PageShell>
 </template>

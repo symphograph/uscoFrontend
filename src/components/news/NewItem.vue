@@ -6,6 +6,8 @@ import {useQuasar} from "quasar";
 import SketchImg from "components/SketchImg.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {Entry} from "src/js/entry";
+import {SketchBase} from "src/js/img";
+import BtnHideOrShow from "components/main/buttons/BtnHideOrShow.vue";
 
 
 const q = useQuasar()
@@ -49,6 +51,7 @@ async function delEntry() {
 
   loading.value = false
 }
+
 </script>
 
 <template>
@@ -57,10 +60,7 @@ async function delEntry() {
       <div class="nimg_block">
         <div>
           <q-item :href="link().href" :to="link().to" dense class="no-padding" target="_blank">
-            <SketchImg :ext="item?.sketch?.ext || ''"
-                       :md5="item?.sketch?.md5 || ''"
-                       :size="q.platform.is.desktop ? 260 : 1080">
-            </SketchImg>
+            <SketchImg :url="SketchBase.srcByProps(q, item.sketch)"></SketchImg>
           </q-item>
         </div>
       </div>
@@ -79,14 +79,20 @@ async function delEntry() {
       </div>
       <template v-if="editMode">
         <div style="display: flex; justify-content: right; grid-gap: 1em;">
-          <q-btn icon="visibility" :loading="loading" flat color="green" v-if="itemMutable.isShow" outline @click="hideOrShow()">
-            <q-tooltip>Скрыть</q-tooltip>
-          </q-btn>
-          <q-btn color="orange" flat icon="visibility_off" v-else @click="hideOrShow()">
-            <q-tooltip>Опубликовать</q-tooltip>
-          </q-btn>
-          <BtnDelete danger flat title="Удалить новость" tooltip="Удалить" throw-confirm @onOk="delEntry()"></BtnDelete>
-          <q-btn icon="edit" flat :to="'/new/' + item.id">
+          <BtnHideOrShow :is-show="itemMutable.isShow"
+                         @onOk="hideOrShow()"
+                         :loading="loading"
+                         throw-confirm></BtnHideOrShow>
+
+          <BtnDelete danger
+                     flat
+                     title="Удалить новость"
+                     tooltip="Удалить"
+                     throw-confirm @onOk="delEntry()"></BtnDelete>
+
+          <q-btn icon="edit"
+                 flat
+                 :to="'/new/' + item.id">
             <q-tooltip anchor="top middle">Редактировать</q-tooltip>
           </q-btn>
         </div>

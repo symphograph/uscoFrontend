@@ -1,30 +1,29 @@
-<script setup>
+<script setup lang="ts">
 import 'src/css/dialog.css'
 import DateTime from 'components/announсes/DateTime.vue'
 import {useQuasar} from 'quasar'
-import {api} from 'boot/axios'
 import AnnounceCard from 'components/announсes/AnnounceCard.vue'
-import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
+import {inject, onMounted, onUnmounted, provide, Ref, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {notifyError, notifyOK} from "src/js/myFuncts";
 import SketchUploader from "components/announсes/SketchUploader.vue";
 import {myUser} from "src/js/myAuth";
-import AddWorkDialog from 'components/announсes/AddWorkDialog.vue';
 import HallSelect from 'components/hall/HallSelect.vue';
-import {myAnnounce} from "src/js/announce";
+import {myAnnounce, Poster} from "src/js/announce";
 import WorkList from "components/announсes/WorkList.vue";
+import {Hall} from "src/js/hall";
+import {ussoAxios} from "src/js/myAxios";
 
-const apiUrl = String(process.env.API)
+
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
-const announce = inject('Announce')
+const announce = inject('Announce') as Ref<any>
 const selectedHall = ref(announce.value.Hall)
 provide('selectedHall', selectedHall)
 
-function onHallSelect(hall) {
-  console.log(hall)
+function onHallSelect(hall: Hall) {
   announce.value.hallId = hall.id
   announce.value.Hall = hall
 }
@@ -59,8 +58,8 @@ const paySelect = [
   }
 ]
 
-const posterUploader = ref(null)
-const rAnnounceCard = ref(null)
+const posterUploader = ref()
+const rAnnounceCard = ref()
 
 const loadingAuthors = ref(false)
 provide('loadingAuthors', loadingAuthors)
@@ -71,14 +70,10 @@ provide('selectedAuthorId', selectedAuthorId)
 const selectedAuthor = ref(null)
 provide('selectedAuthor', selectedAuthor)
 
-watch(selectedAuthorId, () => {
-  selectedAuthor.value = AuthorSelectList.value.find(el => el.id === selectedAuthorId.value)
-})
-
-
-function addPoster(files) {
+function addPoster(files: any) {
+  const url = ussoAxios.getApiUrl(Poster.path)
   return {
-    url: apiUrl + 'epoint/event/poster.php',
+    url: url,
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -97,12 +92,12 @@ function addPoster(files) {
   }
 }
 
-function sketchUploaded(info) {
+function sketchUploaded(info: any) {
   q.notify(notifyOK('Загружено'))
   emit('posterUploaded')
 }
 
-function posterUploaded(info) {
+function posterUploaded(info: any) {
   q.notify(notifyOK('Загружено'))
   emit('posterUploaded')
   posterUploader.value.reset()
@@ -110,7 +105,7 @@ function posterUploaded(info) {
 }
 
 const photoWatcher = ref(false)
-let intervalId = null;
+let intervalId:  NodeJS.Timeout | null = null;
 watch(photoWatcher, (newValue) => {
   console.log('photoWatcher')
   if (newValue && !intervalId) {
@@ -121,7 +116,7 @@ watch(photoWatcher, (newValue) => {
   }
 });
 
-function failed(info) {
+function failed(info: any) {
   let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
   q.notify(notifyError(null, msg))
 }
@@ -151,30 +146,9 @@ async function updateMarkdown() {
   }
 }
 
-function loadPoster() {
-  api.post(apiUrl + 'epoint/event/poster.php', {
-    params: {
-      method: 'get',
-      announceId: route.params.evid
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-
-      announce.value.poster = response?.data?.data ?? null
-      if (announce.value?.poster?.status !== 'process') {
-        photoWatcher.value = false
-      }
-    })
-    .catch((error) => {
-      photoWatcher.value = false
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-
-    })
+async function loadPoster() {
+  announce.value.poster = await Poster.get(q, Number(route.params.evid))
+  photoWatcher.value = false
 }
 
 const toggleWorks = ref(false)

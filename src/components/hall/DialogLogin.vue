@@ -1,35 +1,3 @@
-<template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin DialogCard">
-      <q-card-section class="DialogText"><div v-html="text"></div></q-card-section>
-      <q-card-section>
-        <q-list>
-          <q-item>
-            <TelegramForm :AccessToken="AccessToken" :SessionToken="SessionToken"></TelegramForm>
-          </q-item>
-          <q-item>
-            <VkontakteForm :AccessToken="AccessToken" :SessionToken="SessionToken"></VkontakteForm>
-          </q-item>
-        </q-list>
-      </q-card-section>
-      <!--
-        ...content
-        ... use q-card-section for it?
-      -->
-
-      <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn :label="cancelBtnText"
-               class="DefBtn"
-               no-caps
-               outline
-               @click="onDialogCancel"
-        ></q-btn>
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
-</template>
-
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import {ref} from "vue";
@@ -68,6 +36,38 @@ function onOKClick () {
   // ...and it will also hide the dialog automatically
 }
 </script>
+
+<template>
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-card class="q-dialog-plugin DialogCard">
+      <q-card-section class="DialogText"><div v-html="text"></div></q-card-section>
+      <q-card-section>
+        <q-list>
+          <q-item>
+            <TelegramForm :AccessToken="AccessToken" :SessionToken="SessionToken"></TelegramForm>
+          </q-item>
+          <q-item>
+            <VkontakteForm :AccessToken="AccessToken" :SessionToken="SessionToken"></VkontakteForm>
+          </q-item>
+        </q-list>
+      </q-card-section>
+      <!--
+        ...content
+        ... use q-card-section for it?
+      -->
+
+      <!-- buttons example -->
+      <q-card-actions align="right">
+        <q-btn :label="cancelBtnText"
+               class="DefBtn"
+               no-caps
+               outline
+               @click="onDialogCancel"
+        ></q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+</template>
 
 <style scoped>
 .DialogCard {

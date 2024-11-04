@@ -103,22 +103,15 @@ function onUploaded() {
 }
 
 function getUrl() {
-  let path
   switch (props.type) {
     case 'event':
-      path = AnnounceSketch.path
-      break
+      return  AnnounceSketch.getApiUrl()
     case 'entry':
-      path = EntrySketch.path
-      break
+      return  EntrySketch.getApiUrl()
     default:
-      path = ''
+      q.notify(notifyError(new Error('Недопустимый URL для изображения')));
+      return  ''
   }
-  if(!path) {
-    q.notify(notifyError(new Error('Недопустимый URL для изображения')));
-    return ''
-  }
-  return ussoAxios.getApiUrl(String(path))
 }
 
 function uploadSketch(): QUploaderFactoryObject {

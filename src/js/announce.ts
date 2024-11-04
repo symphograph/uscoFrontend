@@ -1,6 +1,7 @@
 import {QVueGlobals} from "quasar";
 import {ussoAxios} from "src/js/myAxios";
 import {ref, Ref} from "vue";
+import {ImgBase, SketchBase} from "src/js/img";
 
 export class myAnnounce {
   private static path: string = 'epoint/event/announce.php'
@@ -66,7 +67,7 @@ export class myAnnounce {
 
     const params = {
       method: 'updateMarkdown',
-      id: announceId,
+      announceId: announceId,
       markdown: markdown
     }
     const errMsg = 'Текст не обновился'
@@ -140,15 +141,35 @@ export class myAnnounce {
 
 }
 
-export class Sketch {
+export class Sketch extends SketchBase{
   static path: string = 'epoint/event/sketch.php'
 
-  static async del(q: QVueGlobals, announceId: number): Promise<boolean> {
+  static getApiUrl() {
+    return ussoAxios.getApiUrl(this.path)
+  }
+}
+
+export class Poster extends ImgBase{
+  static path: string = 'epoint/event/poster.php'
+
+  static get defaultUrl(): string {
+    return '/img/news/default_sketch.svg';
+  }
+
+  static async unlink(q: QVueGlobals, id: number): Promise<boolean> {
     const params = {
-      method: 'del',
+      method: 'unlink',
+      carrierId: id
+    }
+    return ussoAxios.set(q, this.path, params);
+  }
+
+  static async get(q: QVueGlobals, announceId: number): Promise<any> {
+    const params = {
+      method: 'get',
       announceId: announceId
     }
-    return ussoAxios.set(q, this.path, params)
+    return ussoAxios.get(q, this.path, params)
   }
 }
 

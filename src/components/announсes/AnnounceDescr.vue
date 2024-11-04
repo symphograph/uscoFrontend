@@ -1,29 +1,28 @@
-<script setup>
-import {computed, inject} from 'vue'
+<script setup lang="ts">
+import {computed, inject, Ref} from 'vue'
 import {useQuasar} from 'quasar'
-import {fDateTime, imgUrl, notifyError} from 'src/js/myFuncts'
+import {fDateTime} from 'src/js/myFuncts'
 import PhoneNumber from "components/contacts/PhoneNumber.vue";
 import BtnDelete from "components/main/BtnDelete.vue";
-import {api} from "boot/axios";
 import {Hall} from "src/js/hall";
+import {Poster} from "src/js/announce";
+import {SketchBase} from "src/js/img";
 
-
-const apiUrl = String(process.env.API)
 const q = useQuasar()
 const editMode = inject('editMode')
-const Announce = inject('Announce')
+const announce = inject('Announce') as Ref<Record<string, any>>
 const emit = defineEmits(['delPoster'])
 
 const posterUrl = computed(() => {
   let size = q.platform.is.mobile ? 1080 : 480
-  if(!Announce.value.poster) {
-    return '/img/news/default_sketch.svg';
+  if(!announce.value.poster) {
+    return SketchBase.defaultUrl;
   }
-  return imgUrl(apiUrl, Announce.value.poster.md5, Announce.value.poster.ext, size)
+  return SketchBase.getSrc(announce.value.poster.md5,announce.value.poster.ext, size);
 })
 
 const hall = computed(() => {
-  return Hall.findById(Announce.value.hallId)
+  return Hall.findById(announce.value.hallId)
 })
 
 function vkHref() {
@@ -31,36 +30,24 @@ function vkHref() {
     + 'url='
     + String(process.env.ServiceUrl)
     + '/announce/'
-    + String(Announce.value.id)
+    + String(announce.value.id)
     + '&title='
-    + String(Announce.value.progName)
+    + String(announce.value.progName)
     + '&noparse=true'
     + '&image=' + String(posterUrl.value)
 }
 
-function delPoster() {
-  api.post(apiUrl + 'epoint/event/poster.php', {
-    params: {
-      method: 'unlink',
-      id: Announce.value.id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      delete Announce.value.poster
-      delete Announce.value.posterId
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function delPoster() {
+  if (await Poster.unlink(q, announce.value.id)){
+    delete announce.value.poster
+    delete announce.value.posterId
+  }
 }
 
 </script>
 
 <template>
-  <div class="posterArea relative-position" v-if="Announce.poster">
+  <div class="posterArea relative-position" v-if="announce.poster">
     <template v-if="editMode">
       <div style="position: absolute; right: 1em; top:1em; z-index: 10">
         <BtnDelete throw-confirm
@@ -71,7 +58,7 @@ function delPoster() {
         </BtnDelete>
       </div>
     </template>
-    <q-item v-if="Announce.poster.status === 'process'">
+    <q-item v-if="announce.poster.status === 'process'">
       <q-img></q-img>
       <q-item-section>
         <q-inner-loading showing label="Обработка"></q-inner-loading>
@@ -79,7 +66,7 @@ function delPoster() {
     </q-item>
     <q-img :src="posterUrl" v-else>
       <template v-slot:error>
-        <img src="/img/news/default_sketch.svg"/>
+        <img src="/img/news/default_sketch.svg" alt="sketch"/>
       </template>
     </q-img>
 
@@ -90,17 +77,17 @@ function delPoster() {
         <q-item>
           <q-item-section>
             <q-item-label class="title">
-              {{ Announce.progName }}
+              {{ announce.progName }}
             </q-item-label>
             <q-item-label class="title">
-              {{ fDateTime(Announce.eventTime) }}
+              {{ fDateTime(announce.eventTime) }}
             </q-item-label>
           </q-item-section>
         </q-item>
       </q-card-section>
 
       <q-card-section>
-        <template v-for="(row, idx) in Announce.parsedMD" :key="idx">
+        <template v-for="(row, idx) in announce.parsedMD" :key="idx">
 
           <div v-if="row.type === 'text'">
             <div v-if="row.content !== '\n'" v-html="row.content" class="textBlock"></div>
@@ -119,9 +106,9 @@ function delPoster() {
 
 
       <q-card-actions align="right"
-                      v-if="!Announce.completed
-                      && [3,4].includes(Announce.pay)
-                      && Announce.ticketLink">
+                      v-if="!announce.completed
+                      && [3,4].includes(announce.pay)
+                      && announce.ticketLink">
 
       </q-card-actions>
 
@@ -146,20 +133,20 @@ function delPoster() {
         </q-item>
       </q-card-section>
 
-      <q-card-section v-if="!Announce.completed
-                      && [3,4].includes(Announce.pay)
-                      && Announce.ticketLink">
-        <q-item clickable :href="Announce.ticketLink" target="_blank">
-          <template v-if="Announce.pay === 3">
+      <q-card-section v-if="!announce.completed
+                      && [3,4].includes(announce.pay)
+                      && announce.ticketLink">
+        <q-item clickable :href="announce.ticketLink" target="_blank">
+          <template v-if="announce.pay === 3">
             <q-item-section avatar>
               <q-icon name="shopping_cart"></q-icon>
             </q-item-section>
             <q-item-section>
               <q-item-label>Купить билет</q-item-label>
-              <q-item-label caption v-if="Announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
+              <q-item-label caption v-if="announce.isPushkin">+ Доступно по пушкинской карте</q-item-label>
             </q-item-section>
           </template>
-          <template v-if="Announce.pay === 4">
+          <template v-if="announce.pay === 4">
             <q-item-section avatar>
               <q-icon name="img:/img/uds.svg"></q-icon>
             </q-item-section>

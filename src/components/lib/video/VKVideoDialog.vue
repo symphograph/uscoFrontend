@@ -3,10 +3,12 @@
 import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
 import {computed, inject, Ref, ref} from 'vue';
-import { imgUrl } from 'src/js/myFuncts';
 import {Video} from "src/js/lib";
 import {ussoAxios} from "src/js/myAxios";
 import {myAnnounce} from "src/js/announce";
+import {SketchBase} from "src/js/img";
+import SketchImg from "components/SketchImg.vue";
+import SketchMini from "components/sketch/SketchMini.vue";
 
 const q = useQuasar()
 
@@ -71,7 +73,8 @@ function getImgUrl(announce: any) {
   const md5 = announce?.sketch?.md5 || null
   const ext = announce?.sketch?.ext || null
   const size = 100
-  return imgUrl(apiUrl, md5, ext, size)
+  return SketchBase.getSrc(md5, ext, size)
+
 }
 
 async function linkToAnnounce() {
@@ -105,14 +108,16 @@ async function linkToAnnounce() {
                   clearable
                   use-input
                   @input-value="setInputVal"
-
-
                   @update:modelValue="() => {}"
         >
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
               <q-item-section avatar>
-                <q-img :src="getImgUrl(scope.opt)"></q-img>
+                <SketchImg
+                  :ext="scope.opt.sketch?.ext"
+                  :md5="scope.opt.sketch?.md5"
+                  :size="100"
+                ></SketchImg>
               </q-item-section>
               <q-item-section>
                 <q-item-label>{{ scope.opt.progName }}</q-item-label>

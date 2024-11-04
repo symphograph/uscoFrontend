@@ -1,50 +1,45 @@
-<script setup>
+<script setup lang="ts">
 
-import {copy, imgUrl, notifyError} from "src/js/myFuncts";
-import {inject, onUnmounted, ref, watch} from "vue";
+import {copy, notifyError} from "src/js/myFuncts";
+import {inject, onUnmounted, Ref, ref, watch} from "vue";
 import {api} from "boot/axios";
 import {useQuasar} from "quasar";
 import {useRoute} from "vue-router";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {myUser} from "src/js/myAuth";
+import {Photo, PhotoPW} from "src/js/entry";
 
 const apiUrl = String(process.env.API)
 
 const q = useQuasar()
 const route = useRoute()
 
-const Entry = inject('Entry')
+const emit = defineEmits(['onDel'])
 
-const isPhotosCompleted = inject('isPhotosCompleted')
+const entry = inject<any>('Entry')
+
+const isPhotosCompleted = inject<() => boolean>('isPhotosCompleted', ()=>false)
 
 
-const uploader = ref(null)
+const uploader = ref()
+const loading = inject('loading') as Ref<boolean>
 
-const unlinkPhoto = inject('unlinkPhoto')
+//const unlinkPhoto = inject<(id: number) => void>('unlinkPhoto', () => {})
 
-function unlinkAll() {
-  api.post(apiUrl + 'epoint/news/photo.php', {
-    params: {
-      method: 'unlinkAll',
-      entryId: route.params.id,
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
 
-      Entry.value.Photos = []
-
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
+async function unlinkAll() {
+  loading.value = true
+  const result = await Photo.unlinkAll(q, Number(route.params.id))
+  if(result){
+    entry.value.Photos = []
+  }
+  loading.value = false
 }
 
 function addPhoto() {
   return {
-    url: apiUrl + 'epoint/news/photo.php',
+
+    url: Photo.getApiUrl(),
     headers: [
       {
         name: 'ACCESSTOKEN',
@@ -53,7 +48,7 @@ function addPhoto() {
     ],
     formFields: [{
       name: 'entryId',
-      value: Entry.value.id
+      value: entry.value.id
     }, {
       name: 'method',
       value: 'add'
@@ -61,45 +56,28 @@ function addPhoto() {
   }
 }
 
-function uploaded(info) {
+function uploaded(info: any) {
   console.log(info.xhr.response)
-  loadPhotos()
+  //loadPhotos()
   uploader.value.reset()
   photoWatcher.value = true
   //save()
 }
 
-function failed(info) {
+function failed(info: any) {
   console.log(info.xhr.response)
   let msg = JSON.parse(info?.xhr?.response)?.error ?? ''
   q.notify(notifyError(null, msg))
 }
 
-function loadPhotos() {
-  api.post(apiUrl + 'epoint/news/photo.php', {
-    params: {
-      method: 'list',
-      entryId: route.params.id
-    }
-  })
-    .then((response) => {
-      if (!!!response?.data?.result) {
-        throw new Error();
-      }
-      Entry.value.Photos = response?.data?.data ?? []
-      if (isPhotosCompleted()) {
-        photoWatcher.value = false
-      }
-    })
-    .catch((error) => {
-      q.notify(notifyError(error))
-    })
-    .finally(() => {
-
-    })
+async function loadPhotos() {
+  entry.value.Photos = await Photo.getList(q, Number(route.params.id))
+  if (isPhotosCompleted() || !entry.value.Photos.length) {
+    photoWatcher.value = false
+  }
 }
 
-function copyCode(img) {
+function copyCode(img: any) {
   const val = `\n![](${img.md5}.${img.ext})\n`
   copy(val, q)
 }
@@ -107,7 +85,7 @@ function copyCode(img) {
 
 
 const photoWatcher = ref(false)
-let intervalId = null;
+let intervalId: NodeJS.Timeout|null = null;
 watch(photoWatcher, (newValue) => {
 
   if (newValue && !intervalId) {
@@ -144,7 +122,7 @@ onUnmounted(() => {
     >
     </q-uploader>
   </div>
-  <q-card bordered flat class="transparent" v-if="Entry.Photos && Entry.Photos.length">
+  <q-card bordered flat class="transparent" v-if="entry.Photos && entry.Photos.length">
 
     <q-card-actions align="right">
       <BtnDelete throw-confirm
@@ -158,12 +136,12 @@ onUnmounted(() => {
     </q-card-actions>
     <q-card-section>
       <div class="imagesArea">
-        <template v-for="(img, key) in Entry.Photos" :key="key">
+        <template v-for="(img, key) in entry.Photos" :key="key">
           <q-card>
             <template v-if="img.status === 'completed'">
               <q-img
                 :ratio="96/54"
-                :src="imgUrl(apiUrl,img.md5,img.ext, 260)"
+                :src="PhotoPW.srcByProps(q,img)"
               >
               </q-img>
             </template>
@@ -181,9 +159,10 @@ onUnmounted(() => {
               <div class="absolute delBthArea">
                 <BtnDelete size="0.7em"
                            throw-confirm
-                           @onOk="unlinkPhoto(img.id)"
+                           @onOk="emit('onDel',img.id)"
                            title="Удалить фото"
                            tooltip="Удалить фото"
+                           :loading="loading"
                 >
 
                 </BtnDelete>

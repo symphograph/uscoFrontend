@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'new/:id',
                 name: 'new',
                 meta: { allowedPowers: [13] },
-                component: () => import('components/news/NewPage.vue')
+                component: () => import('components/news/EntryPage.vue')
               },
               {
                 path: 'conductor',
