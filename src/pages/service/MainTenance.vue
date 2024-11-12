@@ -6,7 +6,7 @@
   <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
     <q-card class="no-shadow" style="background: none; padding: 1em; width: 100%">
       <q-card-section>
-        <div class="text-h3" style="opacity:.4">
+        <div class="text-h5" style="opacity:.4; text-align: center">
           Поддержка приостановлена
         </div>
       </q-card-section>
