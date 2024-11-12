@@ -28,10 +28,11 @@ async function del() {
 
 <template>
 
-  <div :key="`w${work.id}`">
-    <q-item clickable :to="`/work/${work.id}`">
+  <div :key="`w${work.id}`" >
+    <q-item clickable :to="`/work/${work.id}`" class="mainCol">
       <q-item-section>
         <q-item-label>{{work.titleRu}}</q-item-label>
+        <q-item-label>{{work.titleCO}}</q-item-label>
         <q-item-label caption>{{work.titleEn}}</q-item-label>
         <q-item-label v-if="work.genreId" caption>{{getGenre(work.genreId).name}}</q-item-label>
       </q-item-section>
@@ -42,8 +43,8 @@ async function del() {
         <q-btn dense
                v-if="false"
                icon-right="content_copy"
-               flat :label="`ID:
-           ${work.id}`"
+               flat
+               :label="`ID: ${work.id}`"
                @click.stop.prevent="copy(work.id, q)"
         ></q-btn>
       </q-item-section>
@@ -64,7 +65,9 @@ async function del() {
 
 
 <style scoped>
-.opus {
-  /*min-width: 15em;*/
+.mainCol {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 </style>

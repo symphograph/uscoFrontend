@@ -1,28 +1,20 @@
 <script setup>
 import {inject, onBeforeMount, onMounted, provide, ref} from 'vue'
 import MainHeader from "components/main/header/MainHeader.vue";
-import SiteNameMobile from "components/main/header/SiteNameMobile.vue";
-import SiteNameDesktop from "components/main/header/SiteNameDesktop.vue";
-import MainFooter from "components/main/footer/MainFooter.vue";
 import {LocalStorage, useQuasar} from "quasar";
-import AnderHeader from "components/main/header/AnderHeader.vue";
-import {myUser} from "src/js/myAuth";
 
 
-const $q = useQuasar()
+const q = useQuasar()
 const isMounted = ref(false)
-
-
 
 const darkTrigger = ref(false)
 provide('darkTrigger', darkTrigger)
 
 function darkSwitch() {
-  $q.dark.set(darkTrigger.value)
+  q.dark.set(darkTrigger.value)
   LocalStorage.set('dark',darkTrigger.value)
 }
 provide('darkSwitch', darkSwitch)
-
 
 const leftDrawerOpen = inject('leftDrawerOpen')
 
@@ -40,7 +32,7 @@ onMounted(() => {
   isMounted.value = true
   if (LocalStorage.getItem('dark')) {
     darkTrigger.value = true
-    $q.dark.set(LocalStorage.getItem('dark'))
+    q.dark.set(LocalStorage.getItem('dark'))
   }
   document.body.style.backgroundImage = "url('/img/header-bg.jpg')";
   console.log('midLayout Mounted')
@@ -156,5 +148,7 @@ body, body.body--dark {
   color: var(--docTitle);
 }
 
-
+.invert {
+  filter: invert(100%);
+}
 </style>

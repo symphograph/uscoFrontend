@@ -9,8 +9,6 @@ import BtnDelete from "components/main/BtnDelete.vue";
 import {myUser} from "src/js/myAuth";
 import {Photo, PhotoPW} from "src/js/entry";
 
-const apiUrl = String(process.env.API)
-
 const q = useQuasar()
 const route = useRoute()
 

@@ -39,7 +39,7 @@ body {
 .centralCol {
   width: 100%;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
   min-height: 80vh;
 }
 </style>

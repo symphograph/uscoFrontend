@@ -1,20 +1,22 @@
-<script setup>
-import {onMounted, ref, provide, inject, onBeforeMount} from "vue";
-import {LocalStorage, useQuasar} from "quasar";
+<script setup lang="ts">
+import {ref, provide, inject, onBeforeMount, Ref} from "vue";
+import {useMeta, useQuasar} from "quasar";
 import {useRoute, useRouter} from "vue-router";
 import WorkList from "components/lib/work/WorkList.vue";
-import PageShell from "components/main/PageShell.vue";
-import AuthorItem from "components/lib/AuthorItem.vue";
-import WorkDialog from "components/lib/work/WorkDialog.vue";
+import AuthorItem from "components/lib/author/AuthorItem.vue";
+import WorkCreateDialog from "components/lib/work/WorkCreateDialog.vue";
 import {Author, Work} from "src/js/lib";
-
+import {getMeta} from "src/js/myFuncts";
+import MainFooter from "components/main/footer/MainFooter.vue";
 
 const q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
+const metaData = getMeta('Произведения')
+useMeta(metaData)
 
-const loadingAuthors = inject('loadingAuthors')
+const loadingAuthors = inject('loadingAuthors') as Ref<boolean>
 
 const searchText = ref('')
 provide('searchText', searchText)
@@ -22,40 +24,29 @@ provide('searchText', searchText)
 const progress = ref(false)
 provide('progress', progress)
 
-const works = ref([])
-provide('works', works)
-
-
-const selectedAuthorId = inject('selectedAuthorId')
+const works = ref([]) as Ref<Record<string, any>[]>
 
 const editMode = inject('editMode')
 
 const isOpenWorkDialog = ref(false)
 provide('isOpenWorkDialog', isOpenWorkDialog)
 
-const work = ref(null)
+const work = ref()
 provide('work', work)
 
-function itSel() {
-  LocalStorage.set('lastAuthor', selectedAuthorId.value)
-  route.params.authorId = selectedAuthorId.value
-  router.push({ path: '/lib/works/' +  selectedAuthorId.value })
-  loadWorks()
-}
-
-async function loadWorks() {
+async function loadWorks(authorId: number) {
   progress.value = true
-  const worksLoaded = await Work.getListByAuthor(q, route.params.authorId)
-  if(worksLoaded){
-    works.value = worksLoaded
+  const result = await Work.getListByAuthor(q, authorId)
+  if (result) {
+    works.value = result
   }
   progress.value = false
 }
 
-async function loadAuthor() {
+async function loadAuthor(authorId: number) {
   loadingAuthors.value = true
-  const result = await Author.get(q, route.params.authorId)
-  if(result) {
+  const result = await Author.get(q, authorId)
+  if (result) {
     Author.selected.value = result
   }
   loadingAuthors.value = false
@@ -74,40 +65,92 @@ function createWork() {
 }
 
 onBeforeMount(() => {
-  selectedAuthorId.value = route.params.authorId * 1
-  if(!selectedAuthorId.value){
+  const authorId = Number(route.params.authorId)
+  if (!authorId) {
     router.push({path: '/lib/author/'})
+    return
   }
+  loadAuthor(authorId)
+  loadWorks(authorId)
 })
 
-onMounted(() => {
-  if (!selectedAuthorId.value) return
-  loadAuthor()
-  loadWorks()
-})
+
+const isExpandedMenu = ref(false)
+
 </script>
 
 <template>
+  <template v-if="Author.selected.value">
+    <div v-if="q.platform.is.mobile">
+      <q-item class="pageTitle">
+        <q-item-label lines="0">{{ metaData.title }}</q-item-label>
+      </q-item>
 
-      <PageShell page-title="Произведения ">
-        <template v-slot:ToolPanel>
-          <q-btn @click="createWork" icon="add" v-if="editMode" flat round></q-btn>
-          <AuthorItem :id="selectedAuthorId"
-                      :iofEn="Author.selected.value?.iofEn"
-                      :iconUrl="Author.selected.value?.iconUrl"
-                      :fioRu="Author.selected.value?.fioRu"></AuthorItem>
-          <q-input v-model="searchText" style="width: 100%; max-width: 16em" label="фильтр" stack-label clearable>
+      <AuthorItem :id="Author.selected.value.id"
+                  :iofEn="Author.selected.value?.iofEn"
+                  :iconUrl="Author.selected.value?.iconUrl"
+                  :fioRu="Author.selected.value?.fioRu">
+        <template v-slot:sections>
+          <q-item-section side>
+            <q-btn @click="createWork" icon="add" v-if="editMode" round></q-btn>
+            <q-btn icon="tune" v-else flat stretch @click.stop.prevent="isExpandedMenu = !isExpandedMenu"></q-btn>
+          </q-item-section>
+        </template>
+      </AuthorItem>
+      <q-slide-transition>
+        <q-input v-model="searchText" v-if="isExpandedMenu" style="width: 100%;" label="фильтр" stack-label clearable>
+          <template v-slot:append>
+            <q-icon name="search"></q-icon>
+          </template>
+        </q-input>
+      </q-slide-transition>
+      <q-separator></q-separator>
+    </div>
+
+    <div class="mainCol" v-else>
+      <div style="display: flex; flex-wrap: nowrap">
+        <q-item class="pageTitle">
+          <q-item-label lines="0">{{ metaData.title }}</q-item-label>
+        </q-item>
+        <AuthorItem :id="Author.selected.value.id"
+                    :iofEn="Author.selected.value?.iofEn"
+                    :iconUrl="Author.selected.value?.iconUrl"
+                    :fioRu="Author.selected.value?.fioRu">
+          <template v-slot:sections>
+            <q-item-section side>
+              <q-btn @click.stop.prevent="createWork" icon="add" v-if="editMode" round></q-btn>
+            </q-item-section>
+          </template>
+        </AuthorItem>
+        <q-slide-transition>
+
+          <q-input v-model="searchText"
+                   style="width: 100%;"
+                   label="фильтр"
+                   stack-label clearable>
+
             <template v-slot:append>
               <q-icon name="search"></q-icon>
             </template>
           </q-input>
-        </template>
-        <template v-slot:virtualScroll>
-            <WorkList  @onDel="loadWorks"></WorkList>
-        </template>
-      </PageShell>
+        </q-slide-transition>
+      </div>
+      <q-separator></q-separator>
+    </div>
+  </template>
 
-  <WorkDialog @onSave="loadWorks"></WorkDialog>
+
+  <WorkList :works="works" :searchText="searchText" @onDel="loadWorks">
+    <template v-slot:after>
+      <MainFooter></MainFooter>
+    </template>
+  </WorkList>
+
+
+  <WorkCreateDialog :authorId="Author.selected.value.id"
+                    v-if="Author.selected.value"
+                    @onSave="loadWorks"></WorkCreateDialog>
+
 </template>
 
 <style scoped>
@@ -116,5 +159,21 @@ onMounted(() => {
   max-width: 400px;
 }
 
+.pageTitle {
+  font-size: 25px;
+  color: var(--PageTitle);
+}
+
+.toolRow {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.mainCol {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  /*Высоту не трогать!!!*/
+}
 
 </style>

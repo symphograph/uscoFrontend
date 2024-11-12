@@ -1,27 +1,25 @@
-<script setup>
+<script setup lang="ts">
 
-import {computed, inject, watch} from "vue";
+import {computed} from "vue";
 import WorkItem from "components/lib/work/WorkItem.vue";
 
-
-const works = inject('works')
-const searchText = inject('searchText')
+const props = defineProps<{
+  works: Record<string, any>[]
+  searchText?: string
+}>()
 
 const filteredList = computed(() => {
-  if (!searchText.value) {
-    return works.value
+  if (!props.searchText) {
+    return props.works
   }
-  const searchLower = searchText.value.toLowerCase();
-  return works.value.filter(work =>
+  const searchLower = props.searchText.toLowerCase();
+  return props.works.filter(work =>
     (work.titleRu ? work.titleRu.toLowerCase().includes(searchLower) : false) ||
     (work.titleEn ? work.titleEn.toLowerCase().includes(searchLower) : false)
   );
 })
 const emit = defineEmits(['onDel'])
 
-watch(searchText, (newValue, oldValue) => {
-  console.log("Search text changed from", oldValue, "to", newValue);
-});
 </script>
 
 <template>
@@ -35,14 +33,17 @@ watch(searchText, (newValue, oldValue) => {
                       :virtual-scroll-sticky-size-start="48"
                       :virtual-scroll-sticky-size-end="132"
                       scroll-target="#scroll-area-with-virtual-scroll-1 > .scroll"
-                      class="centralCol"
-
+                      style="height: 100%"
     >
       <template v-slot="{item}">
         <WorkItem :work="item" @onDel="emit('onDel')" :key="`wrk${item.id}`"></WorkItem>
       </template>
+      <template v-slot:after>
+        <slot name="after"></slot>
+      </template>
     </q-virtual-scroll>
   </q-scroll-area>
+
 </template>
 
 

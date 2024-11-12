@@ -178,11 +178,11 @@ const tabList = ref(
       id: 8,
       expand: true,
       label: 'Библиотека',
-      caption: 'Ноты и видео',
+      //caption: 'Ноты и видео',
       permits: [16],
       tabs: [
-        {id: 1, name: 'Ноты', caption: 'Партитуры и репертуар', url: '/lib/works', icon: 'music_notes'},
-        {id: 2, name: 'Видео', caption: '', url: '/lib/videos', icon: 'smart_display'}
+        {id: 1, name: 'Каталог произведений', caption: 'Данные для управления репертуаром', url: '/lib/author', icon: 'music_notes'},
+        {id: 2, name: 'Видеотека', caption: 'Записи концертов', url: '/lib/videos', icon: 'smart_display'}
       ]
     }
   ])

@@ -2,7 +2,7 @@
 import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
 import {inject, Ref, ref} from 'vue';
-import SelectComposer from 'components/lib/SelectComposer.vue';
+import SelectComposer from 'components/lib/author/SelectComposer.vue';
 import {Partition, Work} from "src/js/lib";
 import WorkSelect from "components/lib/WorkSelect.vue";
 

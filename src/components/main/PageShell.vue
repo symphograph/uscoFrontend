@@ -111,7 +111,7 @@ function onScroll(evt: { verticalPosition: number; }) {
 .pageToolbar {
   width: 100%;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
   display: flex;
   /*border-bottom: 1px solid var(--PageTitle);*/
 }

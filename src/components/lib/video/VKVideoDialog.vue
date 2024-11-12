@@ -4,19 +4,14 @@ import 'src/css/dialog.css'
 import { useQuasar } from 'quasar';
 import {computed, inject, Ref, ref} from 'vue';
 import {Video} from "src/js/lib";
-import {ussoAxios} from "src/js/myAxios";
 import {myAnnounce} from "src/js/announce";
 import {SketchBase} from "src/js/img";
 import SketchImg from "components/SketchImg.vue";
-import SketchMini from "components/sketch/SketchMini.vue";
 
 const q = useQuasar()
 
 const isOpenDialog = inject('isOpenVKVideoDialog') as Ref<boolean>
 const loading = ref(false)
-
-const apiUrl = ussoAxios.getApiUrl('')
-
 
 const announceList = myAnnounce.all
 const announceInput = ref('')
@@ -67,14 +62,6 @@ function onShow() {
 
 function close() {
   isOpenDialog.value = false
-}
-
-function getImgUrl(announce: any) {
-  const md5 = announce?.sketch?.md5 || null
-  const ext = announce?.sketch?.ext || null
-  const size = 100
-  return SketchBase.getSrc(md5, ext, size)
-
 }
 
 async function linkToAnnounce() {

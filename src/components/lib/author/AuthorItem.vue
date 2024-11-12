@@ -16,7 +16,7 @@ function avaUrl() {
 </script>
 
 <template>
-  <q-item>
+  <q-item style="width: 100%" clickable :to="`/lib/author/${id}`">
     <q-item-section avatar>
       <q-avatar>
         <div class="authorAva"

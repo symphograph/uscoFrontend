@@ -16,7 +16,7 @@ export class Author {
   wikiId= 0;
 
   public static list: Ref<Record<string, any>[]>
-  public static selected: Ref<Record<string, any>|undefined> = ref()
+  public static selected: Ref<any> = ref()
 
   private static path: string = 'epoint/lib/author.php';
 

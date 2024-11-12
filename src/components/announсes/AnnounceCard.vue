@@ -10,8 +10,6 @@ import {Hall} from "src/js/hall";
 import {SketchBase} from "src/js/img";
 import SketchImg from "components/SketchImg.vue";
 
-
-const apiUrl = String(process.env.API);
 const q = useQuasar();
 
 const editModes = inject('editModes') as Record<string, any>;

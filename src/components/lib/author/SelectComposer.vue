@@ -2,7 +2,7 @@
 
 import {computed, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRouter} from 'vue-router';
-import AuthorItem from "components/lib/AuthorItem.vue";
+import AuthorItem from "components/lib/author/AuthorItem.vue";
 import {Author} from "src/js/lib";
 
 const router = useRouter()
