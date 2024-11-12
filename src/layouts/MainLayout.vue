@@ -140,6 +140,7 @@ function maintenance() {
 
 onBeforeMount(() => {
   router.push({path: '/mainfinance'})
+  return;
   //maintenance()
   console.log('mainLayout beforeMount')
   //document.body.style.background = "none";
