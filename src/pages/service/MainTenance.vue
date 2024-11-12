@@ -11,7 +11,7 @@
         </div>
       </q-card-section>
       <q-card-section>
-        <q-item-label caption>В связи с неоплатой услуг, поддержка сервиса приостановлена.</q-item-label>
+        <q-item-label caption>В связи с неоплатой услуг поддержка сервиса приостановлена.</q-item-label>
       </q-card-section>
       <q-card-section v-if="false">
         <q-btn
