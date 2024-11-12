@@ -7,11 +7,11 @@
     <q-card class="no-shadow" style="background: none; padding: 1em; width: 100%">
       <q-card-section>
         <div class="text-h3" style="opacity:.4">
-          Технические работы
+          Произошла чудовищная ошибка
         </div>
       </q-card-section>
       <q-card-section>
-        <q-item-label caption>Мы тут кое-что улучшаем. Скоро всё заработает.</q-item-label>
+        <q-item-label caption>Похоже, на сервере нет денег.</q-item-label>
       </q-card-section>
       <q-card-section v-if="false">
         <q-btn
