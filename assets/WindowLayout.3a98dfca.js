@@ -1,1 +1,0 @@
-import{_ as o}from"./plugin-vue_export-helper.21dcd24c.js";import{J as t,m as a,C as n,ax as r,f as s}from"./index.bc11f4d7.js";const _={},c={class:"bgArea WindowArea"},i={class:"content-container"};function d(l,m){const e=t("router-view");return a(),n("div",c,[r("div",i,[s(e)])])}var f=o(_,[["render",d]]);export{f as default};
