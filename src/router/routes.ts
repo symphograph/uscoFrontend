@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
               },
               {
                 path: 'contacts',
-                component: () => import('pages/ContactPage.vue')
+                component: () => import('components/contacts/ContactPage.vue')
               },
               {
                 path: 'announces',
@@ -125,7 +125,7 @@ const routes: RouteRecordRaw[] = [
                     name: 'libAuthor',
                     meta: { allowedPowers: [5] },
                     path: 'author/:id?',
-                    component: () => import('components/lib/AuthorPage.vue')
+                    component: () => import('components/lib/author/AuthorPage.vue')
                   },
                   {
                     path: 'videos',
@@ -157,13 +157,13 @@ const routes: RouteRecordRaw[] = [
     children: [{path: '', component: () => import('pages/service/AuthCallback.vue')}]
   },
   {
-    path: '/maintenance',
+    path: '/mainfinance',
     component: () => import('layouts/RootLayout.vue'),
     children: [{path: '', component: () => import('pages/service/MainTenance.vue')}]
   },
 
   // Always leave this as last one,
-  // but you can also remove it AlexandrZrazaev
+  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('layouts/RootLayout.vue'),
