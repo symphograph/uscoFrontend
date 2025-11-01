@@ -14,7 +14,7 @@
 
       <q-card-section class="q-mt-md">
         <div class="text-body1" style="opacity:.8; text-align: center">
-          Поддержка этого сайта прекращена.
+          Поддержка этого сайта прекращена. gfgdfg
         </div>
         <div
           class="text-body2 q-mt-md"
