@@ -139,7 +139,7 @@ function maintenance() {
 }
 
 onBeforeMount(() => {
-  router.push({path: '/mainfinance'})
+  //router.push({path: '/mainfinance'})
   return;
   //maintenance()
   console.log('mainLayout beforeMount')

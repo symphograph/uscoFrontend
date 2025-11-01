@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {copy} from "src/js/myFuncts";
+import {copy, fDate} from "src/js/myFuncts";
 import {useQuasar} from "quasar";
 import BtnDelete from "components/main/BtnDelete.vue";
 import {Work} from "src/js/lib";
@@ -17,6 +17,14 @@ const emit = defineEmits(['onDel'])
 
 function getGenre(genreId: number) {
   return genres.value.find((el) => el.id === genreId)
+}
+
+function getYear(work: any){
+  const year = fDate(work.minDate, 'YYYY')
+  if(Number(year) === 1000 || Number(year) === 9999){
+    return 'Год не найден'
+  }
+  return `${year}г`
 }
 
 async function del() {
@@ -37,9 +45,10 @@ async function del() {
         <q-item-label v-if="work.genreId" caption>{{getGenre(work.genreId).name}}</q-item-label>
       </q-item-section>
       <q-item-section side class="opus">
-        <q-item-label caption>{{work.opus ?? 'Op.?'}}</q-item-label>
-        <q-item-label caption>{{work.icatno ?? 'cat№.?'}}</q-item-label>
-        <q-item-label caption>{{work.catalogIndex ?? 'catIdx: ?'}}</q-item-label>
+        <q-item-label caption>{{getYear(work)}}</q-item-label>
+        <q-item-label caption v-if="false">{{work.opus ?? 'Op.?'}}</q-item-label>
+        <q-item-label caption v-if="false">{{work.icatno ?? 'cat№.?'}}</q-item-label>
+        <q-item-label caption v-if="false">{{work.catalogIndex ?? 'catIdx: ?'}}</q-item-label>
         <q-btn dense
                v-if="false"
                icon-right="content_copy"
